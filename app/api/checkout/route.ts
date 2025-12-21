@@ -42,9 +42,9 @@ export async function POST(request: Request) {
           product_name: product.name
         },
         back_urls: {
-          success: 'https://tu-web.com/track',
-          failure: 'https://tu-web.com/',
-          pending: 'https://tu-web.com/',
+          success: 'https://comprarseguidoresperu.vercel.app/',
+          failure: 'https://comprarseguidoresperu.vercel.app/',
+          pending: 'https://comprarseguidoresperu.vercel.app/',
         },
         auto_return: 'approved',
       }

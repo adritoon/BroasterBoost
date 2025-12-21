@@ -1,0 +1,42 @@
+@import "tailwindcss";
+
+/* @theme sirve para configurar variables globales en Tailwind v4 */
+@theme {
+  /* Aquí podrías definir colores custom si quisieras, 
+     pero usaremos los de defecto de Tailwind (slate, pink, purple) */
+}
+
+/* Configuración Base */
+:root {
+  /* Forzamos el modo oscuro por defecto */
+  color-scheme: dark;
+}
+
+body {
+  /* Slate 950 = #020617 */
+  background-color: #020617; 
+  color: #ffffff;
+  
+  /* Suavizado de fuente */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --- Scrollbar Oscuro (Para que no se vea blanco feo) --- */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #334155; /* Slate 700 */
+  border-radius: 5px;
+  border: 2px solid #020617;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #475569; /* Slate 600 */
+}

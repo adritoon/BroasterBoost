@@ -1,0 +1,6 @@
+# Permitir a todos los bots rastrear todo el sitio.
+User-agent: *
+Allow: /
+
+# Indicar dónde está el mapa del sitio (lo haremos en el paso 3).
+Sitemap: https://grupoberboz.vercel.app/sitemap.xml

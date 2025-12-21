@@ -318,7 +318,7 @@ export default function Home() {
               </div>
 
               {/* Zona QR */}
-              <div className="bg-white p-4 rounded-xl mb-6 flex flex-col items-center">
+              <div className="bg-[#752384] p-4 rounded-xl mb-6 flex flex-col items-center">
                 {/* --- CONFIGURACIÓN: DESCOMENTAR CUANDO TENGAS LA FOTO --- */}
                 <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
                 
@@ -327,7 +327,7 @@ export default function Home() {
                    SUBE UNA FOTO LLAMADA "qr-yape.png" A TU CARPETA PUBLIC
                 </div> */}
                 
-                <p className="mt-2 text-slate-900 font-bold text-lg">Titular: Tu Nombre</p>
+                <p className="mt-3 text-white font-bold text-lg tracking-wide">Titular: Robert Sal*</p>
               </div>
 
               {/* Instrucciones y Botón WhatsApp */}

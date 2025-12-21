@@ -70,16 +70,7 @@ export default function Home() {
     }
 
     setLoading(true);
-    // --- SIMULACIÓN (Borrar esto cuando tengas MP) ---
-    console.log("Enviando al Backend:", {
-      productId: product.id,
-      targetLink: targetLink
-    });
-    setTimeout(() => {
-      alert(`¡Simulación Exitosa! \nProducto: ${product.name}\nLink: ${targetLink}`);
-      setLoading(false);
-      // Aquí normalmente aparecería el botón de MP
-    }, 1500);
+    
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',

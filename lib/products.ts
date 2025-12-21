@@ -24,21 +24,21 @@ export const PRODUCTS: Product[] = [
   // TIKTOK
   // =========================================
   {
-    id: 'tt-followers-50',
-    name: '50 Seguidores TikTok',
-    price: 2.00,
-    provider_id: 0,
-    provider_quantity: 50,
+    id: 'tt-followers-100',
+    name: '100 Seguidores TikTok',
+    price: 5.00,
+    provider_id: 2560,
+    provider_quantity: 100,
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
     icon: 'users'
   },
   {
-    id: 'tt-followers-100',
-    name: '100 Seguidores TikTok',
-    price: 4.00,
-    provider_id: 0,
-    provider_quantity: 100,
+    id: 'tt-followers-500',
+    name: '500 Seguidores TikTok',
+    price: 15.00,
+    provider_id: 2560,
+    provider_quantity: 500,
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
     icon: 'users'
@@ -46,8 +46,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-followers-1k',
     name: '1,000 Seguidores TikTok',
-    price: 35.00,
-    provider_id: 0,
+    price: 25.00,
+    provider_id: 2560,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
@@ -58,8 +58,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-followers-5k',
     name: '5,000 Seguidores TikTok',
-    price: 135.00,
-    provider_id: 0,
+    price: 100.00,
+    provider_id: 2560,
     provider_quantity: 5000,
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
@@ -68,8 +68,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-followers-10k',
     name: '10,000 Seguidores TikTok',
-    price: 245.00,
-    provider_id: 0,
+    price: 180.00,
+    provider_id: 2560,
     provider_quantity: 10000,
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
@@ -78,21 +78,155 @@ export const PRODUCTS: Product[] = [
   },
   // Extras TikTok
   {
-    id: 'tt-likes-1k',
-    name: '1,000 Likes TikTok',
-    price: 9.00,
-    provider_id: 0,
-    provider_quantity: 1000,
+    id: 'tt-likes-100',
+    name: '100 Likes TikTok',
+    price: 4.00,
+    provider_id: 2563,
+    provider_quantity: 100,
     type: 'tiktok',
     service_type: 'likes', // <--- Diferente tipo
     icon: 'heart'
   },
   {
+    id: 'tt-likes-500',
+    name: '500 Likes TikTok',
+    price: 10.00,
+    provider_id: 2563,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'likes', // <--- Diferente tipo
+    icon: 'heart'
+  },
+  {
+    id: 'tt-likes-1k',
+    name: '1,000 Likes TikTok',
+    price: 15.00,
+    provider_id: 2563,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'likes', // <--- Diferente tipo
+    icon: 'heart',
+    popular: true,
+    label: 'Más Vendido'
+  },
+  {
+    id: 'tt-likes-5k',
+    name: '5,000 Likes TikTok',
+    price: 50.00,
+    provider_id: 2563,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'likes', // <--- Diferente tipo
+    icon: 'heart'
+  },
+  {
+    id: 'tt-likes-10k',
+    name: '10,000 Likes TikTok',
+    price: 90.00,
+    provider_id: 2563,
+    provider_quantity: 10000,
+    type: 'tiktok',
+    service_type: 'likes', // <--- Diferente tipo
+    icon: 'heart'
+  },
+  {
+    id: 'tt-likes-20k',
+    name: '20,000 Likes TikTok',
+    price: 160.00,
+    provider_id: 2563,
+    provider_quantity: 20000,
+    type: 'tiktok',
+    service_type: 'likes', // <--- Diferente tipo
+    icon: 'heart'
+  },
+  {
+    id: 'tt-likes-50k',
+    name: '50,000 Likes TikTok',
+    price: 350.00,
+    provider_id: 2563,
+    provider_quantity: 50000,
+    type: 'tiktok',
+    service_type: 'likes', // <--- Diferente tipo
+    icon: 'heart'
+  },
+  {
+    id: 'tt-views-100',
+    name: '100 Vistas Video',
+    price: 4.00,
+    provider_id: 5791,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye'
+  },
+  {
+    id: 'tt-views-500',
+    name: '500 Vistas Video',
+    price: 9.00,
+    provider_id: 5791,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye'
+  },
+  {
+    id: 'tt-views-1k',
+    name: '1,000 Vistas Video',
+    price: 14.00,
+    provider_id: 5791,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye',
+    popular: true,
+    label: 'Más Vendido'
+  },
+  {
+    id: 'tt-views-5k',
+    name: '5,000 Vistas Video',
+    price: 30.00,
+    provider_id: 5791,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye'
+  },
+  {
     id: 'tt-views-10k',
     name: '10,000 Vistas Video',
-    price: 5.00,
-    provider_id: 0,
+    price: 50.00,
+    provider_id: 5791,
     provider_quantity: 10000,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye'
+  },
+  {
+    id: 'tt-views-20k',
+    name: '20,000 Vistas Video',
+    price: 90.00,
+    provider_id: 5791,
+    provider_quantity: 20000,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye'
+  },
+  {
+    id: 'tt-views-50k',
+    name: '50,000 Vistas Video',
+    price: 170.00,
+    provider_id: 5791,
+    provider_quantity: 50000,
+    type: 'tiktok',
+    service_type: 'views', // <--- Diferente tipo
+    icon: 'eye'
+  },
+  {
+    id: 'tt-views-100k',
+    name: '100,000 Vistas Video',
+    price: 320.00,
+    provider_id: 5791,
+    provider_quantity: 100000,
     type: 'tiktok',
     service_type: 'views', // <--- Diferente tipo
     icon: 'eye'

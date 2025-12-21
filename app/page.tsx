@@ -232,7 +232,7 @@ export default function Home() {
 
                         {preferenceId ? (
                            <div className="wallet-container">
-                             <Wallet initialization={{ preferenceId }} customization={{ texts:{ valueProp: 'smart_option'}}} />
+                             <Wallet initialization={{ preferenceId }} />
                            </div>
                         ) : (
                           <div className="flex gap-2">

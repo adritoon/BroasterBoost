@@ -10,11 +10,13 @@ import {
 import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
-// Inicializar MP
+// 1. Inicializar Mercado Pago
+// Asegúrate de que tu variable de entorno empiece con NEXT_PUBLIC_
 if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
   initMercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY, { locale: 'es-PE' });
 }
 
+// 2. Mapeo de Iconos y Etiquetas
 const iconMap: Record<string, any> = {
   instagram: Instagram, music: Music, facebook: Facebook, youtube: Youtube,
   'gamepad-2': Gamepad2, heart: Heart, eye: Eye, 'message-circle': MessageCircle,
@@ -31,16 +33,21 @@ const serviceLabels: Record<ServiceType, string> = {
 };
 
 export default function Home() {
+  // --- ESTADOS ---
   const [activeCategory, setActiveCategory] = useState<ProductType>('tiktok');
   const [activeService, setActiveService] = useState<ServiceType>('followers');
   
-  // Estado para manejar el flujo de compra
+  // Estado para compra automática (Mercado Pago)
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [targetLink, setTargetLink] = useState('');
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Filtros (Igual que antes)
+  // Estado para compra manual (Yape QR)
+  const [showYapeModal, setShowYapeModal] = useState(false);
+  const [manualProduct, setManualProduct] = useState<Product | null>(null);
+
+  // --- LÓGICA DE FILTROS ---
   const productsByCategory = PRODUCTS.filter(p => p.type === activeCategory);
   const availableServices = Array.from(new Set(productsByCategory.map(p => p.service_type)));
   const finalProducts = productsByCategory.filter(p => p.service_type === activeService);
@@ -54,15 +61,15 @@ export default function Home() {
     setActiveService(firstService);
   };
 
-  // Paso 1: Seleccionar producto -> Mostrar Input
+  // --- LÓGICA DE SELECCIÓN ---
   const handleSelectProduct = (id: string) => {
-    if (selectedProductId === id) return; // Ya está seleccionado
+    if (selectedProductId === id) return;
     setSelectedProductId(id);
-    setPreferenceId(null); // Resetear pago anterior
+    setPreferenceId(null);
     setTargetLink('');
   };
 
-  // Paso 2: Generar Pago con el Link
+  // --- LÓGICA MERCADO PAGO (Automático) ---
   const handleCreatePayment = async (product: Product) => {
     if (!targetLink || targetLink.length < 3) {
       alert("Por favor ingresa un enlace válido (ej: usuario o link del video).");
@@ -70,14 +77,13 @@ export default function Home() {
     }
 
     setLoading(true);
-    
     try {
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           productId: product.id,
-          targetLink: targetLink // <--- ¡AQUÍ ENVIAMOS EL LINK!
+          targetLink: targetLink 
         }),
       });
       const data = await response.json();
@@ -88,6 +94,16 @@ export default function Home() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // --- LÓGICA YAPE MANUAL (QR) ---
+  const handleManualPayment = (product: Product) => {
+    if (!targetLink || targetLink.length < 3) {
+      alert("Por favor ingresa tu enlace primero.");
+      return;
+    }
+    setManualProduct(product);
+    setShowYapeModal(true);
   };
 
   return (
@@ -106,13 +122,14 @@ export default function Home() {
         </div>
       </header>
 
-      {/* HERO & CATEGORÍAS (Igual) */}
+      {/* HERO SECTION */}
       <section className="pt-32 pb-8 px-4 text-center">
         <h1 className="mx-auto max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl">
           Domina las <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Redes Sociales</span>
         </h1>
       </section>
 
+      {/* CATEGORÍAS */}
       <section className="container mx-auto px-4 pb-6">
         <div className="flex flex-wrap justify-center gap-2">
           {CATEGORIES.map((cat) => (
@@ -133,7 +150,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* SUB-FILTROS */}
+      {/* SUB-FILTROS (SERVICIOS) */}
       <section className="container mx-auto px-4 pb-12">
         <div className="flex justify-center">
           <div className="inline-flex rounded-xl bg-white/5 p-1 border border-white/10">
@@ -142,7 +159,7 @@ export default function Home() {
                 key={service}
                 onClick={() => {
                   setActiveService(service);
-                  setSelectedProductId(null); // Cerrar cualquier input abierto
+                  setSelectedProductId(null);
                 }}
                 className={cn(
                   "rounded-lg px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
@@ -181,11 +198,12 @@ export default function Home() {
                     isSelected ? "bg-white/10 ring-1 ring-pink-500/50" : "hover:bg-white/10 border-white/10"
                   )}
                 >
-                  {/* Badge */}
+                  {/* Badge Popular */}
                   {product.popular && (
                     <div className="absolute right-0 top-0 rounded-bl-xl bg-gradient-to-r from-amber-500 to-orange-600 px-3 py-1 text-xs font-bold text-white">POPULAR</div>
                   )}
 
+                  {/* Encabezado Producto */}
                   <div className="flex justify-between items-start">
                     <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-slate-900 shadow-inner">
                       <Icon className="text-slate-200" size={24} />
@@ -197,7 +215,7 @@ export default function Home() {
 
                   <h3 className="text-lg font-bold text-slate-100">{product.name}</h3>
                   
-                  {/* ZONA INTERACTIVA */}
+                  {/* ZONA DE COMPRA */}
                   <div className="mt-6">
                     {!isSelected ? (
                       // 1. Botón Inicial
@@ -208,7 +226,7 @@ export default function Home() {
                         Comprar
                       </button>
                     ) : (
-                      // 2. Formulario (Input + Botón Pagar)
+                      // 2. Formulario de Datos + Botones
                       <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -230,24 +248,39 @@ export default function Home() {
                           />
                         </div>
 
+                        {/* Si ya tenemos ID de pago, mostrar Wallet de MP */}
                         {preferenceId ? (
                            <div className="wallet-container">
+                             {/* Usamos la versión simple para evitar errores de TypeScript */}
                              <Wallet initialization={{ preferenceId }} />
                            </div>
                         ) : (
-                          <div className="flex gap-2">
-                             <button 
-                              onClick={() => setSelectedProductId(null)}
-                              className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5"
+                          // Si no, mostrar botones de selección de pago
+                          <div className="space-y-2">
+                             
+                             {/* Fila 1: Cancelar + Botón Mercado Pago */}
+                             <div className="flex gap-2">
+                               <button 
+                                onClick={() => setSelectedProductId(null)}
+                                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5"
+                               >
+                                 Cancelar
+                               </button>
+                               <button 
+                                onClick={() => handleCreatePayment(product)}
+                                disabled={loading}
+                                className="flex-1 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-2.5 hover:opacity-90 disabled:opacity-50 text-sm"
+                               >
+                                 {loading ? 'Cargando...' : 'Pago Web'}
+                               </button>
+                             </div>
+
+                             {/* Fila 2: Botón Manual Yape (Ocupa todo el ancho) */}
+                             <button
+                               onClick={() => handleManualPayment(product)}
+                               className="w-full rounded-lg border border-pink-500/30 text-pink-400 font-bold py-2 hover:bg-pink-500/10 transition-colors text-sm"
                              >
-                               Cancelar
-                             </button>
-                             <button 
-                              onClick={() => handleCreatePayment(product)}
-                              disabled={loading}
-                              className="flex-1 rounded-lg bg-gradient-to-r from-pink-600 to-purple-600 text-white font-bold py-2.5 hover:opacity-90 disabled:opacity-50"
-                             >
-                               {loading ? 'Cargando...' : 'Ir a Pagar'}
+                               Yapear Directo (QR)
                              </button>
                           </div>
                         )}
@@ -261,6 +294,71 @@ export default function Home() {
           </AnimatePresence>
         </motion.div>
       </section>
+
+      {/* --- MODAL YAPE MANUAL --- */}
+      <AnimatePresence>
+        {showYapeModal && manualProduct && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[60] flex items-center justify-center bg-black/80 px-4 backdrop-blur-sm"
+          >
+            <motion.div 
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
+              className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-700 p-6 shadow-2xl relative"
+            >
+              {/* Header del Modal */}
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold text-white">Yape Directo (Manual)</h3>
+                <button 
+                  onClick={() => setShowYapeModal(false)} 
+                  className="text-slate-400 hover:text-white bg-white/5 rounded-full p-1"
+                >
+                  ✕
+                </button>
+              </div>
+
+              {/* Zona QR */}
+              <div className="bg-white p-4 rounded-xl mb-6 flex flex-col items-center">
+                {/* --- CONFIGURACIÓN: DESCOMENTAR CUANDO TENGAS LA FOTO --- */}
+                <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
+                
+                {/* Placeholder (Bórralo cuando pongas la imagen real) */}
+                {/* <div className="w-48 h-48 bg-purple-100 flex items-center justify-center text-purple-600 font-bold border-2 border-dashed border-purple-300 text-center text-sm p-4">
+                   SUBE UNA FOTO LLAMADA "qr-yape.png" A TU CARPETA PUBLIC
+                </div> */}
+                
+                <p className="mt-2 text-slate-900 font-bold text-lg">Titular: Tu Nombre</p>
+              </div>
+
+              {/* Instrucciones y Botón WhatsApp */}
+              <div className="space-y-4">
+                <div className="bg-slate-800 p-3 rounded-lg text-sm text-slate-300 space-y-1">
+                  <p>1. Yapea <strong>S/ {manualProduct.price.toFixed(2)}</strong> al QR.</p>
+                  <p>2. Toma una captura de pantalla.</p>
+                  <p>3. Envíala a nuestro WhatsApp para activar.</p>
+                </div>
+
+                {/* --- CONFIGURACIÓN: PON TU NÚMERO AQUÍ --- */}
+                <a 
+                  href={`https://wa.me/51971409482?text=${encodeURIComponent(
+                    `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
+                  )}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#25D366] text-white font-bold py-3 hover:bg-[#20bd5a] transition-all"
+                >
+                  <MessageCircle size={20} />
+                  Enviar Comprobante
+                </a>
+                
+                <p className="text-xs text-center text-slate-500">
+                  *La activación manual puede tomar 15-30 minutos.
+                </p>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
     </main>
   );

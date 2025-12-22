@@ -1,8 +1,8 @@
 import { ImageResponse } from 'next/og';
 
-// Configuración de la imagen (Estándar de Twitter/Discord)
+// Configuración de la imagen
 export const runtime = 'edge';
-export const alt = 'Hongo Awards 2025 - Vota por tus favoritos';
+export const alt = 'SocialBoost Perú - Compra Seguidores, Likes y Vistas para Todas las Redes';
 export const size = {
   width: 1200,
   height: 630,
@@ -21,128 +21,134 @@ export default async function Image() {
           alignItems: 'center',
           justifyContent: 'center',
           backgroundColor: '#020617', // Slate-950
-          backgroundImage: 'radial-gradient(circle at 50% 50%, #3b0764 0%, #020617 100%)', // Toque morado oscuro sutil
+          // Un fondo sutil degradado morado oscuro
+          backgroundImage: 'radial-gradient(circle at 50% 100%, #581c87 0%, #020617 50%)', 
           fontFamily: 'sans-serif',
-          position: 'relative',
         }}
       >
-        {/* Grid Pattern de fondo (Simulado con CSS) */}
+        {/* Decoración de Fondo (Líneas sutiles) */}
         <div
           style={{
             position: 'absolute',
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: 'radial-gradient(rgba(236, 72, 153, 0.2) 1px, transparent 1px)',
-            backgroundSize: '40px 40px',
-            opacity: 0.3,
+            top: 0, left: 0, right: 0, bottom: 0,
+            backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px)',
+            backgroundSize: '50px 50px',
+            opacity: 0.2,
           }}
         />
 
-        {/* Badge de Edición */}
+        {/* Badge Superior */}
         <div
           style={{
             display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
             padding: '8px 24px',
             borderRadius: '50px',
-            border: '1px solid rgba(236, 72, 153, 0.5)',
-            backgroundColor: 'rgba(236, 72, 153, 0.1)',
-            color: '#fbcfe8', // Pink-200
-            fontSize: 20,
+            border: '1px solid rgba(168, 85, 247, 0.5)', // Borde Morado
+            backgroundColor: 'rgba(168, 85, 247, 0.15)',
+            color: '#e9d5ff', // Purple-200
+            fontSize: 18,
             fontWeight: 600,
-            letterSpacing: '0.2em',
-            marginBottom: 40,
+            letterSpacing: '0.1em',
+            marginBottom: 30,
             textTransform: 'uppercase',
           }}
         >
-          ✨ Edición 2025 ✨
+          La Plataforma #1 en Perú
         </div>
 
-        {/* Título con Efecto Glitch (Simulado con capas) */}
-        <div style={{ position: 'relative', display: 'flex' }}>
-          {/* Capa Sombra Rosa (Desplazada) */}
-          <div
-            style={{
-              fontSize: 130,
-              fontWeight: 900,
-              fontStyle: 'italic',
-              color: '#db2777', // Pink-600
-              position: 'absolute',
-              top: 0,
-              left: -4,
-              opacity: 0.8,
-              letterSpacing: '-0.05em',
-            }}
-          >
-            HONGO AWARDS
-          </div>
-          
-          {/* Capa Sombra Azul (Desplazada) */}
-          <div
-            style={{
-              fontSize: 130,
-              fontWeight: 900,
-              fontStyle: 'italic',
-              color: '#0284c7', // Sky-600
-              position: 'absolute',
-              top: 0,
-              left: 4,
-              opacity: 0.8,
-              letterSpacing: '-0.05em',
-            }}
-          >
-            HONGO AWARDS
-          </div>
-
-          {/* Capa Principal Blanca */}
-          <div
-            style={{
-              fontSize: 130,
-              fontWeight: 900,
-              fontStyle: 'italic',
-              color: 'white',
-              letterSpacing: '-0.05em',
-              zIndex: 10,
-            }}
-          >
-            HONGO AWARDS
-          </div>
-        </div>
-
-        {/* Subtítulo */}
+        {/* Título Principal con Gradiente */}
         <div
           style={{
-            fontSize: 32,
-            color: '#cbd5e1', // Slate-300
-            marginTop: 20,
-            textAlign: 'center',
-            maxWidth: '800px',
-            lineHeight: 1.4,
-          }}
-        >
-          Celebramos lo mejor, lo peor y lo más cringe del año.
-        </div>
-
-        {/* Botón Simulado */}
-        <div
-          style={{
-            marginTop: 50,
-            backgroundColor: '#ec4899', // Pink-500
-            color: 'white',
-            padding: '16px 48px',
-            borderRadius: '20px',
-            fontSize: 28,
-            fontWeight: 'bold',
             display: 'flex',
+            fontSize: 90,
+            fontWeight: 900,
+            letterSpacing: '-0.03em',
+            textAlign: 'center',
+            lineHeight: 1,
+            color: 'white',
+            marginBottom: 20,
+            flexDirection: 'column',
             alignItems: 'center',
-            boxShadow: '0 0 40px rgba(236, 72, 153, 0.6)',
           }}
         >
-          ¡VOTA AHORA!
+          <span style={{ 
+            backgroundImage: 'linear-gradient(90deg, #ec4899, #8b5cf6, #06b6d4)', // Pink -> Purple -> Cyan
+            backgroundClip: 'text',
+            color: 'transparent',
+            paddingBottom: 10,
+          }}>
+            SocialBoost.pe
+          </span>
         </div>
+
+        {/* Subtítulo descriptivo */}
+        <div
+          style={{
+            fontSize: 36,
+            color: '#94a3b8', // Slate-400
+            textAlign: 'center',
+            maxWidth: '900px',
+            fontWeight: 500,
+          }}
+        >
+          Seguidores • Likes • Vistas • Comentarios
+        </div>
+
+        {/* Redes Sociales (Actualizado con YouTube y Kick) */}
+        <div
+          style={{
+            display: 'flex',
+            marginTop: 40,
+            gap: '25px', // Reduje un poco el espacio para que quepan bien los 5
+            fontSize: 22,
+            color: 'white',
+            fontWeight: 'bold',
+            flexWrap: 'wrap',
+            justifyContent: 'center',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#00f2ea' }} />
+             TikTok
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#e1306c' }} />
+             Instagram
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#1877f2' }} />
+             Facebook
+          </div>
+          {/* YouTube (Nuevo) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#FF0000' }} />
+             YouTube
+          </div>
+          {/* Kick (Nuevo) */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+            <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#53FC18' }} />
+             Kick
+          </div>
+        </div>
+
+        {/* Footer: Métodos de Pago */}
+        <div
+           style={{
+             position: 'absolute',
+             bottom: 40,
+             display: 'flex',
+             alignItems: 'center',
+             gap: 15,
+             fontSize: 20,
+             color: '#cbd5e1',
+           }}
+        >
+          <span>Aceptamos:</span>
+          <span style={{ backgroundColor: '#752384', color: 'white', padding: '4px 12px', borderRadius: 8, fontWeight: 'bold' }}>Yape</span>
+          <span style={{ backgroundColor: '#00c6bc', color: 'white', padding: '4px 12px', borderRadius: 8, fontWeight: 'bold' }}>Plin</span>
+          <span style={{ border: '1px solid white', padding: '4px 12px', borderRadius: 8 }}>Tarjetas</span>
+        </div>
+
       </div>
     ),
     {

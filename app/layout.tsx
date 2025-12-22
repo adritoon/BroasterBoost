@@ -7,21 +7,22 @@ const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   // --- 1. URL BASE (CRÍTICO PARA REDES SOCIALES) ---
-  // Reemplaza 'https://tu-proyecto.vercel.app' con tu dominio real de Vercel.
-  // Si no lo pones, la imagen OpenGraph no cargará en Discord/Twitter.
-  metadataBase: new URL('https://hongo-awards.vercel.app'), 
+  // Esta es la URL que configuramos en Vercel
+  metadataBase: new URL('https://comprarseguidoresperu.vercel.app'), 
 
-  // --- 2. INFORMACIÓN BÁSICA ---
-  title: 'Hongo Awards 2025',
-  description: 'La gala de premios más fúngica del año. Vota por tus favoritos.',
+  // --- 2. INFORMACIÓN BÁSICA (SEO) ---
+  title: 'SocialBoost Perú | Comprar Seguidores, Likes y Vistas Reales',
+  description: 'Potencia tus redes sociales en segundos. Seguidores, Likes y Vistas para TikTok, Instagram, Kick y Facebook. Precios baratos, entrega inmediata y pago seguro con Yape o Tarjeta.',
+  
+  // --- 3. PALABRAS CLAVE (KEYWORDS) ---
+  keywords: ['comprar seguidores peru', 'likes tiktok peru', 'vistas instagram', 'social media marketing', 'yape', 'seguidores reales', 'viewers kick peru', 'kick peru'],
 
-  // --- 3. OPEN GRAPH (CÓMO SE VE AL COMPARTIR) ---
-  // Esto asegura que Twitter y WhatsApp usen la imagen generada
+  // --- 4. OPEN GRAPH (CÓMO SE VE AL COMPARTIR EN WHATSAPP/FACEBOOK) ---
   openGraph: {
-    title: 'Hongo Awards 2025',
-    description: 'Entra y vota por los mejores clips, fails y momentos del año.',
-    siteName: 'Hongo Awards',
-    locale: 'es_ES',
+    title: 'SocialBoost Perú | Crece en Redes Sociales',
+    description: 'La forma más segura y rápida de aumentar tus seguidores y likes. Aceptamos Yape, Plin y Tarjetas.',
+    siteName: 'SocialBoost Perú',
+    locale: 'es_PE', // Español Perú
     type: 'website',
   },
 }
@@ -32,10 +33,9 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // Forzamos la clase 'dark' y el fondo oscuro base para evitar flashbangs blancos al cargar
+    // Forzamos la clase 'dark' para que siempre se vea el tema oscuro elegante
     <html lang="es" className="dark">
       <body className={`${inter.className} bg-slate-950 text-slate-200 antialiased min-h-screen`}>
-        {/* Aquí se renderizará tu nueva App (page.tsx) sin estorbos antiguos */}
         {children}
       </body>
     </html>

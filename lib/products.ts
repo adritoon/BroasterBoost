@@ -304,6 +304,16 @@ export const PRODUCTS: Product[] = [
   // KICK
   // =========================================
   {
+    id: 'kick-followers-10',
+    name: '10 Seguidores Kick',
+    price: 1.00,
+    provider_id: 7266,
+    provider_quantity: 10,
+    type: 'kick',
+    service_type: 'followers',
+    icon: 'gamepad-2'
+  },
+  {
     id: 'kick-followers-100',
     name: '100 Seguidores Kick',
     price: 5.00,

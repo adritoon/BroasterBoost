@@ -19,11 +19,14 @@ export default async function Image() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
+          // CAMBIO AQUÍ: En vez de 'center', usamos 'flex-start' y padding para subirlo
+          justifyContent: 'flex-start',
+          paddingTop: 70, // Esto sube todo el bloque de contenido
           backgroundColor: '#020617', // Slate-950
           // Un fondo sutil degradado morado oscuro
           backgroundImage: 'radial-gradient(circle at 50% 100%, #581c87 0%, #020617 50%)', 
           fontFamily: 'sans-serif',
+          position: 'relative', // Necesario para el footer absoluto
         }}
       >
         {/* Decoración de Fondo (Líneas sutiles) */}
@@ -94,12 +97,12 @@ export default async function Image() {
           Seguidores • Likes • Vistas • Comentarios
         </div>
 
-        {/* Redes Sociales (Actualizado con YouTube y Kick) */}
+        {/* Redes Sociales */}
         <div
           style={{
             display: 'flex',
-            marginTop: 40,
-            gap: '25px', // Reduje un poco el espacio para que quepan bien los 5
+            marginTop: 45, // Un poco más de espacio aquí
+            gap: '25px',
             fontSize: 22,
             color: 'white',
             fontWeight: 'bold',
@@ -119,23 +122,21 @@ export default async function Image() {
             <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#1877f2' }} />
              Facebook
           </div>
-          {/* YouTube (Nuevo) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#FF0000' }} />
              YouTube
           </div>
-          {/* Kick (Nuevo) */}
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <div style={{ width: 12, height: 12, borderRadius: '50%', backgroundColor: '#53FC18' }} />
              Kick
           </div>
         </div>
 
-        {/* Footer: Métodos de Pago */}
+        {/* Footer: Métodos de Pago (Permanece fijo abajo) */}
         <div
            style={{
              position: 'absolute',
-             bottom: 40,
+             bottom: 35, // Un poco más pegado al borde inferior
              display: 'flex',
              alignItems: 'center',
              gap: 15,

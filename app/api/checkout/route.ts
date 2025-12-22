@@ -42,7 +42,7 @@ export async function POST(request: Request) {
           product_name: product.name
         },
         back_urls: {
-          success: 'https://comprarseguidoresperu.vercel.app/',
+          success: 'https://comprarseguidoresperu.vercel.app/track',
           failure: 'https://comprarseguidoresperu.vercel.app/',
           pending: 'https://comprarseguidoresperu.vercel.app/',
         },

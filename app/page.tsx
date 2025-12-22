@@ -240,7 +240,7 @@ export default function Home() {
                             placeholder={
                               product.service_type === 'likes' || product.service_type === 'views' 
                               ? "Pega el link del video/foto" 
-                              : "Usuario (sin @) o Link Perfil"
+                              : "Pega el link del perfil"
                             }
                             value={targetLink}
                             onChange={(e) => setTargetLink(e.target.value)}

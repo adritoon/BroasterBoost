@@ -314,10 +314,20 @@ export const PRODUCTS: Product[] = [
     icon: 'gamepad-2'
   },
   {
+    id: 'kick-followers-50',
+    name: '50 Seguidores Kick',
+    price: 10.00,
+    provider_id: 7266,
+    provider_quantity: 50,
+    type: 'kick',
+    service_type: 'followers',
+    icon: 'gamepad-2'
+  },
+  {
     id: 'kick-followers-100',
     name: '100 Seguidores Kick',
-    price: 5.00,
-    provider_id: 0,
+    price: 15.00,
+    provider_id: 7266,
     provider_quantity: 100,
     type: 'kick',
     service_type: 'followers',
@@ -326,8 +336,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-500',
     name: '500 Seguidores Kick',
-    price: 15.00,
-    provider_id: 0,
+    price: 50.00,
+    provider_id: 7266,
     provider_quantity: 500,
     type: 'kick',
     service_type: 'followers',
@@ -336,14 +346,34 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-1k',
     name: '1,000 Seguidores Kick',
-    price: 25.00,
-    provider_id: 0,
+    price: 90.00,
+    provider_id: 7266,
     provider_quantity: 1000,
     type: 'kick',
     service_type: 'followers',
     icon: 'gamepad-2',
     popular: true,
     label: 'Afiliado Rápido'
+  },
+  {
+    id: 'kick-followers-5k',
+    name: '5,000 Seguidores Kick',
+    price: 350.00,
+    provider_id: 7266,
+    provider_quantity: 5000,
+    type: 'kick',
+    service_type: 'followers',
+    icon: 'gamepad-2'
+  },
+  {
+    id: 'kick-followers-10k',
+    name: '10,000 Seguidores Kick',
+    price: 650.00,
+    provider_id: 7266,
+    provider_quantity: 10000,
+    type: 'kick',
+    service_type: 'followers',
+    icon: 'gamepad-2'
   },
   {
     id: 'kick-viewers-100-15',
@@ -353,63 +383,149 @@ export const PRODUCTS: Product[] = [
     provider_quantity: 100,
     type: 'kick',
     service_type: 'streaming', // <--- Tipo especial para En Vivo
-    icon: 'users',
-    label: 'En Vivo'
+    icon: 'users'
   },
   {
-    id: 'kick-viewers-100',
+    id: 'kick-viewers-100-30',
+    name: '100 Viewers (30 minutos)',
+    price: 10.00,
+    provider_id: 3769,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-100-1',
     name: '100 Viewers (1 Hora)',
-    price: 35.00,
+    price: 15.00,
     provider_id: 3771,
     provider_quantity: 100,
     type: 'kick',
     service_type: 'streaming', // <--- Tipo especial para En Vivo
-    icon: 'users',
-    label: 'En Vivo'
+    icon: 'users'
   },
   {
-    id: 'kick-viewers-500',
+    id: 'kick-viewers-200-1',
+    name: '200 Viewers (1 Hora)',
+    price: 25.00,
+    provider_id: 3771,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-500-30',
+    name: '500 Viewers (30 minutos)',
+    price: 30.00,
+    provider_id: 3769,
+    provider_quantity: 500,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-500-1',
     name: '500 Viewers (1 Hora)',
-    price: 135.00,
+    price: 50.00,
     provider_id: 3771,
     provider_quantity: 500,
     type: 'kick',
     service_type: 'streaming', // <--- Tipo especial para En Vivo
-    icon: 'users',
-    label: 'En Vivo'
+    icon: 'users'
   },
   {
-    id: 'kick-viewers-1000',
+    id: 'kick-viewers-1000-30',
+    name: '1000 Viewers (30 minutos)',
+    price: 45.00,
+    provider_id: 3769,
+    provider_quantity: 1000,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-1000-1',
     name: '1000 Viewers (1 Hora)',
-    price: 200.00,
+    price: 80.00,
     provider_id: 3771,
     provider_quantity: 1000,
     type: 'kick',
     service_type: 'streaming', // <--- Tipo especial para En Vivo
     icon: 'users',
-    label: 'En Vivo'
+    popular: true,
+    label: 'Más popular'
+  },
+  {
+    id: 'kick-viewers-2000-1',
+    name: '2000 Viewers (1 Hora)',
+    price: 150.00,
+    provider_id: 3771,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
   },
   {
     id: 'kick-viewers-1000-2',
     name: '1000 Viewers (2 Horas)',
-    price: 300.00,
+    price: 150.00,
     provider_id: 3772,
     provider_quantity: 1000,
     type: 'kick',
     service_type: 'streaming', // <--- Tipo especial para En Vivo
-    icon: 'users',
-    label: 'En Vivo'
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-2000-2',
+    name: '2000 Viewers (2 Horas)',
+    price: 280.00,
+    provider_id: 3772,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
   },
   {
     id: 'kick-viewers-1000-3',
     name: '1000 Viewers (3 Horas)',
-    price: 450.00,
+    price: 210.00,
     provider_id: 3773,
     provider_quantity: 1000,
     type: 'kick',
     service_type: 'streaming', // <--- Tipo especial para En Vivo
-    icon: 'users',
-    label: 'En Vivo'
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-2000-3',
+    name: '2000 Viewers (3 Horas)',
+    price: 400.00,
+    provider_id: 3773,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-1000-5',
+    name: '1000 Viewers (5 Horas)',
+    price: 340.00,
+    provider_id: 3775,
+    provider_quantity: 1000,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-2000-5',
+    name: '2000 Viewers (5 Horas)',
+    price: 650.00,
+    provider_id: 3775,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    icon: 'users'
   },
 
   // =========================================

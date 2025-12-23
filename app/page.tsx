@@ -11,13 +11,16 @@ import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/p
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
+// --- CONFIGURACIÓN ---
 // 1. Inicializar Mercado Pago
-// Asegúrate de que tu variable de entorno empiece con NEXT_PUBLIC_
 if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
   initMercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY, { locale: 'es-PE' });
 }
 
-// 2. Mapeo de Iconos y Etiquetas
+// 2. Número de WhatsApp Centralizado (Lee del .env.local o usa uno por defecto)
+const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999';
+
+// 3. Mapeo de Iconos
 const iconMap: Record<string, any> = {
   instagram: Instagram, music: Music, plays: Play, listeners: Headphones, saves: Bookmark, facebook: Facebook, youtube: Youtube,
   'gamepad-2': Gamepad2, heart: Heart, eye: Eye, 'message-circle': MessageCircle,
@@ -213,7 +216,7 @@ export default function Home() {
                       <Icon className="text-slate-200" size={24} />
                     </div>
                     <div className="text-right">
-                       <span className="text-2xl font-bold text-white">S/ {product.price.toFixed(2)}</span>
+                        <span className="text-2xl font-bold text-white">S/ {product.price.toFixed(2)}</span>
                     </div>
                   </div>
 
@@ -255,7 +258,6 @@ export default function Home() {
                         {/* Si ya tenemos ID de pago, mostrar Wallet de MP */}
                         {preferenceId ? (
                            <div className="wallet-container">
-                             {/* Usamos la versión simple para evitar errores de TypeScript */}
                              <Wallet initialization={{ preferenceId }} />
                            </div>
                         ) : (
@@ -323,14 +325,7 @@ export default function Home() {
 
               {/* Zona QR */}
               <div className="bg-[#752384] p-4 rounded-xl mb-6 flex flex-col items-center">
-                {/* --- CONFIGURACIÓN: DESCOMENTAR CUANDO TENGAS LA FOTO --- */}
                 <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
-                
-                {/* Placeholder (Bórralo cuando pongas la imagen real) */}
-                {/* <div className="w-48 h-48 bg-purple-100 flex items-center justify-center text-purple-600 font-bold border-2 border-dashed border-purple-300 text-center text-sm p-4">
-                   SUBE UNA FOTO LLAMADA "qr-yape.png" A TU CARPETA PUBLIC
-                </div> */}
-                
                 <p className="mt-3 text-white font-bold text-lg tracking-wide">Titular: Robert Sal*</p>
               </div>
 
@@ -342,9 +337,9 @@ export default function Home() {
                   <p>3. Envíala a nuestro WhatsApp para activar.</p>
                 </div>
 
-                {/* --- CONFIGURACIÓN: PON TU NÚMERO AQUÍ --- */}
+                {/* --- AHORA USAMOS LA VARIABLE WHATSAPP_NUMBER AQUÍ --- */}
                 <a 
-                  href={`https://wa.me/51971409482?text=${encodeURIComponent(
+                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
                     `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
                   )}`}
                   target="_blank"
@@ -363,7 +358,8 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-      {/* --- FOOTER (ACTUALIZADO CON LINKS FUNCIONALES) --- */}
+
+      {/* --- FOOTER --- */}
       <footer className="mt-20 border-t border-white/10 bg-slate-900 py-12">
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6 flex justify-center gap-2 items-center">
@@ -372,15 +368,15 @@ export default function Home() {
           </div>
           
           <div className="mb-8 flex flex-wrap justify-center gap-6 text-sm text-slate-400">
-            {/* AQUÍ ESTÁN LOS CAMBIOS: Usamos Link href="..." */}
             <Link href="/terminos" className="hover:text-white transition-colors">
               Términos y Condiciones
             </Link>
             <Link href="/privacidad" className="hover:text-white transition-colors">
               Política de Privacidad
             </Link>
-            {/* El contacto mejor que lleve al WhatsApp directo */}
-            <a href="https://wa.me/51971409482" target="_blank" className="hover:text-white transition-colors">
+            
+            {/* --- AHORA USAMOS LA VARIABLE WHATSAPP_NUMBER AQUÍ TAMBIÉN --- */}
+            <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" className="hover:text-white transition-colors">
               Contacto
             </a>
           </div>
@@ -392,15 +388,14 @@ export default function Home() {
         </div>
       </footer>
 
-      {/* --- BOTÓN FLOTANTE DE WHATSAPP OFICIAL --- */}
+      {/* --- BOTÓN FLOTANTE DE WHATSAPP --- */}
       <a
-        href="https://wa.me/51971409482?text=Hola,%20tengo%20una%20consulta%20sobre%20los%20servicios%20de%20SocialBoost."
+        href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola,%20tengo%20una%20consulta%20sobre%20los%20servicios%20de%20SocialBoost.`}
         target="_blank"
         rel="noopener noreferrer"
         className="fixed bottom-6 right-6 z-50 flex items-center justify-center rounded-full bg-[#25D366] p-3 shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] transition-transform hover:scale-110 active:scale-95"
         aria-label="Contactar por WhatsApp"
       >
-        {/* Logo SVG Oficial de WhatsApp */}
         <svg 
           viewBox="0 0 24 24" 
           width="32" 

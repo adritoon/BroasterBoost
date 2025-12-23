@@ -1036,7 +1036,8 @@ export const PRODUCTS: Product[] = [
     provider_quantity: 1000,
     type: 'spotify',
     service_type: 'listeners',
-    icon: 'listeners'
+    icon: 'listeners',
+    popular: true
   },
   {
     id: 'spotify-listeners-5k',

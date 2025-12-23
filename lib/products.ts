@@ -151,7 +151,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-100',
-    name: '100 Vistas Video',
+    name: '100 Vistas Tiktok',
     price: 4.00,
     provider_id: 5791,
     provider_quantity: 100,
@@ -161,7 +161,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-500',
-    name: '500 Vistas Video',
+    name: '500 Vistas Tiktok',
     price: 9.00,
     provider_id: 5791,
     provider_quantity: 500,
@@ -171,7 +171,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-1k',
-    name: '1,000 Vistas Video',
+    name: '1,000 Vistas Tiktok',
     price: 14.00,
     provider_id: 5791,
     provider_quantity: 1000,
@@ -183,7 +183,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-5k',
-    name: '5,000 Vistas Video',
+    name: '5,000 Vistas Tiktok',
     price: 30.00,
     provider_id: 5791,
     provider_quantity: 5000,
@@ -193,7 +193,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-10k',
-    name: '10,000 Vistas Video',
+    name: '10,000 Vistas Tiktok',
     price: 50.00,
     provider_id: 5791,
     provider_quantity: 10000,
@@ -203,7 +203,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-20k',
-    name: '20,000 Vistas Video',
+    name: '20,000 Vistas Tiktok',
     price: 90.00,
     provider_id: 5791,
     provider_quantity: 20000,
@@ -213,7 +213,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-50k',
-    name: '50,000 Vistas Video',
+    name: '50,000 Vistas Tiktok',
     price: 170.00,
     provider_id: 5791,
     provider_quantity: 50000,
@@ -223,7 +223,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'tt-views-100k',
-    name: '100,000 Vistas Video',
+    name: '100,000 Vistas Tiktok',
     price: 320.00,
     provider_id: 5791,
     provider_quantity: 100000,
@@ -300,7 +300,7 @@ export const PRODUCTS: Product[] = [
   // Extras Instagram
   {
     id: 'ig-likes-100',
-    name: '100 Likes Reales',
+    name: '100 Likes Instagram',
     price: 4.00,
     provider_id: 8159,
     provider_quantity: 100,
@@ -310,7 +310,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'ig-likes-500',
-    name: '500 Likes Reales',
+    name: '500 Likes Instagram',
     price: 10.00,
     provider_id: 8159,
     provider_quantity: 500,
@@ -320,7 +320,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'ig-likes-1k',
-    name: '1,000 Likes Reales',
+    name: '1,000 Likes Instagram',
     price: 15.00,
     provider_id: 8159,
     provider_quantity: 1000,
@@ -332,7 +332,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'ig-likes-5k',
-    name: '5,000 Likes Reales',
+    name: '5,000 Likes Instagram',
     price: 50.00,
     provider_id: 8159,
     provider_quantity: 5000,
@@ -342,7 +342,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'ig-likes-10k',
-    name: '10,000 Likes Reales',
+    name: '10,000 Likes Instagram',
     price: 90.00,
     provider_id: 8159,
     provider_quantity: 10000,
@@ -352,7 +352,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'ig-likes-50k',
-    name: '50,000 Likes Reales',
+    name: '50,000 Likes Instagram',
     price: 420.00,
     provider_id: 8159,
     provider_quantity: 50000,
@@ -362,7 +362,7 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'ig-likes-100k',
-    name: '100,000 Likes Reales',
+    name: '100,000 Likes Instagram',
     price: 820.00,
     provider_id: 8159,
     provider_quantity: 100000,

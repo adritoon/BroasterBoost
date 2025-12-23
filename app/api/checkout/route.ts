@@ -41,6 +41,7 @@ export async function POST(request: Request) {
           quantity: product.provider_quantity,
           product_name: product.name
         },
+        notification_url: "https://comprarseguidoresperu.vercel.app/api/webhook",
         back_urls: {
           success: 'https://comprarseguidoresperu.vercel.app/track',
           failure: 'https://comprarseguidoresperu.vercel.app/',

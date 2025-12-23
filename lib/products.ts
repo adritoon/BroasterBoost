@@ -1,10 +1,10 @@
 import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircle, Share2, Users, Clock, ThumbsUp } from 'lucide-react';
 
 // 1. Definimos las Categorías (Redes)
-export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick';
+export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'spotify';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'views' | 'comments' | 'shares' | 'streaming';
+export type ServiceType = 'followers' | 'likes' | 'views' | 'comments' | 'shares' | 'streaming' | 'plays' | 'listeners' | 'saves';
 
 export interface Product {
   id: string;             // ID único interno
@@ -715,7 +715,6 @@ export const PRODUCTS: Product[] = [
     service_type: 'views', // Watchtime lo agrupamos en "Views" o consumo
     icon: 'clock'
   },
-
   // =========================================
   // FACEBOOK
   // =========================================
@@ -759,6 +758,387 @@ export const PRODUCTS: Product[] = [
     type: 'facebook',
     service_type: 'likes',
     icon: 'thumbs-up'
+  },
+
+  // =========================================
+  // SPOTIFY
+  // =========================================
+  {
+    id: 'spotify-followers-global-100',
+    name: '100 Seguidores Global',
+    price: 3.00,
+    provider_id: 1981,
+    provider_quantity: 100,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-100',
+    name: '100 Seguidores (Perú 🇵🇪)',
+    price: 5.00,
+    provider_id: 4511,
+    provider_quantity: 100,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-global-500',
+    name: '500 Seguidores Global',
+    price: 8.00,
+    provider_id: 1981,
+    provider_quantity: 500,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-500',
+    name: '500 Seguidores (Perú 🇵🇪)',
+    price: 12.00,
+    provider_id: 4511,
+    provider_quantity: 500,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-global-1k',
+    name: '1,000 Seguidores Global',
+    price: 13.00,
+    provider_id: 1981,
+    provider_quantity: 1000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-1k',
+    name: '1,000 Seguidores (Perú 🇵🇪)',
+    price: 18.00,
+    provider_id: 4511,
+    provider_quantity: 1000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users',
+    popular: true
+  },
+  {
+    id: 'spotify-followers-global-5k',
+    name: '5,000 Seguidores Global',
+    price: 40.00,
+    provider_id: 1981,
+    provider_quantity: 5000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-5k',
+    name: '5,000 Seguidores (Perú 🇵🇪)',
+    price: 50.00,
+    provider_id: 4511,
+    provider_quantity: 5000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-global-10k',
+    name: '10,000 Seguidores Global',
+    price: 70.00,
+    provider_id: 1981,
+    provider_quantity: 10000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-10k',
+    name: '10,000 Seguidores (Perú 🇵🇪)',
+    price: 85.00,
+    provider_id: 4511,
+    provider_quantity: 10000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-global-50k',
+    name: '50,000 Seguidores Global',
+    price: 300.00,
+    provider_id: 1981,
+    provider_quantity: 50000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-50k',
+    name: '50,000 Seguidores (Perú 🇵🇪)',
+    price: 400.00,
+    provider_id: 4511,
+    provider_quantity: 50000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-global-100k',
+    name: '100,000 Seguidores Global',
+    price: 600.00,
+    provider_id: 1981,
+    provider_quantity: 100000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'spotify-followers-peru-100k',
+    name: '100,000 Seguidores (Perú 🇵🇪)',
+    price: 780.00,
+    provider_id: 4511,
+    provider_quantity: 100000,
+    type: 'spotify',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  
+  // PLAYS SPOTIFY
+  {
+    id: 'spotify-plays-global-500',
+    name: '500 Reproducciones Global',
+    price: 5.00,
+    provider_id: 1612,
+    provider_quantity: 500,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-peru-500',
+    name: '500 Reproducciones (Perú 🇵🇪)',
+    price: 8.00,
+    provider_id: 4410,
+    provider_quantity: 500,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-global-1k',
+    name: '1,000 Reproducciones Global',
+    price: 9.00,
+    provider_id: 1612,
+    provider_quantity: 1000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-peru-1k',
+    name: '1,000 Reproducciones (Perú 🇵🇪)',
+    price: 14.00,
+    provider_id: 4410,
+    provider_quantity: 1000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays',
+    popular: true
+  },
+  {
+    id: 'spotify-plays-global-5k',
+    name: '5,000 Reproducciones Global',
+    price: 30.00,
+    provider_id: 1612,
+    provider_quantity: 5000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-peru-5k',
+    name: '5,000 Reproducciones (Perú 🇵🇪)',
+    price: 45.00,
+    provider_id: 4410,
+    provider_quantity: 5000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-global-10k',
+    name: '10,000 Reproducciones Global',
+    price: 55.00,
+    provider_id: 1612,
+    provider_quantity: 10000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-peru-10k',
+    name: '10,000 Reproducciones (Perú 🇵🇪)',
+    price: 80.00,
+    provider_id: 4410,
+    provider_quantity: 10000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-global-50k',
+    name: '50,000 Reproducciones Global',
+    price: 240.00,
+    provider_id: 1612,
+    provider_quantity: 50000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-peru-50k',
+    name: '50,000 Reproducciones (Perú 🇵🇪)',
+    price: 380.00,
+    provider_id: 4410,
+    provider_quantity: 50000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-global-100k',
+    name: '100,000 Reproducciones Global',
+    price: 470.00,
+    provider_id: 1612,
+    provider_quantity: 100000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  {
+    id: 'spotify-plays-peru-100k',
+    name: '100,000 Reproducciones (Perú 🇵🇪)',
+    price: 740.00,
+    provider_id: 4410,
+    provider_quantity: 100000,
+    type: 'spotify',
+    service_type: 'plays',
+    icon: 'plays'
+  },
+  //OYENTES MENSUALES
+  {
+    id: 'spotify-listeners-1k',
+    name: '1,000 Oyentes Mensuales',
+    price: 30.00,
+    provider_id: 1980,
+    provider_quantity: 1000,
+    type: 'spotify',
+    service_type: 'listeners',
+    icon: 'listeners'
+  },
+  {
+    id: 'spotify-listeners-5k',
+    name: '5,000 Oyentes Mensuales',
+    price: 140.00,
+    provider_id: 1980,
+    provider_quantity: 5000,
+    type: 'spotify',
+    service_type: 'listeners',
+    icon: 'listeners'
+  },
+  {
+    id: 'spotify-listeners-10k',
+    name: '10,000 Oyentes Mensuales',
+    price: 270.00,
+    provider_id: 1980,
+    provider_quantity: 10000,
+    type: 'spotify',
+    service_type: 'listeners',
+    icon: 'listeners'
+  },
+  {
+    id: 'spotify-listeners-50k',
+    name: '50,000 Oyentes Mensuales',
+    price: 1300.00,
+    provider_id: 1980,
+    provider_quantity: 50000,
+    type: 'spotify',
+    service_type: 'listeners',
+    icon: 'listeners'
+  },
+  //GUARDADOS SPOTIFY
+  {
+    id: 'spotify-saves-100',
+    name: '100 Guardados',
+    price: 4.00,
+    provider_id: 3240,
+    provider_quantity: 100,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves'
+  },
+  {
+    id: 'spotify-saves-500',
+    name: '500 Guardados',
+    price: 10.00,
+    provider_id: 3240,
+    provider_quantity: 500,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves'
+  },
+  {
+    id: 'spotify-saves-1k',
+    name: '1,000 Guardados',
+    price: 15.00,
+    provider_id: 3240,
+    provider_quantity: 1000,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves',
+    popular: true
+  },
+  {
+    id: 'spotify-saves-5k',
+    name: '5,000 Guardados',
+    price: 45.00,
+    provider_id: 3240,
+    provider_quantity: 5000,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves'
+  },
+  {
+    id: 'spotify-saves-10k',
+    name: '10,000 Guardados',
+    price: 80.00,
+    provider_id: 3240,
+    provider_quantity: 10000,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves'
+  },
+  {
+    id: 'spotify-saves-50k',
+    name: '50,000 Guardados',
+    price: 350.00,
+    provider_id: 3240,
+    provider_quantity: 50000,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves'
+  },
+  {
+    id: 'spotify-saves-100k',
+    name: '100,000 Guardados',
+    price: 680.00,
+    provider_id: 3240,
+    provider_quantity: 100000,
+    type: 'spotify',
+    service_type: 'saves',
+    icon: 'saves'
   }
 ];
 
@@ -767,5 +1147,6 @@ export const CATEGORIES = [
   { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
   //{ id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
   //{ id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
+  { id: 'spotify', label: 'Spotify', color: 'from-green-500 to-green-700' },
   { id: 'kick', label: 'Kick', color: 'from-green-400 to-green-600' },
 ];

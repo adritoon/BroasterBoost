@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { 
-  Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, 
+  Instagram, Music, Headphones, Bookmark, Play, Facebook, Youtube, Gamepad2, Heart, Eye, 
   MessageCircle, Share2, Users, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon 
 } from 'lucide-react';
 import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/products';
@@ -19,7 +19,7 @@ if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
 
 // 2. Mapeo de Iconos y Etiquetas
 const iconMap: Record<string, any> = {
-  instagram: Instagram, music: Music, facebook: Facebook, youtube: Youtube,
+  instagram: Instagram, music: Music, plays: Play, listeners: Headphones, saves: Bookmark, facebook: Facebook, youtube: Youtube,
   'gamepad-2': Gamepad2, heart: Heart, eye: Eye, 'message-circle': MessageCircle,
   'share-2': Share2, users: Users, clock: Clock, 'thumbs-up': ThumbsUp
 };
@@ -30,7 +30,10 @@ const serviceLabels: Record<ServiceType, string> = {
   views: 'Vistas',
   comments: 'Comentarios',
   shares: 'Compartidos',
-  streaming: 'En Vivo'
+  streaming: 'En Vivo',
+  plays: 'Plays',
+  listeners: 'Oyentes Mensuales',
+  saves: 'Guardados'
 };
 
 export default function Home() {

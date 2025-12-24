@@ -776,7 +776,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'spotify-followers-peru-100',
     name: '100 Seguidores (Perú 🇵🇪)',
-    price: 5.00,
+    price: 2.00,
     provider_id: 4511,
     provider_quantity: 100,
     type: 'spotify',

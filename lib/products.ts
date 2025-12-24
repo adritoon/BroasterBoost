@@ -449,7 +449,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-10',
     name: '10 Seguidores Kick',
-    price: 2.00,
+    price: 4.00,
     provider_id: 7266,
     provider_quantity: 10,
     type: 'kick',
@@ -521,7 +521,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-100-15',
     name: '100 Viewers (15 minutos)',
-    price: 2.00,
+    price: 4.00,
     provider_id: 3768,
     provider_quantity: 100,
     type: 'kick',

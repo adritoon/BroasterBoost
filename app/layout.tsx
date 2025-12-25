@@ -2,6 +2,7 @@ import './globals.css'
 import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react';
+import { SalesNotification } from '@/components/SalesNotification';
 
 // Cargamos la fuente Inter (se ve muy bien para UI moderna)
 const inter = Inter({ subsets: ['latin'] })
@@ -39,6 +40,7 @@ export default function RootLayout({
       <body className={`${inter.className} bg-slate-950 text-slate-200 antialiased min-h-screen`}>
         {children}
         <Analytics />
+        <SalesNotification />
       </body>
     </html>
   )

@@ -17,6 +17,8 @@ export interface Product {
   icon: string;           // Icono visual
   popular?: boolean;      // Destacado
   label?: string;         // Etiqueta (ej: "Oferta", "Pack")
+  speed?: string;      // Ej: "⚡ Inicio: Inmediato"
+  guarantee?: string;  // Ej: "🛡️ Garantía: 30 días"
 }
 
 export const PRODUCTS: Product[] = [
@@ -32,6 +34,8 @@ export const PRODUCTS: Product[] = [
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
     icon: 'users'
+    //speed: '⚡ 0-6 horas',      // Ej: "⚡ Inicio: Inmediato"
+    //guarantee: '🛡️ Sin caidas'  // Ej: "🛡️ Garantía: 30 días"
   },
   {
     id: 'tt-followers-500',

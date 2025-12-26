@@ -10,6 +10,7 @@ import {
 import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/products';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { FAQSection } from '@/components/FAQSection';
 
 // --- CONFIGURACIÓN ---
 if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
@@ -227,6 +228,24 @@ export default function Home() {
                   {/* H3 es correcto aquí porque está dentro de una sección con H2 (aunque sea invisible) */}
                   <h3 className="text-lg font-bold text-slate-100">{product.name}</h3>
                   
+                  {/* --- NUEVA SECCIÓN DE INFO --- */}
+                  {/* Solo se muestra si el producto tiene speed o guarantee definidos */}
+                  {(product.speed || product.guarantee) && (
+                    <div className="mb-4 flex flex-col gap-1 text-xs text-slate-400">
+                      {product.speed && (
+                        <span className="flex items-center gap-1.5">
+                          {product.speed} 
+                        </span>
+                      )}
+                      {product.guarantee && (
+                        <span className="flex items-center gap-1.5 text-emerald-400/80">
+                          {product.guarantee}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                  {/* ----------------------------- */}
+
                   {/* ZONA DE COMPRA */}
                   <div className="mt-6">
                     {!isSelected ? (
@@ -298,6 +317,8 @@ export default function Home() {
           </AnimatePresence>
         </motion.div>
       </section>
+
+      <FAQSection />
 
       {/* --- MODAL YAPE MANUAL --- */}
       <AnimatePresence>

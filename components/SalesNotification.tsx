@@ -7,8 +7,7 @@ import { PRODUCTS } from '@/lib/products';
 
 const TIMES = ['Hace un momento', 'Hace 2 min', 'Hace 5 min', 'Hace 12 min', 'Hace 28 min'];
 
-// 1. FILTRO DE REDES ACTIVAS (Configura aquí qué quieres mostrar)
-// Si borras 'facebook' de esta lista, NUNCA saldrá, aunque tengas productos de Facebook.
+// 1. FILTRO DE REDES ACTIVAS
 const ALLOWED_NETWORKS = ['tiktok', 'instagram', 'kick', 'spotify', 'twitch'];
 
 // 2. ESTILOS VISUALES
@@ -35,13 +34,11 @@ export function SalesNotification() {
   const detectNetwork = (product: any) => {
     if (!product) return DEFAULT_STYLE;
 
-    // Detectar por type
     if (product.type) {
       const typeKey = product.type.toLowerCase().trim();
       if (NETWORK_STYLES[typeKey]) return NETWORK_STYLES[typeKey];
     }
     
-    // Detectar por nombre (backup)
     const nameLower = product.name ? product.name.toLowerCase() : '';
     if (nameLower.includes('tiktok')) return NETWORK_STYLES['tiktok'];
     if (nameLower.includes('insta')) return NETWORK_STYLES['instagram'];
@@ -54,14 +51,9 @@ export function SalesNotification() {
   };
 
   const generateSale = () => {
-    // --- EL FILTRO MÁGICO ---
-    // 1. Que tenga nombre
-    // 2. Que su tipo (ej: 'facebook') esté en nuestra lista de permitidos (ALLOWED_NETWORKS)
     const validProducts = PRODUCTS.filter(p => {
       if (!p || !p.name) return false;
       const type = p.type ? p.type.toLowerCase() : '';
-      
-      // Si el producto no tiene tipo o su tipo NO está en la lista permitida, lo descartamos
       return ALLOWED_NETWORKS.includes(type);
     });
     
@@ -79,9 +71,10 @@ export function SalesNotification() {
 
   useEffect(() => {
     let timeoutId: NodeJS.Timeout;
+    let hideTimeoutId: NodeJS.Timeout;
 
     const showRandomNotification = () => {
-      setVisible(false);
+      // 1. Calculamos cuánto esperar antes de mostrar la siguiente (15s a 45s)
       const randomDelay = Math.floor(Math.random() * (45000 - 15000) + 15000);
 
       timeoutId = setTimeout(() => {
@@ -90,25 +83,35 @@ export function SalesNotification() {
           setNotification(sale);
           setVisible(true);
         }
-        setTimeout(() => setVisible(false), 6000);
+
+        // 2. Programamos ocultarla Y LLAMAR A LA SIGUIENTE
+        hideTimeoutId = setTimeout(() => {
+          setVisible(false);
+          showRandomNotification(); // <--- ¡AQUÍ ESTABA EL ERROR! Faltaba esta llamada
+        }, 6000); // Se muestra por 6 segundos
+
       }, randomDelay);
     };
 
+    // Primera ejecución al cargar la página (espera 5s)
     const startTimeout = setTimeout(() => {
       const sale = generateSale();
       if (sale) {
         setNotification(sale);
         setVisible(true);
       }
-      setTimeout(() => {
+      
+      hideTimeoutId = setTimeout(() => {
         setVisible(false);
-        showRandomNotification(); // Arranca el bucle
+        showRandomNotification(); // Arranca el bucle infinito
       }, 6000);
+      
     }, 5000);
 
     return () => {
       clearTimeout(startTimeout);
       clearTimeout(timeoutId);
+      clearTimeout(hideTimeoutId);
     };
   }, []);
 

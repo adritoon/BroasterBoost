@@ -7,9 +7,11 @@ import { PRODUCTS } from '@/lib/products';
 
 const TIMES = ['Hace un momento', 'Hace 2 min', 'Hace 5 min', 'Hace 12 min', 'Hace 28 min'];
 
-// --- 1. DEFINICIÓN SEGURA DE ESTILOS ---
-const DEFAULT_STYLE = { label: 'SocialBoost', color: 'from-slate-700 to-slate-900' };
+// 1. FILTRO DE REDES ACTIVAS (Configura aquí qué quieres mostrar)
+// Si borras 'facebook' de esta lista, NUNCA saldrá, aunque tengas productos de Facebook.
+const ALLOWED_NETWORKS = ['tiktok', 'instagram', 'kick', 'spotify', 'twitch'];
 
+// 2. ESTILOS VISUALES
 const NETWORK_STYLES: Record<string, { label: string; color: string }> = {
   tiktok:    { label: 'TikTok',    color: 'from-black to-slate-800' },
   instagram: { label: 'Instagram', color: 'from-pink-600 via-red-500 to-yellow-500' },
@@ -20,10 +22,10 @@ const NETWORK_STYLES: Record<string, { label: string; color: string }> = {
   twitch:    { label: 'Twitch',    color: 'from-purple-600 to-indigo-700' },
 };
 
+const DEFAULT_STYLE = { label: 'SocialBoost', color: 'from-slate-700 to-slate-900' };
+
 export function SalesNotification() {
   const [visible, setVisible] = useState(false);
-  
-  // SOLUCIÓN 1: Inicializamos el estado con datos completos seguros
   const [notification, setNotification] = useState({ 
     item: '', 
     time: '', 
@@ -33,13 +35,13 @@ export function SalesNotification() {
   const detectNetwork = (product: any) => {
     if (!product) return DEFAULT_STYLE;
 
-    // A. Intentar por el campo 'type'
+    // Detectar por type
     if (product.type) {
       const typeKey = product.type.toLowerCase().trim();
       if (NETWORK_STYLES[typeKey]) return NETWORK_STYLES[typeKey];
     }
-
-    // B. Intentar por el nombre
+    
+    // Detectar por nombre (backup)
     const nameLower = product.name ? product.name.toLowerCase() : '';
     if (nameLower.includes('tiktok')) return NETWORK_STYLES['tiktok'];
     if (nameLower.includes('insta')) return NETWORK_STYLES['instagram'];
@@ -52,8 +54,16 @@ export function SalesNotification() {
   };
 
   const generateSale = () => {
-    // Filtro de seguridad: evitar productos sin nombre
-    const validProducts = PRODUCTS.filter(p => p && p.name);
+    // --- EL FILTRO MÁGICO ---
+    // 1. Que tenga nombre
+    // 2. Que su tipo (ej: 'facebook') esté en nuestra lista de permitidos (ALLOWED_NETWORKS)
+    const validProducts = PRODUCTS.filter(p => {
+      if (!p || !p.name) return false;
+      const type = p.type ? p.type.toLowerCase() : '';
+      
+      // Si el producto no tiene tipo o su tipo NO está en la lista permitida, lo descartamos
+      return ALLOWED_NETWORKS.includes(type);
+    });
     
     if (validProducts.length === 0) return null;
 
@@ -63,7 +73,7 @@ export function SalesNotification() {
     return { 
       item: randomProduct.name, 
       time: TIMES[Math.floor(Math.random() * TIMES.length)],
-      style: style || DEFAULT_STYLE // SOLUCIÓN 2: Fallback forzado
+      style: style || DEFAULT_STYLE
     };
   };
 
@@ -80,11 +90,7 @@ export function SalesNotification() {
           setNotification(sale);
           setVisible(true);
         }
-
-        setTimeout(() => {
-          setVisible(false);
-          showRandomNotification();
-        }, 6000);
+        setTimeout(() => setVisible(false), 6000);
       }, randomDelay);
     };
 
@@ -96,7 +102,7 @@ export function SalesNotification() {
       }
       setTimeout(() => {
         setVisible(false);
-        showRandomNotification();
+        showRandomNotification(); // Arranca el bucle
       }, 6000);
     }, 5000);
 
@@ -106,13 +112,10 @@ export function SalesNotification() {
     };
   }, []);
 
-  // SOLUCIÓN 3: Variable de seguridad antes de renderizar
-  // Si por alguna razón 'notification.style' es undefined, usamos DEFAULT_STYLE
   const currentStyle = notification.style || DEFAULT_STYLE;
   const currentColor = currentStyle.color || DEFAULT_STYLE.color;
   const currentLabel = currentStyle.label || DEFAULT_STYLE.label;
 
-  // Si no hay item, no renderizamos nada (para evitar cajitas vacías)
   if (!notification.item) return null;
 
   return (
@@ -125,12 +128,9 @@ export function SalesNotification() {
           className="fixed bottom-4 left-4 z-50 max-w-[320px] md:bottom-6 md:left-6"
         >
           <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-md ring-1 ring-white/5">
-            
-            {/* AQUÍ ESTABA EL ERROR: Ahora usamos 'currentColor' que está protegido */}
             <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${currentColor} shadow-lg`}>
                <ShoppingBag className="text-white h-5 w-5" />
             </div>
-
             <div className="flex flex-col">
               <span className="text-sm font-bold text-slate-100 flex items-center gap-1">
                 Nuevo Pedido
@@ -141,11 +141,9 @@ export function SalesNotification() {
                   </>
                 )}
               </span>
-              
               <span className="text-xs text-slate-400 line-clamp-1 mt-0.5">
                 <span className="text-white font-medium">{notification.item}</span>
               </span>
-              
               <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-500">
                 <ShieldCheck size={10} className="text-blue-400" />
                 <span>Cliente Verificado • {notification.time}</span>

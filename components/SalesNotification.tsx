@@ -149,7 +149,7 @@ export function SalesNotification() {
               </span>
               <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-500">
                 <ShieldCheck size={10} className="text-blue-400" />
-                <span>Cliente Verificado • {notification.time}</span>
+                <span>Pago Verificado • {notification.time}</span>
               </div>
             </div>
           </div>

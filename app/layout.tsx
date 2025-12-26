@@ -1,33 +1,35 @@
-import './globals.css'
-import type { Metadata } from 'next'
-import { Inter } from 'next/font/google'
+import './globals.css';
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { Analytics } from '@vercel/analytics/react';
 import { SalesNotification } from '@/components/SalesNotification';
 
-// Cargamos la fuente Inter (se ve muy bien para UI moderna)
-const inter = Inter({ subsets: ['latin'] })
+// Cargamos la fuente Inter
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  // --- 1. URL BASE (CRÍTICO PARA REDES SOCIALES) ---
-  // Esta es la URL que configuramos en Vercel
+  // --- 1. URL BASE ---
+  // Fundamental para que Next.js genere las rutas de las imágenes automáticamente
   metadataBase: new URL('https://comprarseguidoresperu.vercel.app'), 
 
-  // --- 2. INFORMACIÓN BÁSICA (SEO) ---
+  // --- 2. SEO BÁSICO ---
   title: 'SocialBoost Perú | Comprar Seguidores, Likes y Vistas Reales',
   description: 'Potencia tus redes sociales en segundos. Seguidores, Likes y Vistas para TikTok, Instagram, Kick y Facebook. Precios baratos, entrega inmediata y pago seguro con Yape o Tarjeta.',
   
-  // --- 3. PALABRAS CLAVE (KEYWORDS) ---
+  // --- 3. PALABRAS CLAVE ---
   keywords: ['comprar seguidores peru', 'likes tiktok peru', 'vistas instagram', 'social media marketing', 'yape', 'seguidores reales', 'viewers kick peru', 'kick peru'],
 
-  // --- 4. OPEN GRAPH (CÓMO SE VE AL COMPARTIR EN WHATSAPP/FACEBOOK) ---
+  // --- 4. OPEN GRAPH ---
+  // Nota: Next.js detectará automáticamente tu archivo opengraph-image.tsx
+  // e inyectará la imagen aquí sin que tengas que escribirla manualmente.
   openGraph: {
     title: 'SocialBoost Perú | Crece en Redes Sociales',
     description: 'La forma más segura y rápida de aumentar tus seguidores y likes. Aceptamos Yape, Plin y Tarjetas.',
     siteName: 'SocialBoost Perú',
-    locale: 'es_PE', // Español Perú
+    locale: 'es_PE',
     type: 'website',
   },
-}
+};
 
 export default function RootLayout({
   children,
@@ -35,13 +37,40 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    // Forzamos la clase 'dark' para que siempre se vea el tema oscuro elegante
     <html lang="es" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-slate-200 antialiased min-h-screen`}>
+      <body className={`${inter.className} bg-slate-950 text-slate-200 antialiased min-h-screen relative`}>
+        
+        {/* Contenido de la página */}
         {children}
+        
+        {/* Componentes Globales */}
         <Analytics />
         <SalesNotification />
+
+        {/* --- DATOS ESTRUCTURADOS (JSON-LD) --- */}
+        {/* Este script le dice a Google explícitamente que eres una Tienda Peruana */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'OnlineStore',
+              name: 'SocialBoost Perú',
+              description: 'Venta de seguidores y likes para redes sociales en Perú.',
+              url: 'https://comprarseguidoresperu.vercel.app',
+              priceRange: '$$',
+              paymentAccepted: ['Cash', 'Yape', 'Plin', 'Credit Card'],
+              currenciesAccepted: 'PEN',
+              areaServed: 'PE',
+              address: {
+                '@type': 'PostalAddress',
+                addressCountry: 'PE',
+                addressLocality: 'Lima',
+              },
+            }),
+          }}
+        />
       </body>
     </html>
-  )
+  );
 }

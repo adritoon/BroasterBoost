@@ -12,15 +12,12 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 
 // --- CONFIGURACIÓN ---
-// 1. Inicializar Mercado Pago
 if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
   initMercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY, { locale: 'es-PE' });
 }
 
-// 2. Número de WhatsApp Centralizado (Lee del .env.local o usa uno por defecto)
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999';
 
-// 3. Mapeo de Iconos
 const iconMap: Record<string, any> = {
   instagram: Instagram, music: Music, plays: Play, listeners: Headphones, saves: Bookmark, facebook: Facebook, youtube: Youtube,
   'gamepad-2': Gamepad2, heart: Heart, eye: Eye, 'message-circle': MessageCircle,
@@ -44,13 +41,11 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<ProductType>('tiktok');
   const [activeService, setActiveService] = useState<ServiceType>('followers');
   
-  // Estado para compra automática (Mercado Pago)
   const [selectedProductId, setSelectedProductId] = useState<string | null>(null);
   const [targetLink, setTargetLink] = useState('');
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Estado para compra manual (Yape QR)
   const [showYapeModal, setShowYapeModal] = useState(false);
   const [manualProduct, setManualProduct] = useState<Product | null>(null);
 
@@ -68,7 +63,6 @@ export default function Home() {
     setActiveService(firstService);
   };
 
-  // --- LÓGICA DE SELECCIÓN ---
   const handleSelectProduct = (id: string) => {
     if (selectedProductId === id) return;
     setSelectedProductId(id);
@@ -76,7 +70,7 @@ export default function Home() {
     setTargetLink('');
   };
 
-  // --- LÓGICA MERCADO PAGO (Automático) ---
+  // --- LÓGICA MERCADO PAGO ---
   const handleCreatePayment = async (product: Product) => {
     if (!targetLink || targetLink.length < 3) {
       alert("Por favor ingresa un enlace válido (ej: usuario o link del video).");
@@ -103,7 +97,7 @@ export default function Home() {
     }
   };
 
-  // --- LÓGICA YAPE MANUAL (QR) ---
+  // --- LÓGICA YAPE MANUAL ---
   const handleManualPayment = (product: Product) => {
     if (!targetLink || targetLink.length < 3) {
       alert("Por favor ingresa tu enlace primero.");
@@ -123,9 +117,12 @@ export default function Home() {
             <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-pink-500 to-purple-600" />
             <span className="text-xl font-bold tracking-tight">SocialBoost.pe</span>
           </div>
-          <button className="rounded-full bg-white/10 p-2 transition hover:bg-white/20">
+          {/*<button 
+            className="rounded-full bg-white/10 p-2 transition hover:bg-white/20"
+            aria-label="Ver carrito de compras" // <--- CORRECCIÓN ACCESIBILIDAD
+          >
             <ShoppingCart className="h-5 w-5" />
-          </button>
+          </button>*/}
         </div>
       </header>
 
@@ -138,6 +135,9 @@ export default function Home() {
 
       {/* CATEGORÍAS */}
       <section className="container mx-auto px-4 pb-6">
+        {/* CORRECCIÓN SEO: Título invisible para mantener orden H1 -> H2 */}
+        <h2 className="sr-only">Selecciona una Red Social</h2> 
+        
         <div className="flex flex-wrap justify-center gap-2">
           {CATEGORIES.map((cat) => (
             <button
@@ -172,7 +172,8 @@ export default function Home() {
                   "rounded-lg px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
                   activeService === service 
                     ? "bg-slate-800 text-white shadow-sm" 
-                    : "text-slate-500 hover:text-slate-300 hover:bg-white/5"
+                    // CORRECCIÓN CONTRASTE: text-slate-500 -> text-slate-400
+                    : "text-slate-400 hover:text-slate-200 hover:bg-white/5" 
                 )}
               >
                 {serviceLabels[service]}
@@ -184,6 +185,9 @@ export default function Home() {
 
       {/* GRID PRODUCTOS */}
       <section className="container mx-auto max-w-6xl px-4 pb-24">
+        {/* CORRECCIÓN SEO: Otro título invisible para estructura */}
+        <h2 className="sr-only">Catálogo de Servicios</h2>
+
         <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode='popLayout'>
             {finalProducts.map((product) => {
@@ -220,12 +224,12 @@ export default function Home() {
                     </div>
                   </div>
 
+                  {/* H3 es correcto aquí porque está dentro de una sección con H2 (aunque sea invisible) */}
                   <h3 className="text-lg font-bold text-slate-100">{product.name}</h3>
                   
                   {/* ZONA DE COMPRA */}
                   <div className="mt-6">
                     {!isSelected ? (
-                      // 1. Botón Inicial
                       <button 
                         onClick={() => handleSelectProduct(product.id)}
                         className="w-full rounded-xl bg-white text-slate-950 font-bold py-3 hover:scale-[1.02] active:scale-[0.98] transition-all"
@@ -233,7 +237,6 @@ export default function Home() {
                         Comprar
                       </button>
                     ) : (
-                      // 2. Formulario de Datos + Botones
                       <motion.div 
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -250,21 +253,17 @@ export default function Home() {
                             }
                             value={targetLink}
                             onChange={(e) => setTargetLink(e.target.value)}
-                            className="w-full rounded-lg bg-slate-950 border border-slate-700 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-slate-600 focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                            className="w-full rounded-lg bg-slate-950 border border-slate-700 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
                             autoFocus
                           />
                         </div>
 
-                        {/* Si ya tenemos ID de pago, mostrar Wallet de MP */}
                         {preferenceId ? (
                            <div className="wallet-container">
                              <Wallet initialization={{ preferenceId }} />
                            </div>
                         ) : (
-                          // Si no, mostrar botones de selección de pago
                           <div className="space-y-2">
-                             
-                             {/* Fila 1: Cancelar + Botón Mercado Pago */}
                              <div className="flex gap-2">
                                <button 
                                 onClick={() => setSelectedProductId(null)}
@@ -281,7 +280,6 @@ export default function Home() {
                                </button>
                              </div>
 
-                             {/* Fila 2: Botón Manual Yape (Ocupa todo el ancho) */}
                              <button
                                onClick={() => handleManualPayment(product)}
                                className="w-full rounded-lg border border-pink-500/30 text-pink-400 font-bold py-2 hover:bg-pink-500/10 transition-colors text-sm"
@@ -312,24 +310,22 @@ export default function Home() {
               initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
               className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-700 p-6 shadow-2xl relative"
             >
-              {/* Header del Modal */}
               <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-bold text-white">Yape Directo (Manual)</h3>
                 <button 
                   onClick={() => setShowYapeModal(false)} 
                   className="text-slate-400 hover:text-white bg-white/5 rounded-full p-1"
+                  aria-label="Cerrar ventana modal" // <--- CORRECCIÓN ACCESIBILIDAD
                 >
                   ✕
                 </button>
               </div>
 
-              {/* Zona QR */}
               <div className="bg-[#752384] p-4 rounded-xl mb-6 flex flex-col items-center">
                 <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
                 <p className="mt-3 text-white font-bold text-lg tracking-wide">Titular: Robert Sal*</p>
               </div>
 
-              {/* Instrucciones y Botón WhatsApp */}
               <div className="space-y-4">
                 <div className="bg-slate-800 p-3 rounded-lg text-sm text-slate-300 space-y-1">
                   <p>1. Yapea <strong>S/ {manualProduct.price.toFixed(2)}</strong> al QR.</p>
@@ -337,7 +333,6 @@ export default function Home() {
                   <p>3. Envíala a nuestro WhatsApp para activar.</p>
                 </div>
 
-                {/* --- AHORA USAMOS LA VARIABLE WHATSAPP_NUMBER AQUÍ --- */}
                 <a 
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
                     `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
@@ -350,7 +345,8 @@ export default function Home() {
                   Enviar Comprobante
                 </a>
                 
-                <p className="text-xs text-center text-slate-500">
+                {/* CORRECCIÓN CONTRASTE: text-slate-500 -> text-slate-400 */}
+                <p className="text-xs text-center text-slate-400">
                   *La activación manual puede tomar 15-30 minutos.
                 </p>
               </div>
@@ -367,6 +363,7 @@ export default function Home() {
              <span className="text-xl font-bold text-white">SocialBoost.pe</span>
           </div>
           
+          {/* CORRECCIÓN CONTRASTE: text-slate-400 (ya estaba bien, pero aseguramos) */}
           <div className="mb-8 flex flex-wrap justify-center gap-6 text-sm text-slate-400">
             <Link href="/terminos" className="hover:text-white transition-colors">
               Términos y Condiciones
@@ -375,13 +372,13 @@ export default function Home() {
               Política de Privacidad
             </Link>
             
-            {/* --- AHORA USAMOS LA VARIABLE WHATSAPP_NUMBER AQUÍ TAMBIÉN --- */}
             <a href={`https://wa.me/${WHATSAPP_NUMBER}`} target="_blank" className="hover:text-white transition-colors">
               Contacto
             </a>
           </div>
 
-          <p className="text-xs text-slate-600">
+          {/* CORRECCIÓN CONTRASTE: text-slate-600 -> text-slate-500 */}
+          <p className="text-xs text-slate-500">
             © 2025 SocialBoost Perú. Todos los derechos reservados. <br/>
             Este sitio no está afiliado con TikTok, Instagram, Facebook ni YouTube.
           </p>
@@ -407,7 +404,6 @@ export default function Home() {
         </svg>
       </a>
 
-    {/* ETIQUETA DE CIERRE DEL MAIN (NO LA BORRES) */}
     </main>
   );
 }

@@ -10,7 +10,7 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   // --- 1. URL BASE ---
   // Fundamental para que Next.js genere las rutas de las imágenes automáticamente
-  metadataBase: new URL('https://comprarseguidoresperu.vercel.app'), 
+  metadataBase: new URL('https://www.socialboostperu.store'), 
 
   // --- 2. SEO BÁSICO ---
   title: 'SocialBoost Perú | Comprar Seguidores, Likes y Vistas Reales',
@@ -57,7 +57,7 @@ export default function RootLayout({
               '@type': 'OnlineStore',
               name: 'SocialBoost Perú',
               description: 'Venta de seguidores y likes para redes sociales en Perú.',
-              url: 'https://comprarseguidoresperu.vercel.app',
+              url: 'https://www.socialboostperu.store',
               priceRange: '$$',
               paymentAccepted: ['Cash', 'Yape', 'Plin', 'Credit Card'],
               currenciesAccepted: 'PEN',

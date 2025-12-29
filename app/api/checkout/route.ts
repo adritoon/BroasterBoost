@@ -9,7 +9,7 @@ const client = new MercadoPagoConfig({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { productId, targetLink } = body; // <--- Ahora recibimos targetLink
+    const { productId, targetLink } = body;
 
     const product = PRODUCTS.find(p => p.id === productId);
 
@@ -20,6 +20,9 @@ export async function POST(request: Request) {
     if (!targetLink) {
        return NextResponse.json({ error: "Falta el enlace" }, { status: 400 });
     }
+
+    // OBTENEMOS LA URL DE VERCEL (O usará localhost si estás probando en tu PC)
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';
 
     const preference = new Preference(client);
     
@@ -34,18 +37,19 @@ export async function POST(request: Request) {
             currency_id: 'PEN',
           },
         ],
-        // AQUÍ GUARDAMOS EL LINK PARA QUE EL WEBHOOK LO LEA DESPUÉS
         metadata: {
           target_link: targetLink,
-          service_id: product.provider_id, // ID del mayorista
+          service_id: product.provider_id,
           quantity: product.provider_quantity,
           product_name: product.name
         },
-        notification_url: "https://comprarseguidoresperu.vercel.app/api/webhook",
+        // --- AQUÍ ESTÁ EL CAMBIO CLAVE ---
+        // Usamos la variable siteUrl en lugar de escribir la dirección a mano
+        notification_url: `${siteUrl}/api/webhook`, 
         back_urls: {
-          success: 'https://comprarseguidoresperu.vercel.app/track',
-          failure: 'https://comprarseguidoresperu.vercel.app/',
-          pending: 'https://comprarseguidoresperu.vercel.app/',
+          success: `${siteUrl}/track`, // O '/track' si prefieres esa página
+          failure: `${siteUrl}/`,
+          pending: `${siteUrl}/`,
         },
         auto_return: 'approved',
       }

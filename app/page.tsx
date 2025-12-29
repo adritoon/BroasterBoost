@@ -11,6 +11,8 @@ import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/p
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
+import { HowItWorks } from '@/components/HowItWorks';
+import Image from 'next/image';
 
 // --- CONFIGURACIÓN ---
 if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
@@ -116,7 +118,7 @@ export default function Home() {
         <div className="container mx-auto flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-2">
             <div className="h-8 w-8 rounded-lg bg-gradient-to-tr from-pink-500 to-purple-600" />
-            <span className="text-xl font-bold tracking-tight">SocialBoost.pe</span>
+            <span className="text-xl font-bold tracking-tight">SocialBoost Perú</span>
           </div>
           {/*<button 
             className="rounded-full bg-white/10 p-2 transition hover:bg-white/20"
@@ -133,6 +135,51 @@ export default function Home() {
           Domina las <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-600">Redes Sociales</span>
         </h1>
       </section>
+
+      <div className="mt-0.5 mb-5 flex flex-col items-center justify-center gap-3 sm:flex-row animate-fade-in-up" style={{animationDelay: '200ms'}}>
+          <span className="text-sm font-medium text-slate-400">
+            Pagos seguros con:
+          </span>
+          
+          <div className="flex items-center gap-4 bg-white/5 px-5 py-2.5 rounded-full border border-white/10 backdrop-blur-sm shadow-lg shadow-pink-500/5">
+            
+            {/* GRUPO 1: Billeteras Locales */}
+            <div className="flex items-center gap-3">
+              <Image 
+                src="/yapelogo.png" 
+                alt="Yape"
+                width={35} height={35}
+                className="h-8 w-auto object-contain transition-transform hover:scale-110"
+              />
+              <Image 
+                src="/plinlogo.png" 
+                alt="Plin"
+                width={35} height={35}
+                className="h-8 w-auto object-contain transition-transform hover:scale-110"
+              />
+            </div>
+
+            {/* Separador Vertical */}
+            <div className="h-5 w-px bg-white/10"></div>
+
+            {/* GRUPO 2: Tarjetas */}
+            <div className="flex items-center gap-3">
+              <Image 
+                src="/visalogo.png" 
+                alt="Visa"
+                width={40} height={40}
+                className="h-6 w-auto object-contain transition-transform hover:scale-110"
+              />
+              <Image 
+                src="/mastercardlogo.png" 
+                alt="Mastercard"
+                width={40} height={40}
+                className="h-6 w-auto object-contain transition-transform hover:scale-110"
+              />
+            </div>
+
+          </div>
+        </div>
 
       {/* CATEGORÍAS */}
       <section className="container mx-auto px-4 pb-6">
@@ -317,6 +364,7 @@ export default function Home() {
           </AnimatePresence>
         </motion.div>
       </section>
+      <HowItWorks />
 
       <FAQSection />
 
@@ -381,7 +429,7 @@ export default function Home() {
         <div className="container mx-auto px-4 text-center">
           <div className="mb-6 flex justify-center gap-2 items-center">
              <div className="h-6 w-6 rounded-md bg-gradient-to-tr from-pink-500 to-purple-600" />
-             <span className="text-xl font-bold text-white">SocialBoost.pe</span>
+             <span className="text-xl font-bold text-white">SocialBoost Perú</span>
           </div>
           
           {/* CORRECCIÓN CONTRASTE: text-slate-400 (ya estaba bien, pero aseguramos) */}

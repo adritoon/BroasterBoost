@@ -528,7 +528,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-100-15',
     name: '100 Viewers (15 minutos)',
-    price: 2.00, // Costo: 0.09 -> Venta: 2.00 (Ganancia x20). GANCHO TOTAL.
+    price: 1.50, // Costo: 0.09 -> Venta: 2.00 (Ganancia x20). GANCHO TOTAL.
     provider_id: 3768,
     provider_quantity: 100,
     type: 'kick',
@@ -538,7 +538,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-100-30',
     name: '100 Viewers (30 minutos)',
-    price: 4.00, // Costo: 0.17 -> Venta: 4.00. Irresistible.
+    price: 2.00, // Costo: 0.17 -> Venta: 4.00. Irresistible.
     provider_id: 3769,
     provider_quantity: 100,
     type: 'kick',
@@ -548,7 +548,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-100-1',
     name: '100 Viewers (1 Hora)',
-    price: 6.00, // Costo: 0.40 -> Venta: 6.00. (Antes S/ 15).
+    price: 2.90, // Costo: 0.40 -> Venta: 6.00. (Antes S/ 15).
     provider_id: 3771,
     provider_quantity: 100,
     type: 'kick',
@@ -560,7 +560,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-200-1',
     name: '200 Viewers (1 Hora)',
-    price: 10.00, // Costo: 0.70 -> Venta: 10.00. (Antes S/ 25).
+    price: 3.50, // Costo: 0.70 -> Venta: 10.00. (Antes S/ 25).
     provider_id: 3771,
     provider_quantity: 200,
     type: 'kick',
@@ -570,7 +570,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-500-30',
     name: '500 Viewers (30 minutos)',
-    price: 15.00, // Costo: 0.90 -> Venta: 15.00. (Antes S/ 30).
+    price: 3.90, // Costo: 0.90 -> Venta: 15.00. (Antes S/ 30).
     provider_id: 3769,
     provider_quantity: 500,
     type: 'kick',
@@ -580,7 +580,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-500-1',
     name: '500 Viewers (1 Hora)',
-    price: 25.00, // Costo: 1.70 -> Venta: 25.00. (Antes S/ 50).
+    price: 6.90, // Costo: 1.70 -> Venta: 25.00. (Antes S/ 50).
     provider_id: 3771,
     provider_quantity: 500,
     type: 'kick',
@@ -590,7 +590,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-30',
     name: '1000 Viewers (30 minutos)',
-    price: 20.00, // Costo: 1.70 -> Venta: 20.00. (Antes S/ 45).
+    price: 6.90, // Costo: 1.70 -> Venta: 20.00. (Antes S/ 45).
     provider_id: 3769,
     provider_quantity: 1000,
     type: 'kick',
@@ -600,7 +600,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-1',
     name: '1000 Viewers (1 Hora)',
-    price: 35.00, // Costo: 3.40 -> Venta: 35.00. (Antes S/ 80). ¡OFERTÓN!
+    price: 11.90, // Costo: 3.40 -> Venta: 35.00. (Antes S/ 80). ¡OFERTÓN!
     provider_id: 3771,
     provider_quantity: 1000,
     type: 'kick',
@@ -612,7 +612,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-1',
     name: '2000 Viewers (1 Hora)',
-    price: 60.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 22.90, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 3771,
     provider_quantity: 2000,
     type: 'kick',
@@ -623,7 +623,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-2',
     name: '1000 Viewers (2 Horas)',
-    price: 65.00, // Costo: 6.80 -> Venta: 65.00. (Antes S/ 150).
+    price: 24.90, // Costo: 6.80 -> Venta: 65.00. (Antes S/ 150).
     provider_id: 3772,
     provider_quantity: 1000,
     type: 'kick',
@@ -633,7 +633,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-2',
     name: '2000 Viewers (2 Horas)',
-    price: 120.00, // Costo: 13.60 -> Venta: 120.00. (Antes S/ 280).
+    price: 44.90, // Costo: 13.60 -> Venta: 120.00. (Antes S/ 280).
     provider_id: 3772,
     provider_quantity: 2000,
     type: 'kick',
@@ -643,7 +643,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-3',
     name: '1000 Viewers (3 Horas)',
-    price: 90.00, // Costo: 10.20 -> Venta: 90.00. (Antes S/ 210).
+    price: 34.90, // Costo: 10.20 -> Venta: 90.00. (Antes S/ 210).
     provider_id: 3773,
     provider_quantity: 1000,
     type: 'kick',
@@ -653,7 +653,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-3',
     name: '2000 Viewers (3 Horas)',
-    price: 180.00, // Costo: 20.50 -> Venta: 180.00. (Antes S/ 400).
+    price: 69.90, // Costo: 20.50 -> Venta: 180.00. (Antes S/ 400).
     provider_id: 3773,
     provider_quantity: 2000,
     type: 'kick',
@@ -663,7 +663,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-5',
     name: '1000 Viewers (5 Horas)',
-    price: 150.00, // Costo: 17.00 -> Venta: 150.00. (Antes S/ 340).
+    price: 59.90, // Costo: 17.00 -> Venta: 150.00. (Antes S/ 340).
     provider_id: 3775,
     provider_quantity: 1000,
     type: 'kick',
@@ -673,7 +673,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-5',
     name: '2000 Viewers (5 Horas)',
-    price: 280.00, // Costo: 34.00 -> Venta: 280.00. (Antes S/ 650).
+    price: 109.90, // Costo: 34.00 -> Venta: 280.00. (Antes S/ 650).
     provider_id: 3775,
     provider_quantity: 2000,
     type: 'kick',

@@ -37,6 +37,9 @@ export const PRODUCTS: Product[] = [
     //speed: '⚡ 0-6 horas',      // Ej: "⚡ Inicio: Inmediato"
     //guarantee: '🛡️ Sin caidas'  // Ej: "🛡️ Garantía: 30 días"
   },
+  // =========================================
+  // TIKTOK SEGUIDORES
+  // =========================================
   {
     id: 'tt-followers-500',
     name: '500 Seguidores TikTok',
@@ -44,7 +47,7 @@ export const PRODUCTS: Product[] = [
     provider_id: 2560,
     provider_quantity: 500,
     type: 'tiktok',
-    service_type: 'followers', // <--- Agregado
+    service_type: 'followers',
     icon: 'users'
   },
   {
@@ -54,7 +57,7 @@ export const PRODUCTS: Product[] = [
     provider_id: 2560,
     provider_quantity: 1000,
     type: 'tiktok',
-    service_type: 'followers', // <--- Agregado
+    service_type: 'followers',
     icon: 'users',
     popular: true,
     label: 'Más Vendido'
@@ -66,7 +69,7 @@ export const PRODUCTS: Product[] = [
     provider_id: 2560,
     provider_quantity: 5000,
     type: 'tiktok',
-    service_type: 'followers', // <--- Agregado
+    service_type: 'followers',
     icon: 'users'
   },
   {
@@ -76,168 +79,156 @@ export const PRODUCTS: Product[] = [
     provider_id: 2560,
     provider_quantity: 10000,
     type: 'tiktok',
-    service_type: 'followers', // <--- Agregado
+    service_type: 'followers',
     icon: 'users',
     label: 'Pack Influencer'
   },
-  // Extras TikTok
+
+  // =========================================
+  // TIKTOK LIKES
+  // Estrategia: Bajar precios para volumen
+  // =========================================
   {
     id: 'tt-likes-100',
     name: '100 Likes TikTok',
-    price: 4.00,
+    price: 3.00, // Ajustado para no competir con el de 1000
     provider_id: 2563,
     provider_quantity: 100,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart'
   },
   {
     id: 'tt-likes-500',
     name: '500 Likes TikTok',
-    price: 10.00,
+    price: 5.00, // Reducido para entrada fácil
     provider_id: 2563,
     provider_quantity: 500,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart'
   },
   {
     id: 'tt-likes-1k',
     name: '1,000 Likes TikTok',
-    price: 15.00,
+    price: 6.00, // GANCHO: De S/ 15 a S/ 6. Irresistible.
     provider_id: 2563,
     provider_quantity: 1000,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart',
     popular: true,
-    label: 'Más Vendido'
+    label: 'Oferta Especial'
   },
   {
     id: 'tt-likes-5k',
     name: '5,000 Likes TikTok',
-    price: 50.00,
+    price: 25.00, // De S/ 50 a S/ 25
     provider_id: 2563,
     provider_quantity: 5000,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart'
   },
   {
     id: 'tt-likes-10k',
     name: '10,000 Likes TikTok',
-    price: 90.00,
+    price: 45.00, // De S/ 90 a S/ 45
     provider_id: 2563,
     provider_quantity: 10000,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart'
   },
   {
     id: 'tt-likes-20k',
     name: '20,000 Likes TikTok',
-    price: 160.00,
+    price: 80.00, // De S/ 160 a S/ 80
     provider_id: 2563,
     provider_quantity: 20000,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart'
   },
   {
     id: 'tt-likes-50k',
     name: '50,000 Likes TikTok',
-    price: 350.00,
+    price: 180.00, // De S/ 350 a S/ 180
     provider_id: 2563,
     provider_quantity: 50000,
     type: 'tiktok',
-    service_type: 'likes', // <--- Diferente tipo
+    service_type: 'likes',
     icon: 'heart'
   },
-  {
-    id: 'tt-views-100',
-    name: '100 Vistas Tiktok',
-    price: 4.00,
-    provider_id: 5791,
-    provider_quantity: 100,
-    type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
-    icon: 'eye'
-  },
-  {
-    id: 'tt-views-500',
-    name: '500 Vistas Tiktok',
-    price: 9.00,
-    provider_id: 5791,
-    provider_quantity: 500,
-    type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
-    icon: 'eye'
-  },
+
+  // =========================================
+  // TIKTOK VISTAS
+  // =========================================
   {
     id: 'tt-views-1k',
     name: '1,000 Vistas Tiktok',
-    price: 14.00,
+    price: 4.00,
     provider_id: 5791,
     provider_quantity: 1000,
     type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
+    service_type: 'views',
+    icon: 'eye'
+  },
+  {
+    id: 'tt-views-5k',
+    name: '5,000 Vistas Tiktok',
+    price: 10.00,
+    provider_id: 5791,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'views',
     icon: 'eye',
     popular: true,
     label: 'Más Vendido'
   },
   {
-    id: 'tt-views-5k',
-    name: '5,000 Vistas Tiktok',
-    price: 30.00,
-    provider_id: 5791,
-    provider_quantity: 5000,
-    type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
-    icon: 'eye'
-  },
-  {
     id: 'tt-views-10k',
     name: '10,000 Vistas Tiktok',
-    price: 50.00,
+    price: 20.00,
     provider_id: 5791,
     provider_quantity: 10000,
     type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
+    service_type: 'views',
     icon: 'eye'
   },
   {
     id: 'tt-views-20k',
     name: '20,000 Vistas Tiktok',
-    price: 90.00,
+    price: 35.00,
     provider_id: 5791,
     provider_quantity: 20000,
     type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
+    service_type: 'views',
     icon: 'eye'
   },
   {
     id: 'tt-views-50k',
     name: '50,000 Vistas Tiktok',
-    price: 170.00,
+    price: 50.00,
     provider_id: 5791,
     provider_quantity: 50000,
     type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
+    service_type: 'views',
     icon: 'eye'
   },
   {
     id: 'tt-views-100k',
     name: '100,000 Vistas Tiktok',
-    price: 320.00,
+    price: 85.00,
     provider_id: 5791,
     provider_quantity: 100000,
     type: 'tiktok',
-    service_type: 'views', // <--- Diferente tipo
+    service_type: 'views',
     icon: 'eye'
   },
 
   // =========================================
-  // INSTAGRAM
+  // INSTAGRAM SEGUIDORES
   // =========================================
   {
     id: 'ig-followers-100',
@@ -252,7 +243,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-500',
     name: '500 Seguidores Instagram',
-    price: 15.00,
+    price: 12.00, // Bajado de 15 a 12
     provider_id: 8706,
     provider_quantity: 500,
     type: 'instagram',
@@ -262,7 +253,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-1k',
     name: '1,000 Seguidores Instagram',
-    price: 25.00,
+    price: 20.00, // Bajado de 25 a 20. Precio Gancho.
     provider_id: 8706,
     provider_quantity: 1000,
     type: 'instagram',
@@ -274,7 +265,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-5k',
     name: '5,000 Seguidores Instagram',
-    price: 90.00,
+    price: 85.00, // Bajado de 90
     provider_id: 8706,
     provider_quantity: 5000,
     type: 'instagram',
@@ -284,7 +275,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-10k',
     name: '10,000 Seguidores Instagram',
-    price: 180.00,
+    price: 160.00, // Bajado de 180
     provider_id: 8706,
     provider_quantity: 10000,
     type: 'instagram',
@@ -294,18 +285,21 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-20k',
     name: '20,000 Seguidores Instagram',
-    price: 340.00,
+    price: 300.00, // Bajado de 340
     provider_id: 8706,
     provider_quantity: 20000,
     type: 'instagram',
     service_type: 'followers',
     icon: 'instagram'
   },
-  // Extras Instagram
+
+  // =========================================
+  // INSTAGRAM LIKES
+  // =========================================
   {
     id: 'ig-likes-100',
     name: '100 Likes Instagram',
-    price: 4.00,
+    price: 3.00,
     provider_id: 8159,
     provider_quantity: 100,
     type: 'instagram',
@@ -315,7 +309,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-500',
     name: '500 Likes Instagram',
-    price: 10.00,
+    price: 5.00, // Ticket mínimo perfecto
     provider_id: 8159,
     provider_quantity: 500,
     type: 'instagram',
@@ -325,7 +319,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-1k',
     name: '1,000 Likes Instagram',
-    price: 15.00,
+    price: 9.00, // Bajado de 15 a 9.
     provider_id: 8159,
     provider_quantity: 1000,
     type: 'instagram',
@@ -337,7 +331,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-5k',
     name: '5,000 Likes Instagram',
-    price: 50.00,
+    price: 35.00, // Bajado de 50
     provider_id: 8159,
     provider_quantity: 5000,
     type: 'instagram',
@@ -347,7 +341,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-10k',
     name: '10,000 Likes Instagram',
-    price: 90.00,
+    price: 60.00, // Bajado de 90
     provider_id: 8159,
     provider_quantity: 10000,
     type: 'instagram',
@@ -357,7 +351,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-50k',
     name: '50,000 Likes Instagram',
-    price: 420.00,
+    price: 250.00, // Bajado de 420 (Descuento agresivo)
     provider_id: 8159,
     provider_quantity: 50000,
     type: 'instagram',
@@ -367,17 +361,22 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-100k',
     name: '100,000 Likes Instagram',
-    price: 820.00,
+    price: 450.00, // Bajado de 820
     provider_id: 8159,
     provider_quantity: 100000,
     type: 'instagram',
     service_type: 'likes',
     icon: 'heart'
   },
+
+  // =========================================
+  // INSTAGRAM VISTAS (REELS)
+  // CAMBIOS DRASTICOS AQUÍ
+  // =========================================
   {
     id: 'ig-views-100',
     name: '100 Vistas Reels',
-    price: 3.00,
+    price: 2.00,
     provider_id: 7706,
     provider_quantity: 100,
     type: 'instagram',
@@ -387,7 +386,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-500',
     name: '500 Vistas Reels',
-    price: 8.00,
+    price: 3.00, // Casi regalado para que prueben
     provider_id: 7706,
     provider_quantity: 500,
     type: 'instagram',
@@ -397,7 +396,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-1k',
     name: '1,000 Vistas Reels',
-    price: 12.00,
+    price: 5.00, // GANCHO: De 12 a 5.
     provider_id: 7706,
     provider_quantity: 1000,
     type: 'instagram',
@@ -409,7 +408,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-5k',
     name: '5,000 Vistas Reels',
-    price: 35.00,
+    price: 10.00, // De 35 a 10. Gran valor.
     provider_id: 7706,
     provider_quantity: 5000,
     type: 'instagram',
@@ -419,7 +418,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-10k',
     name: '10,000 Vistas Reels',
-    price: 60.00,
+    price: 18.00, // De 60 a 18.
     provider_id: 7706,
     provider_quantity: 10000,
     type: 'instagram',
@@ -429,7 +428,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-50k',
     name: '50,000 Vistas Reels',
-    price: 250.00,
+    price: 60.00, // De 250 a 60. (Te cuesta centavos, vende volumen).
     provider_id: 7706,
     provider_quantity: 50000,
     type: 'instagram',
@@ -439,7 +438,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-100k',
     name: '100,000 Vistas Reels',
-    price: 480.00,
+    price: 100.00, // De 480 a 100. Viralidad barata.
     provider_id: 7706,
     provider_quantity: 100000,
     type: 'instagram',
@@ -448,7 +447,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // =========================================
-  // KICK
+  // KICK FOLLOWERS
   // =========================================
   {
     id: 'kick-followers-10',
@@ -463,7 +462,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-50',
     name: '50 Seguidores Kick',
-    price: 10.00,
+    price: 8.00, // Bajado a 8
     provider_id: 7266,
     provider_quantity: 50,
     type: 'kick',
@@ -473,7 +472,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-100',
     name: '100 Seguidores Kick',
-    price: 15.00,
+    price: 12.00, // Bajado de 15
     provider_id: 7266,
     provider_quantity: 100,
     type: 'kick',
@@ -483,7 +482,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-500',
     name: '500 Seguidores Kick',
-    price: 50.00,
+    price: 35.00, // Bajado de 50 a 35
     provider_id: 7266,
     provider_quantity: 500,
     type: 'kick',
@@ -493,7 +492,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-1k',
     name: '1,000 Seguidores Kick',
-    price: 90.00,
+    price: 65.00, // GANCHO: Bajado de 90 a 65
     provider_id: 7266,
     provider_quantity: 1000,
     type: 'kick',
@@ -505,7 +504,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-5k',
     name: '5,000 Seguidores Kick',
-    price: 350.00,
+    price: 300.00, // Bajado de 350
     provider_id: 7266,
     provider_quantity: 5000,
     type: 'kick',
@@ -515,163 +514,170 @@ export const PRODUCTS: Product[] = [
   {
     id: 'kick-followers-10k',
     name: '10,000 Seguidores Kick',
-    price: 650.00,
+    price: 550.00, // Bajado de 650
     provider_id: 7266,
     provider_quantity: 10000,
     type: 'kick',
     service_type: 'followers',
     icon: 'gamepad-2'
   },
+
+  // =========================================
+  // KICK VIEWERS (Precios Agresivos / Estrategia Volumen)
+  // =========================================
   {
     id: 'kick-viewers-100-15',
     name: '100 Viewers (15 minutos)',
-    price: 4.00,
+    price: 2.00, // Costo: 0.09 -> Venta: 2.00 (Ganancia x20). GANCHO TOTAL.
     provider_id: 3768,
     provider_quantity: 100,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-100-30',
     name: '100 Viewers (30 minutos)',
-    price: 10.00,
+    price: 4.00, // Costo: 0.17 -> Venta: 4.00. Irresistible.
     provider_id: 3769,
     provider_quantity: 100,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-100-1',
     name: '100 Viewers (1 Hora)',
-    price: 15.00,
+    price: 6.00, // Costo: 0.40 -> Venta: 6.00. (Antes S/ 15).
     provider_id: 3771,
     provider_quantity: 100,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
-    icon: 'users'
+    service_type: 'streaming',
+    icon: 'users',
+    popular: true,
+    label: 'Pack Streamer'
   },
   {
     id: 'kick-viewers-200-1',
     name: '200 Viewers (1 Hora)',
-    price: 25.00,
+    price: 10.00, // Costo: 0.70 -> Venta: 10.00. (Antes S/ 25).
     provider_id: 3771,
     provider_quantity: 200,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-500-30',
     name: '500 Viewers (30 minutos)',
-    price: 30.00,
+    price: 15.00, // Costo: 0.90 -> Venta: 15.00. (Antes S/ 30).
     provider_id: 3769,
     provider_quantity: 500,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-500-1',
     name: '500 Viewers (1 Hora)',
-    price: 50.00,
+    price: 25.00, // Costo: 1.70 -> Venta: 25.00. (Antes S/ 50).
     provider_id: 3771,
     provider_quantity: 500,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-1000-30',
     name: '1000 Viewers (30 minutos)',
-    price: 45.00,
+    price: 20.00, // Costo: 1.70 -> Venta: 20.00. (Antes S/ 45).
     provider_id: 3769,
     provider_quantity: 1000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-1000-1',
     name: '1000 Viewers (1 Hora)',
-    price: 80.00,
+    price: 35.00, // Costo: 3.40 -> Venta: 35.00. (Antes S/ 80). ¡OFERTÓN!
     provider_id: 3771,
     provider_quantity: 1000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users',
     popular: true,
-    label: 'Más popular'
+    label: 'Afiliado Kick'
   },
   {
     id: 'kick-viewers-2000-1',
     name: '2000 Viewers (1 Hora)',
-    price: 150.00,
+    price: 60.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 3771,
     provider_quantity: 2000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
+  // --- PACKS DE LARGA DURACIÓN (Márgenes más altos aquí) ---
   {
     id: 'kick-viewers-1000-2',
     name: '1000 Viewers (2 Horas)',
-    price: 150.00,
+    price: 65.00, // Costo: 6.80 -> Venta: 65.00. (Antes S/ 150).
     provider_id: 3772,
     provider_quantity: 1000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-2000-2',
     name: '2000 Viewers (2 Horas)',
-    price: 280.00,
+    price: 120.00, // Costo: 13.60 -> Venta: 120.00. (Antes S/ 280).
     provider_id: 3772,
     provider_quantity: 2000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-1000-3',
     name: '1000 Viewers (3 Horas)',
-    price: 210.00,
+    price: 90.00, // Costo: 10.20 -> Venta: 90.00. (Antes S/ 210).
     provider_id: 3773,
     provider_quantity: 1000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-2000-3',
     name: '2000 Viewers (3 Horas)',
-    price: 400.00,
+    price: 180.00, // Costo: 20.50 -> Venta: 180.00. (Antes S/ 400).
     provider_id: 3773,
     provider_quantity: 2000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-1000-5',
     name: '1000 Viewers (5 Horas)',
-    price: 340.00,
+    price: 150.00, // Costo: 17.00 -> Venta: 150.00. (Antes S/ 340).
     provider_id: 3775,
     provider_quantity: 1000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
   {
     id: 'kick-viewers-2000-5',
     name: '2000 Viewers (5 Horas)',
-    price: 650.00,
+    price: 280.00, // Costo: 34.00 -> Venta: 280.00. (Antes S/ 650).
     provider_id: 3775,
     provider_quantity: 2000,
     type: 'kick',
-    service_type: 'streaming', // <--- Tipo especial para En Vivo
+    service_type: 'streaming',
     icon: 'users'
   },
 

@@ -8,7 +8,7 @@ import { PRODUCTS } from '@/lib/products';
 const TIMES = ['Hace un momento', 'Hace 2 min', 'Hace 5 min', 'Hace 12 min', 'Hace 28 min'];
 
 // 1. FILTRO DE REDES ACTIVAS
-const ALLOWED_NETWORKS = ['tiktok', 'instagram', 'kick', 'spotify', 'twitch'];
+const ALLOWED_NETWORKS = ['tiktok', 'youtube', 'instagram', 'kick', 'spotify', 'twitch'];
 
 // 2. ESTILOS VISUALES
 const NETWORK_STYLES: Record<string, { label: string; color: string }> = {

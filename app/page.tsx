@@ -31,6 +31,8 @@ const serviceLabels: Record<ServiceType, string> = {
   followers: 'Seguidores',
   likes: 'Likes',
   views: 'Vistas',
+  viewsShorts: 'Shorts',
+  watchtime: 'Watchtime',
   comments: 'Comentarios',
   shares: 'Compartidos',
   streaming: 'En Vivo',

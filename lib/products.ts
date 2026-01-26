@@ -4,7 +4,7 @@ import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircl
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'spotify';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'views' | 'comments' | 'shares' | 'streaming' | 'plays' | 'listeners' | 'saves';
+export type ServiceType = 'followers' | 'likes' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'plays' | 'listeners' | 'saves';
 
 export interface Product {
   id: string;             // ID único interno
@@ -688,7 +688,7 @@ export const PRODUCTS: Product[] = [
     id: 'yt-subs-50',
     name: '50 Suscriptores',
     price: 12.00,
-    provider_id: 0,
+    provider_id: 8123,
     provider_quantity: 50,
     type: 'youtube',
     service_type: 'followers', // Subs = Followers en lógica de filtro
@@ -698,8 +698,18 @@ export const PRODUCTS: Product[] = [
     id: 'yt-subs-100',
     name: '100 Suscriptores',
     price: 20.00,
-    provider_id: 0,
+    provider_id: 8123,
     provider_quantity: 100,
+    type: 'youtube',
+    service_type: 'followers',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-subs-250',
+    name: '250 Suscriptores',
+    price: 45.00,
+    provider_id: 8123,
+    provider_quantity: 250,
     type: 'youtube',
     service_type: 'followers',
     icon: 'youtube'
@@ -708,7 +718,7 @@ export const PRODUCTS: Product[] = [
     id: 'yt-subs-500',
     name: '500 Suscriptores',
     price: 85.00,
-    provider_id: 0,
+    provider_id: 8123,
     provider_quantity: 500,
     type: 'youtube',
     service_type: 'followers',
@@ -716,14 +726,354 @@ export const PRODUCTS: Product[] = [
     popular: true
   },
   {
-    id: 'yt-watchtime-100',
-    name: '100 Horas Visualización',
-    price: 30.00,
-    provider_id: 0,
+    id: 'yt-subs-1000',
+    name: '1000 Suscriptores',
+    price: 150.00,
+    provider_id: 8123,
+    provider_quantity: 1000,
+    type: 'youtube',
+    service_type: 'followers',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-subs-5000',
+    name: '5000 Suscriptores',
+    price: 700.00,
+    provider_id: 8123,
+    provider_quantity: 5000,
+    type: 'youtube',
+    service_type: 'followers',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-subs-10000',
+    name: '10000 Suscriptores',
+    price: 1350.00,
+    provider_id: 8123,
+    provider_quantity: 10000,
+    type: 'youtube',
+    service_type: 'followers',
+    icon: 'youtube'
+  },
+  //VIEWS VIDEO YOUTUBE
+  {
+    id: 'yt-views-500',
+    name: '500 Views de video',
+    price: 7.00,
+    provider_id: 8120,
+    provider_quantity: 500,
+    type: 'youtube',
+    service_type: 'views',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-1000',
+    name: '1,000 Views de video',
+    price: 12.00,
+    provider_id: 8120,
+    provider_quantity: 1000,
+    type: 'youtube',
+    service_type: 'views',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-5000',
+    name: '5,000 Views de video',
+    price: 50.00,
+    provider_id: 8120,
+    provider_quantity: 5000,
+    type: 'youtube',
+    service_type: 'views',
+    icon: 'youtube',
+    popular: true
+  },
+  {
+    id: 'yt-views-10000',
+    name: '10,000 Views de video',
+    price: 90.00,
+    provider_id: 8120,
+    provider_quantity: 10000,
+    type: 'youtube',
+    service_type: 'views',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-50000',
+    name: '50,000 Views de video',
+    price: 400.00,
+    provider_id: 8120,
+    provider_quantity: 50000,
+    type: 'youtube',
+    service_type: 'views',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-100000',
+    name: '100,000 Views de video',
+    price: 750.00,
+    provider_id: 8120,
+    provider_quantity: 100000,
+    type: 'youtube',
+    service_type: 'views',
+    icon: 'youtube'
+  },
+  //VIEWS SHORTS YOUTUBE
+  {
+    id: 'yt-views-shorts-100',
+    name: '100 Views de short',
+    price: 4.00,
+    provider_id: 6673,
     provider_quantity: 100,
     type: 'youtube',
-    service_type: 'views', // Watchtime lo agrupamos en "Views" o consumo
+    service_type: 'viewsShorts',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-shorts-500',
+    name: '500 Views de short',
+    price: 15.00,
+    provider_id: 6673,
+    provider_quantity: 500,
+    type: 'youtube',
+    service_type: 'viewsShorts',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-shorts-1000',
+    name: '1,000 Views de short',
+    price: 25.00,
+    provider_id: 6673,
+    provider_quantity: 1000,
+    type: 'youtube',
+    service_type: 'viewsShorts',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-shorts-5000',
+    name: '5,000 Views de short',
+    price: 105.00,
+    provider_id: 6673,
+    provider_quantity: 5000,
+    type: 'youtube',
+    service_type: 'viewsShorts',
+    icon: 'youtube',
+    popular: true
+  },
+  {
+    id: 'yt-views-shorts-10000',
+    name: '10,000 Views de short',
+    price: 195.00,
+    provider_id: 6673,
+    provider_quantity: 10000,
+    type: 'youtube',
+    service_type: 'viewsShorts',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-shorts-50000',
+    name: '50,000 Views de short',
+    price: 900.00,
+    provider_id: 6673,
+    provider_quantity: 50000,
+    type: 'youtube',
+    service_type: 'viewsShorts',
+    icon: 'youtube'
+  },
+  {
+    id: 'yt-views-shorts-100000',
+    name: '100,000 Views de short',
+    price: 1650.00,
+    provider_id: 6673,
+    provider_quantity: 100000,
+    type: 'youtube',
+    service_type: 'viewsShorts',
+    icon: 'youtube'
+  },
+  //WATCHTIME YOUTUBE
+  {
+    id: 'yt-watchtime-5',
+    name: '5 Horas Visualización',
+    price: 10.00,
+    provider_id: 8831,
+    provider_quantity: 5,
+    type: 'youtube',
+    service_type: 'watchtime',
     icon: 'clock'
+  },
+  {
+    id: 'yt-watchtime-10',
+    name: '10 Horas Visualización',
+    price: 20.00,
+    provider_id: 8831,
+    provider_quantity: 10,
+    type: 'youtube',
+    service_type: 'watchtime',
+    icon: 'clock'
+  },
+  {
+    id: 'yt-watchtime-50',
+    name: '50 Horas Visualización',
+    price: 80.00,
+    provider_id: 8831,
+    provider_quantity: 50,
+    type: 'youtube',
+    service_type: 'watchtime',
+    icon: 'clock'
+  },
+  {
+    id: 'yt-watchtime-100',
+    name: '100 Horas Visualización',
+    price: 140.00,
+    provider_id: 8831,
+    provider_quantity: 100,
+    type: 'youtube',
+    service_type: 'watchtime',
+    icon: 'clock',
+    popular: true
+  },
+  //YOUTUBE LIKES VIDEOS
+  {
+    id: 'yt-likes-100',
+    name: '100 likes de video',
+    price: 4.00,
+    provider_id: 6241,
+    provider_quantity: 100,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-500',
+    name: '500 likes de video',
+    price: 10.00,
+    provider_id: 6241,
+    provider_quantity: 500,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-1000',
+    name: '1,000 likes de video',
+    price: 15.00,
+    provider_id: 6241,
+    provider_quantity: 1000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up',
+    popular: true
+  },
+  {
+    id: 'yt-likes-5000',
+    name: '5,000 likes de video',
+    price: 50.00,
+    provider_id: 6241,
+    provider_quantity: 5000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-10000',
+    name: '10,000 likes de video',
+    price: 80.00,
+    provider_id: 6241,
+    provider_quantity: 10000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-50000',
+    name: '50,000 likes de video',
+    price: 250.00,
+    provider_id: 6241,
+    provider_quantity: 50000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-100000',
+    name: '100,000 likes de video',
+    price: 400.00,
+    provider_id: 6241,
+    provider_quantity: 100000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  //YOUTUBE LIKES SHORTS
+  {
+    id: 'yt-likes-shorts-100',
+    name: '100 likes de shorts',
+    price: 4.00,
+    provider_id: 6243,
+    provider_quantity: 100,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-shorts-500',
+    name: '500 likes de shorts',
+    price: 10.00,
+    provider_id: 6243,
+    provider_quantity: 500,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-shorts-1000',
+    name: '1,000 likes de shorts',
+    price: 15.00,
+    provider_id: 6243,
+    provider_quantity: 1000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up',
+    popular: true
+  },
+  {
+    id: 'yt-likes-shorts-5000',
+    name: '5,000 likes de shorts',
+    price: 50.00,
+    provider_id: 6243,
+    provider_quantity: 5000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-shorts-10000',
+    name: '10,000 likes de shorts',
+    price: 80.00,
+    provider_id: 6243,
+    provider_quantity: 10000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-shorts-50000',
+    name: '50,000 likes de shorts',
+    price: 250.00,
+    provider_id: 6243,
+    provider_quantity: 50000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'yt-likes-shorts-100000',
+    name: '100,000 likes de shorts',
+    price: 400.00,
+    provider_id: 6243,
+    provider_quantity: 100000,
+    type: 'youtube',
+    service_type: 'likes',
+    icon: 'thumbs-up'
   },
   // =========================================
   // FACEBOOK
@@ -1156,7 +1506,7 @@ export const PRODUCTS: Product[] = [
 export const CATEGORIES = [
   { id: 'tiktok', label: 'TikTok', color: 'from-black to-gray-800' },
   { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
-  //{ id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
+  { id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
   //{ id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
   { id: 'spotify', label: 'Spotify', color: 'from-green-500 to-green-700' },
   { id: 'kick', label: 'Kick', color: 'from-green-400 to-green-600' },

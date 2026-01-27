@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   metadataBase: new URL('https://www.socialboostperu.store'), 
 
   // --- 2. SEO BÁSICO ---
-  title: 'SocialBoost Perú | Comprar Seguidores, Likes y Vistas Reales',
-  description: 'Potencia tus redes sociales en segundos. Seguidores, Likes y Vistas para TikTok, Instagram, Kick y Facebook. Precios baratos, entrega inmediata y pago seguro con Yape o Tarjeta.',
+  title: 'SocialBoost Perú | Comprar Seguidores y Likes (Aceptamos Yape)',
+  description: 'Impulsa tus redes al instante. Venta de Seguidores, Likes y Vistas para TikTok, IG, Kick, FB y YT. Precios baratos, entrega real y pagas con Yape/Plin.',
   
   // --- 3. PALABRAS CLAVE ---
   keywords: ['comprar seguidores peru', 'likes tiktok peru', 'vistas instagram', 'social media marketing', 'yape', 'seguidores reales', 'viewers kick peru', 'kick peru'],

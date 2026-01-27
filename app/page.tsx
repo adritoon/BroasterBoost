@@ -12,6 +12,7 @@ import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
 import { HowItWorks } from '@/components/HowItWorks';
+import { SeoContent } from '@/components/SeoContent';
 import Image from 'next/image';
 
 // --- CONFIGURACIÓN ---
@@ -369,6 +370,8 @@ export default function Home() {
       <HowItWorks />
 
       <FAQSection />
+
+      <SeoContent />
 
       {/* --- MODAL YAPE MANUAL --- */}
       <AnimatePresence>

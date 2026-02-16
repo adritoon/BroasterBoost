@@ -226,6 +226,179 @@ export const PRODUCTS: Product[] = [
     service_type: 'views',
     icon: 'eye'
   },
+  // =========================================
+  // TIKTOK VIEWERS STREAMS
+  // =========================================
+  {
+    id: 'tt-viewers-50-15',
+    name: '50 Viewers (15 minutos)',
+    price: 1.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 50,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-100-15',
+    name: '100 Viewers (15 minutos)',
+    price: 2.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-500-15',
+    name: '500 Viewers (15 minutos)',
+    price: 10.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-1000-15',
+    name: '1000 Viewers (15 minutos)',
+    price: 15.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-2000-15',
+    name: '2000 Viewers (15 minutos)',
+    price: 34.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 2000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-5000-15',
+    name: '5000 Viewers (15 minutos)',
+    price: 70.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-8000-15',
+    name: '8000 Viewers (15 minutos)',
+    price: 108.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1118,
+    provider_quantity: 8000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-50-1',
+    name: '50 Viewers (1 Hora)',
+    price: 3.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1120,
+    provider_quantity: 50,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-100-1',
+    name: '100 Viewers (1 Hora)',
+    price: 6.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1120,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-500-1',
+    name: '500 Viewers (1 Hora)',
+    price: 22.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1120,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-1000-1',
+    name: '1000 Viewers (1 Hora)',
+    price: 35.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1120,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-50-2',
+    name: '50 Viewers (2 Horas)',
+    price: 5.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1122,
+    provider_quantity: 50,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-100-2',
+    name: '100 Viewers (2 Hora)',
+    price: 10.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1122,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-500-2',
+    name: '500 Viewers (2 Horas)',
+    price: 40.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1122,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-50-3',
+    name: '50 Viewers (3 Horas)',
+    price: 7.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1123,
+    provider_quantity: 50,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-100-3',
+    name: '100 Viewers (3 Horas)',
+    price: 13.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1123,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-500-3',
+    name: '500 Viewers (3 Horas)',
+    price: 58.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 1123,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
 
   // =========================================
   // INSTAGRAM SEGUIDORES

@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { 
   Instagram, Music, Headphones, Bookmark, Play, Facebook, Youtube, Gamepad2, Heart, Eye, 
-  MessageCircle, Share2, Users, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon 
+  MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon 
 } from 'lucide-react';
 import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/products';
 import { cn } from '@/lib/utils';
@@ -25,7 +25,7 @@ const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999'
 const iconMap: Record<string, any> = {
   instagram: Instagram, music: Music, plays: Play, listeners: Headphones, saves: Bookmark, facebook: Facebook, youtube: Youtube,
   'gamepad-2': Gamepad2, heart: Heart, eye: Eye, 'message-circle': MessageCircle,
-  'share-2': Share2, users: Users, clock: Clock, 'thumbs-up': ThumbsUp
+  'share-2': Share2, users: Users, sword: Swords, clock: Clock, 'thumbs-up': ThumbsUp
 };
 
 const serviceLabels: Record<ServiceType, string> = {
@@ -33,6 +33,7 @@ const serviceLabels: Record<ServiceType, string> = {
   likes: 'Likes',
   views: 'Vistas',
   viewsShorts: 'Shorts',
+  pkbattle: 'Batallas',
   watchtime: 'Watchtime',
   comments: 'Comentarios',
   shares: 'Compartidos',

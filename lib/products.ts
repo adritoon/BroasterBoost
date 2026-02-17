@@ -4,7 +4,7 @@ import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircl
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'spotify';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'plays' | 'listeners' | 'saves';
+export type ServiceType = 'followers' | 'likes' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
 
 export interface Product {
   id: string;             // ID único interno
@@ -399,7 +399,89 @@ export const PRODUCTS: Product[] = [
     service_type: 'streaming',
     icon: 'users'
   },
-
+  // =========================================
+  // TIKTOK PK BATTLES
+  // =========================================
+  {
+    id: 'tt-pkbattle-100',
+    name: '100 Puntos de batalla',
+    price: 2.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-500',
+    name: '500 Puntos de batalla',
+    price: 9.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-1000',
+    name: '1000 Puntos de batalla',
+    price: 15.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-5000',
+    name: '5000 Puntos de batalla',
+    price: 25.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-10000',
+    name: '10000 Puntos de batalla',
+    price: 45.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 10000,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-20000',
+    name: '20000 Puntos de batalla',
+    price: 80.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 20000,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-50000',
+    name: '50000 Puntos de batalla',
+    price: 140.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 50000,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
+  {
+    id: 'tt-pkbattle-100000',
+    name: '100000 Puntos de batalla',
+    price: 255.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    provider_id: 5159,
+    provider_quantity: 100000,
+    type: 'tiktok',
+    service_type: 'pkbattle',
+    icon: 'sword'
+  },
   // =========================================
   // INSTAGRAM SEGUIDORES
   // =========================================

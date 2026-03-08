@@ -4,7 +4,7 @@ import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircl
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'spotify';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
+export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
 
 export interface Product {
   id: string;             // ID único interno
@@ -405,7 +405,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-100',
     name: '100 Puntos de batalla',
-    price: 2.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 2.00, // Costo: 0.15 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 100,
     type: 'tiktok',
@@ -415,7 +415,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-500',
     name: '500 Puntos de batalla',
-    price: 9.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 9.00, // Costo: 0.67 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 500,
     type: 'tiktok',
@@ -425,7 +425,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-1000',
     name: '1000 Puntos de batalla',
-    price: 15.00, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 15.00, // Costo: 1.40 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -435,7 +435,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-5000',
     name: '5000 Puntos de batalla',
-    price: 25.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 25.50, // Costo: 6.75 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 5000,
     type: 'tiktok',
@@ -445,7 +445,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-10000',
     name: '10000 Puntos de batalla',
-    price: 45.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 45.50, // Costo: 13.50 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 10000,
     type: 'tiktok',
@@ -455,7 +455,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-20000',
     name: '20000 Puntos de batalla',
-    price: 80.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 80.50, // Costo: 26.90 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 20000,
     type: 'tiktok',
@@ -465,7 +465,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-50000',
     name: '50000 Puntos de batalla',
-    price: 140.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 140.50, // Costo: 67.20 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 50000,
     type: 'tiktok',
@@ -475,7 +475,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-pkbattle-100000',
     name: '100000 Puntos de batalla',
-    price: 255.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 255.50, // Costo: 135 -> Venta: 60.00. (Antes S/ 150).
     provider_id: 5159,
     provider_quantity: 100000,
     type: 'tiktok',
@@ -1334,10 +1334,30 @@ export const PRODUCTS: Product[] = [
   // FACEBOOK
   // =========================================
   {
-    id: 'fb-followers-100',
-    name: '100 Seguidores Página',
+    id: 'fb-followers-10',
+    name: '10 Seguidores/Likes Página',
     price: 5.00,
-    provider_id: 0,
+    provider_id: 9061,
+    provider_quantity: 10,
+    type: 'facebook',
+    service_type: 'followers',
+    icon: 'facebook'
+  },
+  {
+    id: 'fb-followers-50',
+    name: '50 Seguidores/Likes Página',
+    price: 10.00,
+    provider_id: 9061,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'followers',
+    icon: 'facebook'
+  },
+  {
+    id: 'fb-followers-100',
+    name: '100 Seguidores/Likes Página',
+    price: 15.00,
+    provider_id: 9061,
     provider_quantity: 100,
     type: 'facebook',
     service_type: 'followers',
@@ -1345,9 +1365,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'fb-followers-500',
-    name: '500 Seguidores Página',
-    price: 15.00,
-    provider_id: 0,
+    name: '500 Seguidores/Likes Página',
+    price: 30.00,
+    provider_id: 9061,
     provider_quantity: 500,
     type: 'facebook',
     service_type: 'followers',
@@ -1355,9 +1375,9 @@ export const PRODUCTS: Product[] = [
   },
   {
     id: 'fb-followers-1k',
-    name: '1,000 Seguidores Página',
-    price: 22.00,
-    provider_id: 0,
+    name: '1,000 Seguidores/Likes Página',
+    price: 45.00,
+    provider_id: 9061,
     provider_quantity: 1000,
     type: 'facebook',
     service_type: 'followers',
@@ -1365,14 +1385,485 @@ export const PRODUCTS: Product[] = [
     popular: true
   },
   {
+    id: 'fb-followers-5k',
+    name: '5,000 Seguidores/Likes Página',
+    price: 100.00,
+    provider_id: 9061,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'followers',
+    icon: 'facebook'
+  },
+  {
+    id: 'fb-followers-10k',
+    name: '10,000 Seguidores/Likes Página',
+    price: 150.00,
+    provider_id: 9061,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'followers',
+    icon: 'facebook'
+  },
+  {
+    id: 'fb-followers-50k',
+    name: '50,000 Seguidores/Likes Página',
+    price: 350.00,
+    provider_id: 9061,
+    provider_quantity: 50000,
+    type: 'facebook',
+    service_type: 'followers',
+    icon: 'facebook'
+  },
+  {
+    id: 'fb-followers-100k',
+    name: '100,000 Seguidores/Likes Página',
+    price: 550.00,
+    provider_id: 9061,
+    provider_quantity: 100000,
+    type: 'facebook',
+    service_type: 'followers',
+    icon: 'facebook'
+  },
+  {
+    id: 'fb-likes-post-50',
+    name: '50 Likes en Post',
+    price: 5.00,
+    provider_id: 5133,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'fb-likes-post-100',
+    name: '100 Likes en Post',
+    price: 7.00,
+    provider_id: 5133,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
     id: 'fb-likes-post-500',
     name: '500 Likes en Post',
-    price: 10.00,
-    provider_id: 0,
+    price: 15.00,
+    provider_id: 5133,
     provider_quantity: 500,
     type: 'facebook',
     service_type: 'likes',
     icon: 'thumbs-up'
+  },
+  {
+    id: 'fb-likes-post-1k',
+    name: '1,000 Likes en Post',
+    price: 20.00,
+    provider_id: 5133,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up',
+    popular: true
+  },
+  {
+    id: 'fb-likes-post-5k',
+    name: '5,000 Likes en Post',
+    price: 60.00,
+    provider_id: 5133,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'fb-likes-post-10k',
+    name: '10,000 Likes en Post',
+    price: 100.00,
+    provider_id: 5133,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'fb-likes-post-50k',
+    name: '50,000 Likes en Post',
+    price: 285.00,
+    provider_id: 5133,
+    provider_quantity: 50000,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'fb-likes-post-100k',
+    name: '100,000 Likes en Post',
+    price: 535.00,
+    provider_id: 5133,
+    provider_quantity: 100000,
+    type: 'facebook',
+    service_type: 'likes',
+    icon: 'thumbs-up'
+  },
+  {
+    id: 'fb-react-love-50',
+    name: '50 Me encanta ❤',
+    price: 6.00,
+    provider_id: 5986,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-love-100',
+    name: '100 Me encanta ❤',
+    price: 8.00,
+    provider_id: 5986,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-love-500',
+    name: '500 Me encanta ❤',
+    price: 17.00,
+    provider_id: 5986,
+    provider_quantity: 500,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-love-1k',
+    name: '1,000 Me encanta ❤',
+    price: 25.00,
+    provider_id: 5986,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-love-5k',
+    name: '5,000 Me encanta ❤',
+    price: 65.00,
+    provider_id: 5986,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-love-10k',
+    name: '10,000 Me encanta ❤',
+    price: 110.00,
+    provider_id: 5986,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-care-50',
+    name: '50 Me importa 🥰',
+    price: 6.00,
+    provider_id: 5987,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-care-100',
+    name: '100 Me importa 🥰',
+    price: 8.00,
+    provider_id: 5987,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-care-500',
+    name: '500 Me importa 🥰',
+    price: 17.00,
+    provider_id: 5987,
+    provider_quantity: 500,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-care-1k',
+    name: '1,000 Me importa 🥰',
+    price: 25.00,
+    provider_id: 5987,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-care-5k',
+    name: '5,000 Me importa 🥰',
+    price: 65.00,
+    provider_id: 5987,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-care-10k',
+    name: '10,000 Me importa 🥰',
+    price: 110.00,
+    provider_id: 5987,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-wow-50',
+    name: '50 Me asombra 😮',
+    price: 6.00,
+    provider_id: 5988,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-wow-100',
+    name: '100 Me asombra 😮',
+    price: 8.00,
+    provider_id: 5988,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-wow-500',
+    name: '500 Me asombra 😮',
+    price: 17.00,
+    provider_id: 5988,
+    provider_quantity: 500,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-wow-1k',
+    name: '1,000 Me asombra 😮',
+    price: 25.00,
+    provider_id: 5988,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-wow-5k',
+    name: '5,000 Me asombra 😮',
+    price: 65.00,
+    provider_id: 5988,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-wow-10k',
+    name: '10,000 Me asombra 😮',
+    price: 110.00,
+    provider_id: 5988,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-haha-50',
+    name: '50 Me divierte 😂',
+    price: 6.00,
+    provider_id: 5989,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-haha-100',
+    name: '100 Me divierte 😂',
+    price: 8.00,
+    provider_id: 5989,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-haha-500',
+    name: '500 Me divierte 😂',
+    price: 17.00,
+    provider_id: 5989,
+    provider_quantity: 500,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-haha-1k',
+    name: '1,000 Me divierte 😂',
+    price: 25.00,
+    provider_id: 5989,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-haha-5k',
+    name: '5,000 Me divierte 😂',
+    price: 65.00,
+    provider_id: 5989,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-haha-10k',
+    name: '10,000 Me divierte 😂',
+    price: 110.00,
+    provider_id: 5989,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-sad-50',
+    name: '50 Me entristece 😥',
+    price: 6.00,
+    provider_id: 5990,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-sad-100',
+    name: '100 Me entristece 😥',
+    price: 8.00,
+    provider_id: 5990,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-sad-500',
+    name: '500 Me entristece 😥',
+    price: 17.00,
+    provider_id: 5990,
+    provider_quantity: 500,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-sad-1k',
+    name: '1,000 Me entristece 😥',
+    price: 25.00,
+    provider_id: 5990,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-sad-5k',
+    name: '5,000 Me entristece 😥',
+    price: 65.00,
+    provider_id: 5990,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-sad-10k',
+    name: '10,000 Me entristece 😥',
+    price: 110.00,
+    provider_id: 5990,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-angry-50',
+    name: '50 Me enoja 😡',
+    price: 6.00,
+    provider_id: 5991,
+    provider_quantity: 50,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-angry-100',
+    name: '100 Me enoja 😡',
+    price: 8.00,
+    provider_id: 5991,
+    provider_quantity: 100,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-angry-500',
+    name: '500 Me enoja 😡',
+    price: 17.00,
+    provider_id: 5991,
+    provider_quantity: 500,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-angry-1k',
+    name: '1,000 Me enoja 😡',
+    price: 25.00,
+    provider_id: 5991,
+    provider_quantity: 1000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-angry-5k',
+    name: '5,000 Me enoja 😡',
+    price: 65.00,
+    provider_id: 5991,
+    provider_quantity: 5000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
+  },
+  {
+    id: 'fb-react-angry-10k',
+    name: '10,000 Me enoja 😡',
+    price: 110.00,
+    provider_id: 5991,
+    provider_quantity: 10000,
+    type: 'facebook',
+    service_type: 'reactions',
+    icon: 'post'
   },
 
   // =========================================
@@ -1762,7 +2253,7 @@ export const CATEGORIES = [
   { id: 'tiktok', label: 'TikTok', color: 'from-black to-gray-800' },
   { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
   { id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
-  //{ id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
+  { id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
   { id: 'spotify', label: 'Spotify', color: 'from-green-500 to-green-700' },
   { id: 'kick', label: 'Kick', color: 'from-green-400 to-green-600' },
 ];

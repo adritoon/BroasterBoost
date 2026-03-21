@@ -13,6 +13,7 @@ import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
 import { HowItWorks } from '@/components/HowItWorks';
 import { SeoContent } from '@/components/SeoContent';
+import { PremiumServices } from '@/components/PremiumServices';
 import Image from 'next/image';
 
 // --- CONFIGURACIÓN ---
@@ -54,7 +55,12 @@ export default function Home() {
   const [preferenceId, setPreferenceId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [specialLink, setSpecialLink] = useState(''); //special product
+  // --- FUNCIÓN PUENTE PARA COMPONENTES HIJOS ---
+  const handleOpenModalFromChild = (product: Product, link: string) => {
+    setTargetLink(link); // Guardamos el link en el estado general
+    setManualProduct(product); // Guardamos el producto
+    setShowYapeModal(true); // Abrimos el modal
+  };
 
   const [showYapeModal, setShowYapeModal] = useState(false);
   const [manualProduct, setManualProduct] = useState<Product | null>(null);
@@ -107,31 +113,8 @@ export default function Home() {
     }
   };
 
-  // --- LÓGICA PRODUCTO ESPECIAL (SOLO YAPE) ---
-  const handleSpecialPayment = () => {
-    if (!specialLink || specialLink.length < 3) {
-      alert("Por favor ingresa un enlace o usuario válido.");
-      return;
-    }
-    
-    // Le pasamos el link al estado principal para que el botón de WhatsApp lo lea
-    setTargetLink(specialLink); 
-    
-    // Creamos el producto "al vuelo" para engañar al modal
-    setManualProduct({
-      id: 'producto-premium-1',
-      name: 'Servicio bloqueo sim + cel', // Cambia esto por tu nombre real
-      price: 99.00, // Pon el precio real aquí
-      provider_id: 0,
-      provider_quantity: 1,
-      type: 'instagram', // No importa mucho, es para que no de error
-      service_type: 'followers',
-      icon: 'star', 
-    });
-    
-    // Abrimos tu mismo modal de siempre
-    setShowYapeModal(true);
-  };
+  
+
 
   // --- LÓGICA YAPE MANUAL ---
   const handleManualPayment = (product: Product) => {
@@ -398,61 +381,8 @@ export default function Home() {
         </motion.div>
       </section>
       
-      {/* --- NUEVA SECCIÓN: PRODUCTO PREMIUM (SOLO YAPE) --- */}
-      <section className="container mx-auto max-w-5xl px-4 pb-24">
-        <div className="relative overflow-hidden rounded-3xl border border-pink-500/30 bg-gradient-to-br from-slate-900 to-slate-950 p-8 md:p-12 shadow-2xl shadow-pink-500/10">
-          
-          {/* Brillo decorativo de fondo */}
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-pink-500/10 blur-3xl pointer-events-none"></div>
-
-          <div className="relative flex flex-col md:flex-row gap-10 items-center justify-between">
-            
-            {/* 1. Descripción del Producto */}
-            <div className="flex-1 space-y-5 text-center md:text-left">
-              <span className="inline-block rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold text-pink-400 border border-pink-500/30 uppercase tracking-widest">
-                Servicio Exclusivo
-              </span>
-              <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-                Bloqueo de SIM + Celular
-              </h2>
-              <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0">
-                Solo necesito el número de celular y el titular. 
-                Solo se puede bloquear números que son netamente de uso propio, no empresarial. 
-                Al ser un servicio manual y delicado, el pago se realiza directamente por Yape.
-              </p>
-              <div className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500">
-                S/ 99.00
-              </div>
-            </div>
-
-            {/* 2. Caja de Compra (Input + Botón) */}
-            <div className="w-full md:w-96 rounded-2xl bg-white/5 p-6 border border-white/10 backdrop-blur-md">
-              <div className="space-y-5">
-                <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
-                    Número y titular
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="999756123, Alfredo Palacios"
-                    value={specialLink}
-                    onChange={(e) => setSpecialLink(e.target.value)}
-                    className="w-full rounded-xl bg-slate-950 border border-slate-700 py-3.5 px-4 text-sm text-white placeholder:text-slate-600 focus:border-pink-500 focus:ring-1 focus:ring-pink-500 outline-none transition-all"
-                  />
-                </div>
-                <button
-                  onClick={handleSpecialPayment}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#752384] text-white font-bold py-4 hover:bg-[#8e2aa0] hover:scale-[1.02] active:scale-[0.98] transition-all border border-[#9b2eb0]/50 shadow-lg shadow-[#752384]/20"
-                >
-                  <MessageCircle size={20} /> {/* Icono opcional */}
-                  Yapear y Contactar
-                </button>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      {/* --- SECCIÓN: PRODUCTOS PREMIUM (SOLO YAPE) --- */}
+      <PremiumServices onOpenYapeModal={handleOpenModalFromChild} />
 
       <HowItWorks />
 

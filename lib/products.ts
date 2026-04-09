@@ -19,6 +19,7 @@ export interface Product {
   label?: string;         // Etiqueta (ej: "Oferta", "Pack")
   speed?: string;      // Ej: "⚡ Inicio: Inmediato"
   guarantee?: string;  // Ej: "🛡️ Garantía: 30 días"
+  status?: 'active' | 'maintenance' | 'out_of_stock'; // Estado del producto
 }
 
 export const PRODUCTS: Product[] = [
@@ -2249,8 +2250,15 @@ export const PRODUCTS: Product[] = [
   }
 ];
 
-export const CATEGORIES = [
-  { id: 'tiktok', label: 'TikTok', color: 'from-black to-gray-800' },
+export interface Category {
+  id: string;
+  label: string;
+  color: string;
+  status?: 'active' | 'maintenance';
+}
+
+export const CATEGORIES: Category[] = [
+  { id: 'tiktok', label: 'TikTok', status: 'active', color: 'from-black to-gray-800' },
   { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
   { id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
   { id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },

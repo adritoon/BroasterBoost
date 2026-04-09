@@ -203,21 +203,29 @@ export default function Home() {
         <h2 className="sr-only">Selecciona una Red Social</h2> 
         
         <div className="flex flex-wrap justify-center gap-2">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat.id}
-              onClick={() => handleCategoryChange(cat.id as ProductType)}
-              className={cn(
-                "relative rounded-full px-6 py-2 text-sm font-medium transition-all",
-                activeCategory === cat.id ? "text-white" : "text-slate-400 hover:text-white hover:bg-white/5"
-              )}
-            >
-              {activeCategory === cat.id && (
-                <motion.div layoutId="activeTab" className={`absolute inset-0 z-0 rounded-full bg-gradient-to-r ${cat.color}`} />
-              )}
-              <span className="relative z-10 flex items-center gap-2">{cat.label}</span>
-            </button>
-          ))}
+          {CATEGORIES.map((cat) => {
+            const isCatUnavailable = cat.status === 'maintenance';
+            return (
+              <button
+                key={cat.id}
+                onClick={() => !isCatUnavailable && handleCategoryChange(cat.id as ProductType)}
+                disabled={isCatUnavailable}
+                className={cn(
+                  "relative rounded-full px-6 py-2 text-sm font-medium transition-all",
+                  isCatUnavailable ? "opacity-50 grayscale cursor-not-allowed border border-slate-700/50 bg-white/5" : 
+                  activeCategory === cat.id ? "text-white" : "text-slate-400 hover:text-white hover:bg-white/5"
+                )}
+              >
+                {!isCatUnavailable && activeCategory === cat.id && (
+                  <motion.div layoutId="activeTab" className={`absolute inset-0 z-0 rounded-full bg-gradient-to-r ${cat.color}`} />
+                )}
+                <span className="relative z-10 flex items-center gap-2">
+                  {cat.label}
+                  {isCatUnavailable && <span className="ml-1 text-xs">⚙️</span>}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </section>
 
@@ -257,6 +265,7 @@ export default function Home() {
             {finalProducts.map((product) => {
               const Icon = iconMap[product.icon] || Users;
               const isSelected = selectedProductId === product.id;
+              const isUnavailable = product.status === 'out_of_stock' || product.status === 'maintenance';
 
               return (
                 <motion.div
@@ -270,11 +279,19 @@ export default function Home() {
                   }}
                   className={cn(
                     "group relative overflow-hidden rounded-2xl border bg-white/5 p-6 transition-all",
-                    isSelected ? "bg-white/10 ring-1 ring-pink-500/50" : "hover:bg-white/10 border-white/10"
+                    isSelected ? "bg-white/10 ring-1 ring-pink-500/50" : "hover:bg-white/10 border-white/10",
+                    isUnavailable ? "opacity-90 grayscale-[20%] border-slate-800/50" : ""
                   )}
                 >
-                  {/* Badge Popular */}
-                  {product.popular && (
+                  {/* Badge Popular o Estado */}
+                  {isUnavailable ? (
+                    <div className={cn(
+                      "absolute right-0 top-0 rounded-bl-xl px-3 py-1 text-xs font-bold text-white shadow-sm backdrop-blur-sm",
+                      product.status === 'out_of_stock' ? "bg-red-500/90" : "bg-slate-600/90"
+                    )}>
+                      {product.status === 'out_of_stock' ? 'AGOTADO' : 'EN MANTENIMIENTO'}
+                    </div>
+                  ) : product.popular && (
                     <div className="absolute right-0 top-0 rounded-bl-xl bg-gradient-to-r from-amber-500 to-orange-600 px-3 py-1 text-xs font-bold text-white">POPULAR</div>
                   )}
 
@@ -311,7 +328,14 @@ export default function Home() {
 
                   {/* ZONA DE COMPRA */}
                   <div className="mt-6">
-                    {!isSelected ? (
+                    {isUnavailable ? (
+                      <button 
+                        disabled
+                        className="w-full rounded-xl bg-slate-800/50 text-slate-500 border border-slate-700/50 font-bold py-3 cursor-not-allowed transition-all"
+                      >
+                         {product.status === 'out_of_stock' ? 'Agotado Temporalmente 🔴' : 'En Mantenimiento ⚙️'}
+                      </button>
+                    ) : !isSelected ? (
                       <button 
                         onClick={() => handleSelectProduct(product.id)}
                         className="w-full rounded-xl bg-white text-slate-950 font-bold py-3 hover:scale-[1.02] active:scale-[0.98] transition-all"

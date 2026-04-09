@@ -17,6 +17,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Producto no encontrado" }, { status: 404 });
     }
 
+    if (product.status === 'out_of_stock' || product.status === 'maintenance') {
+      return NextResponse.json({ error: "El producto no está disponible temporalmente" }, { status: 400 });
+    }
+
     if (!targetLink) {
        return NextResponse.json({ error: "Falta el enlace" }, { status: 400 });
     }

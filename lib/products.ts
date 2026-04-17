@@ -92,7 +92,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-100',
     name: '100 Likes TikTok',
-    price: 3.00, // Ajustado para no competir con el de 1000
+    price: 7.00, // Ajustado para no competir con el de 1000
     provider_id: 2563,
     provider_quantity: 100,
     type: 'tiktok',
@@ -102,7 +102,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-500',
     name: '500 Likes TikTok',
-    price: 5.00, // Reducido para entrada fácil
+    price: 15.00, // Reducido para entrada fácil
     provider_id: 2563,
     provider_quantity: 500,
     type: 'tiktok',
@@ -112,7 +112,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-1k',
     name: '1,000 Likes TikTok',
-    price: 6.00, // GANCHO: De S/ 15 a S/ 6. Irresistible.
+    price: 20.00, // GANCHO: De S/ 15 a S/ 6. Irresistible.
     provider_id: 2563,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -124,7 +124,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-5k',
     name: '5,000 Likes TikTok',
-    price: 25.00, // De S/ 50 a S/ 25
+    price: 50.00, // De S/ 50 a S/ 25
     provider_id: 2563,
     provider_quantity: 5000,
     type: 'tiktok',
@@ -134,7 +134,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-10k',
     name: '10,000 Likes TikTok',
-    price: 45.00, // De S/ 90 a S/ 45
+    price: 85.00, // De S/ 90 a S/ 45
     provider_id: 2563,
     provider_quantity: 10000,
     type: 'tiktok',
@@ -144,7 +144,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-20k',
     name: '20,000 Likes TikTok',
-    price: 80.00, // De S/ 160 a S/ 80
+    price: 150.00, // De S/ 160 a S/ 80
     provider_id: 2563,
     provider_quantity: 20000,
     type: 'tiktok',
@@ -154,7 +154,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-likes-50k',
     name: '50,000 Likes TikTok',
-    price: 180.00, // De S/ 350 a S/ 180
+    price: 250.00, // De S/ 350 a S/ 180
     provider_id: 2563,
     provider_quantity: 50000,
     type: 'tiktok',
@@ -555,7 +555,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-100',
     name: '100 Likes Instagram',
-    price: 3.00,
+    price: 7.00,
     provider_id: 8159,
     provider_quantity: 100,
     type: 'instagram',
@@ -565,7 +565,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-500',
     name: '500 Likes Instagram',
-    price: 5.00, // Ticket mínimo perfecto
+    price: 15.00, // Ticket mínimo perfecto
     provider_id: 8159,
     provider_quantity: 500,
     type: 'instagram',
@@ -575,7 +575,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-1k',
     name: '1,000 Likes Instagram',
-    price: 9.00, // Bajado de 15 a 9.
+    price: 20.00, // Bajado de 15 a 9.
     provider_id: 8159,
     provider_quantity: 1000,
     type: 'instagram',
@@ -587,7 +587,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-5k',
     name: '5,000 Likes Instagram',
-    price: 35.00, // Bajado de 50
+    price: 55.00, // Bajado de 50
     provider_id: 8159,
     provider_quantity: 5000,
     type: 'instagram',
@@ -597,7 +597,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-10k',
     name: '10,000 Likes Instagram',
-    price: 60.00, // Bajado de 90
+    price: 85.00, // Bajado de 90
     provider_id: 8159,
     provider_quantity: 10000,
     type: 'instagram',

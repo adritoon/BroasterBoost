@@ -29,7 +29,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-followers-100',
     name: '100 Seguidores TikTok',
-    price: 5.00,
+    price: 8.00,
     provider_id: 2560,
     provider_quantity: 100,
     type: 'tiktok',
@@ -44,7 +44,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-followers-500',
     name: '500 Seguidores TikTok',
-    price: 15.00,
+    price: 18.00,
     provider_id: 2560,
     provider_quantity: 500,
     type: 'tiktok',
@@ -54,7 +54,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-followers-1k',
     name: '1,000 Seguidores TikTok',
-    price: 25.00,
+    price: 30.00,
     provider_id: 2560,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -168,7 +168,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-views-1k',
     name: '1,000 Vistas Tiktok',
-    price: 4.00,
+    price: 10.00,
     provider_id: 5791,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -178,7 +178,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-views-5k',
     name: '5,000 Vistas Tiktok',
-    price: 10.00,
+    price: 25.00,
     provider_id: 5791,
     provider_quantity: 5000,
     type: 'tiktok',
@@ -190,7 +190,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-views-10k',
     name: '10,000 Vistas Tiktok',
-    price: 20.00,
+    price: 40.00,
     provider_id: 5791,
     provider_quantity: 10000,
     type: 'tiktok',
@@ -200,7 +200,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-views-20k',
     name: '20,000 Vistas Tiktok',
-    price: 35.00,
+    price: 60.00,
     provider_id: 5791,
     provider_quantity: 20000,
     type: 'tiktok',
@@ -210,7 +210,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-views-50k',
     name: '50,000 Vistas Tiktok',
-    price: 50.00,
+    price: 100.00,
     provider_id: 5791,
     provider_quantity: 50000,
     type: 'tiktok',
@@ -220,7 +220,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'tt-views-100k',
     name: '100,000 Vistas Tiktok',
-    price: 85.00,
+    price: 150.00,
     provider_id: 5791,
     provider_quantity: 100000,
     type: 'tiktok',

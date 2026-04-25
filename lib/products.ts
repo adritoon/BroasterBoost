@@ -489,7 +489,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-100',
     name: '100 Seguidores Instagram',
-    price: 5.00,
+    price: 8.00,
     provider_id: 8706, 
     provider_quantity: 100,
     type: 'instagram',
@@ -499,7 +499,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-500',
     name: '500 Seguidores Instagram',
-    price: 12.00, // Bajado de 15 a 12
+    price: 20.00, // Bajado de 15 a 12
     provider_id: 8706,
     provider_quantity: 500,
     type: 'instagram',
@@ -509,7 +509,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-1k',
     name: '1,000 Seguidores Instagram',
-    price: 20.00, // Bajado de 25 a 20. Precio Gancho.
+    price: 35.00, // Bajado de 25 a 20. Precio Gancho.
     provider_id: 8706,
     provider_quantity: 1000,
     type: 'instagram',
@@ -521,7 +521,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-5k',
     name: '5,000 Seguidores Instagram',
-    price: 85.00, // Bajado de 90
+    price: 125.00, // Bajado de 90
     provider_id: 8706,
     provider_quantity: 5000,
     type: 'instagram',
@@ -531,7 +531,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-10k',
     name: '10,000 Seguidores Instagram',
-    price: 160.00, // Bajado de 180
+    price: 215.00, // Bajado de 180
     provider_id: 8706,
     provider_quantity: 10000,
     type: 'instagram',
@@ -541,7 +541,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-followers-20k',
     name: '20,000 Seguidores Instagram',
-    price: 300.00, // Bajado de 340
+    price: 350.00, // Bajado de 340
     provider_id: 8706,
     provider_quantity: 20000,
     type: 'instagram',
@@ -587,7 +587,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-5k',
     name: '5,000 Likes Instagram',
-    price: 55.00, // Bajado de 50
+    price: 75.00, // Bajado de 50
     provider_id: 8159,
     provider_quantity: 5000,
     type: 'instagram',
@@ -597,7 +597,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-likes-10k',
     name: '10,000 Likes Instagram',
-    price: 85.00, // Bajado de 90
+    price: 125.00, // Bajado de 90
     provider_id: 8159,
     provider_quantity: 10000,
     type: 'instagram',
@@ -632,7 +632,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-100',
     name: '100 Vistas Reels',
-    price: 2.00,
+    price: 6.00,
     provider_id: 7706,
     provider_quantity: 100,
     type: 'instagram',
@@ -642,7 +642,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-500',
     name: '500 Vistas Reels',
-    price: 3.00, // Casi regalado para que prueben
+    price: 12.00, // Casi regalado para que prueben
     provider_id: 7706,
     provider_quantity: 500,
     type: 'instagram',
@@ -652,7 +652,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-1k',
     name: '1,000 Vistas Reels',
-    price: 5.00, // GANCHO: De 12 a 5.
+    price: 20.00, // GANCHO: De 12 a 5.
     provider_id: 7706,
     provider_quantity: 1000,
     type: 'instagram',
@@ -664,7 +664,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-5k',
     name: '5,000 Vistas Reels',
-    price: 10.00, // De 35 a 10. Gran valor.
+    price: 50.00, // De 35 a 10. Gran valor.
     provider_id: 7706,
     provider_quantity: 5000,
     type: 'instagram',
@@ -674,7 +674,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-10k',
     name: '10,000 Vistas Reels',
-    price: 18.00, // De 60 a 18.
+    price: 80.00, // De 60 a 18.
     provider_id: 7706,
     provider_quantity: 10000,
     type: 'instagram',
@@ -684,7 +684,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-50k',
     name: '50,000 Vistas Reels',
-    price: 60.00, // De 250 a 60. (Te cuesta centavos, vende volumen).
+    price: 160.00, // De 250 a 60. (Te cuesta centavos, vende volumen).
     provider_id: 7706,
     provider_quantity: 50000,
     type: 'instagram',
@@ -694,7 +694,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'ig-views-100k',
     name: '100,000 Vistas Reels',
-    price: 100.00, // De 480 a 100. Viralidad barata.
+    price: 250.00, // De 480 a 100. Viralidad barata.
     provider_id: 7706,
     provider_quantity: 100000,
     type: 'instagram',
@@ -943,8 +943,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-50',
     name: '50 Suscriptores',
-    price: 12.00,
-    provider_id: 8123,
+    price: 8.00,
+    provider_id: 8871,
     provider_quantity: 50,
     type: 'youtube',
     service_type: 'followers', // Subs = Followers en lógica de filtro
@@ -953,8 +953,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-100',
     name: '100 Suscriptores',
-    price: 20.00,
-    provider_id: 8123,
+    price: 15.00,
+    provider_id: 8871,
     provider_quantity: 100,
     type: 'youtube',
     service_type: 'followers',
@@ -963,8 +963,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-250',
     name: '250 Suscriptores',
-    price: 45.00,
-    provider_id: 8123,
+    price: 30.00,
+    provider_id: 8871,
     provider_quantity: 250,
     type: 'youtube',
     service_type: 'followers',
@@ -973,8 +973,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-500',
     name: '500 Suscriptores',
-    price: 85.00,
-    provider_id: 8123,
+    price: 50.00,
+    provider_id: 8871,
     provider_quantity: 500,
     type: 'youtube',
     service_type: 'followers',
@@ -984,8 +984,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-1000',
     name: '1000 Suscriptores',
-    price: 150.00,
-    provider_id: 8123,
+    price: 90.00,
+    provider_id: 8871,
     provider_quantity: 1000,
     type: 'youtube',
     service_type: 'followers',
@@ -994,8 +994,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-5000',
     name: '5000 Suscriptores',
-    price: 700.00,
-    provider_id: 8123,
+    price: 400.00,
+    provider_id: 8871,
     provider_quantity: 5000,
     type: 'youtube',
     service_type: 'followers',
@@ -1004,8 +1004,8 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-subs-10000',
     name: '10000 Suscriptores',
-    price: 1350.00,
-    provider_id: 8123,
+    price: 750.00,
+    provider_id: 8871,
     provider_quantity: 10000,
     type: 'youtube',
     service_type: 'followers',
@@ -1015,7 +1015,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-views-500',
     name: '500 Views de video',
-    price: 7.00,
+    price: 12.00,
     provider_id: 8120,
     provider_quantity: 500,
     type: 'youtube',
@@ -1025,7 +1025,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-views-1000',
     name: '1,000 Views de video',
-    price: 12.00,
+    price: 20.00,
     provider_id: 8120,
     provider_quantity: 1000,
     type: 'youtube',
@@ -1035,7 +1035,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-views-5000',
     name: '5,000 Views de video',
-    price: 50.00,
+    price: 80.00,
     provider_id: 8120,
     provider_quantity: 5000,
     type: 'youtube',
@@ -1046,7 +1046,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-views-10000',
     name: '10,000 Views de video',
-    price: 90.00,
+    price: 140.00,
     provider_id: 8120,
     provider_quantity: 10000,
     type: 'youtube',
@@ -1056,7 +1056,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-views-50000',
     name: '50,000 Views de video',
-    price: 400.00,
+    price: 625.00,
     provider_id: 8120,
     provider_quantity: 50000,
     type: 'youtube',
@@ -1191,7 +1191,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-likes-100',
     name: '100 likes de video',
-    price: 4.00,
+    price: 6.00,
     provider_id: 6241,
     provider_quantity: 100,
     type: 'youtube',
@@ -1201,7 +1201,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-likes-500',
     name: '500 likes de video',
-    price: 10.00,
+    price: 12.00,
     provider_id: 6241,
     provider_quantity: 500,
     type: 'youtube',
@@ -1211,7 +1211,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-likes-1000',
     name: '1,000 likes de video',
-    price: 15.00,
+    price: 18.00,
     provider_id: 6241,
     provider_quantity: 1000,
     type: 'youtube',
@@ -1263,7 +1263,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-likes-shorts-100',
     name: '100 likes de shorts',
-    price: 4.00,
+    price: 6.00,
     provider_id: 6243,
     provider_quantity: 100,
     type: 'youtube',
@@ -1273,7 +1273,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-likes-shorts-500',
     name: '500 likes de shorts',
-    price: 10.00,
+    price: 12.00,
     provider_id: 6243,
     provider_quantity: 500,
     type: 'youtube',
@@ -1283,7 +1283,7 @@ export const PRODUCTS: Product[] = [
   {
     id: 'yt-likes-shorts-1000',
     name: '1,000 likes de shorts',
-    price: 15.00,
+    price: 18.00,
     provider_id: 6243,
     provider_quantity: 1000,
     type: 'youtube',

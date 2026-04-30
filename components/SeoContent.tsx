@@ -17,11 +17,11 @@ export function SeoContent() {
       {/* TÍTULO PRINCIPAL SEO */}
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-white mb-4">
-          La Plataforma #1 de Crecimiento Social en Perú 🇵🇪
+          Comprar Seguidores y Likes en Perú — #1 🇵🇪
         </h2>
         <p className="text-slate-400 max-w-2xl mx-auto">
-          Catálogo completo de servicios SMM para creadores de contenido, artistas y streamers. 
-          Entrega automática, precios en Soles y pagos vía <b>Yape, Plin y Tarjeta</b>.
+          Catálogo completo de servicios para creadores de contenido, artistas, streamers y emprendedores. 
+          Entrega automática, precios en Soles y pagos vía <b>Yape, Plin y Tarjeta</b>. Soporte 24/7 por WhatsApp.
         </p>
       </div>
 
@@ -33,7 +33,7 @@ export function SeoContent() {
             <div className="bg-green-500/20 p-2 rounded-lg text-green-500">
               <Music size={24} />
             </div>
-            <h3 className="text-xl font-bold text-white">Promoción Musical Spotify</h3>
+            <h3 className="text-xl font-bold text-white">Comprar Plays y Oyentes Spotify Perú</h3>
           </div>
           <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             Impulsa tu carrera musical con nuestros servicios especializados. Ofrecemos 
@@ -54,7 +54,7 @@ export function SeoContent() {
             <div className="bg-green-400/20 p-2 rounded-lg text-green-400">
               <Gamepad2 size={24} />
             </div>
-            <h3 className="text-xl font-bold text-white">Crecimiento en Kick</h3>
+            <h3 className="text-xl font-bold text-white">Comprar Viewers y Seguidores Kick</h3>
           </div>
           <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             Consigue el afiliado de Kick en tiempo récord. Proveemos <b>Viewers (Espectadores) estables</b> 
@@ -74,7 +74,7 @@ export function SeoContent() {
             <div className="bg-red-500/20 p-2 rounded-lg text-red-500">
               <Youtube size={24} />
             </div>
-            <h3 className="text-xl font-bold text-white">Monetización YouTube</h3>
+            <h3 className="text-xl font-bold text-white">Comprar Suscriptores y 4000 Horas YouTube</h3>
           </div>
           <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             Todo lo que necesitas para monetizar tu canal. Vendemos las <b>4,000 Horas de Reproducción (Watchtime)</b> 
@@ -95,7 +95,7 @@ export function SeoContent() {
               {/* Icono custom de TikTok o genérico */}
               <Zap size={24} /> 
             </div>
-            <h3 className="text-xl font-bold text-white">Viralización TikTok</h3>
+            <h3 className="text-xl font-bold text-white">Comprar Seguidores y Likes TikTok Perú</h3>
           </div>
           <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             Domina el algoritmo "Para Ti". Compra <b>Seguidores TikTok baratos</b> para habilitar los LIVEs 
@@ -115,7 +115,7 @@ export function SeoContent() {
             <div className="bg-pink-500/20 p-2 rounded-lg text-pink-500">
               <Instagram size={24} />
             </div>
-            <h3 className="text-xl font-bold text-white">Instagram Reels & Profile</h3>
+            <h3 className="text-xl font-bold text-white">Comprar Seguidores y Vistas Reels Instagram</h3>
           </div>
           <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             Mejora tu presencia visual. Ofertas agresivas en <b>Vistas para Reels</b> (la forma más barata de crecer). 
@@ -134,7 +134,7 @@ export function SeoContent() {
             <div className="bg-blue-600/20 p-2 rounded-lg text-blue-500">
               <Facebook size={24} />
             </div>
-            <h3 className="text-xl font-bold text-white">Facebook Fanpages</h3>
+            <h3 className="text-xl font-bold text-white">Comprar Seguidores Facebook Fanpage Perú</h3>
           </div>
           <p className="text-sm text-slate-400 mb-4 leading-relaxed">
             Aumenta la credibilidad de tu negocio. <b>Seguidores para Páginas de Facebook</b> (Fanpages) 
@@ -149,12 +149,38 @@ export function SeoContent() {
         <h4 className="text-sm font-bold text-slate-500 mb-4 uppercase tracking-wider">Búsquedas Frecuentes en Perú:</h4>
         <div className="flex flex-wrap gap-2 text-xs text-slate-600">
           {[
-            "Comprar seguidores con Yape", "Panel SMM Perú barato", 
-            "Bot viewers Kick 24/7", "Oyentes mensuales Spotify Perú", 
-            "4000 horas YouTube precio", "Vistas Reels Instagram gratis", 
-            "Seguidores TikTok Perú reales", "Likes Facebook Yape", 
-            "Boost Kick afiliado", "Vistas Shorts YouTube", 
-            "SocialBoost Perú confiable", "Recargar seguidores con Plin"
+            // TikTok
+            "Comprar seguidores TikTok Perú", "Seguidores TikTok baratos", "Likes TikTok con Yape",
+            "Vistas TikTok Perú", "Viewers TikTok live Perú", "PK Battle TikTok comprar",
+            "Seguidores TikTok reales", "Comprar seguidores TikTok con Yape",
+            // Instagram
+            "Comprar seguidores Instagram Perú", "Likes Instagram baratos",
+            "Vistas Reels Instagram Perú", "Comprar likes Instagram con Yape",
+            "Seguidores Instagram reales",
+            // YouTube
+            "Comprar suscriptores YouTube Perú", "4000 horas YouTube precio",
+            "Watchtime YouTube comprar", "Vistas YouTube Shorts Perú",
+            "Likes YouTube Perú", "Monetizar canal YouTube rápido",
+            // Kick
+            "Viewers Kick Perú", "Comprar seguidores Kick", "Afiliado Kick rápido",
+            "Bot viewers Kick 24/7", "Boost Kick afiliado",
+            // Facebook
+            "Comprar seguidores Facebook Perú", "Likes Facebook Yape",
+            "Seguidores Fanpage Perú", "Likes página Facebook",
+            // Spotify
+            "Comprar plays Spotify Perú", "Oyentes mensuales Spotify",
+            "Guardados Spotify comprar", "Reproducciones Spotify Perú",
+            "Seguidores artista Spotify",
+            // Métodos de pago
+            "Comprar seguidores con Yape", "Panel SMM Perú barato",
+            "Comprar seguidores con Plin", "Panel SMM pagar con tarjeta",
+            "Recargar seguidores con Plin",
+            // Genéricos / Intención de búsqueda
+            "Dónde comprar seguidores Perú", "Mejor página seguidores Perú",
+            "SocialBoost Perú confiable", "Panel SMM Perú 2025",
+            "Seguidores baratos Perú", "Boost redes sociales Perú",
+            "Comprar seguidores reales Perú", "Crecer en redes sociales Perú",
+            "Marketing redes sociales Perú"
           ].map((tag, i) => (
             <span key={i} className="bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
               {tag}

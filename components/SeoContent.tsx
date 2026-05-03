@@ -177,7 +177,7 @@ export function SeoContent() {
             "Recargar seguidores con Plin",
             // Genéricos / Intención de búsqueda
             "Dónde comprar seguidores Perú", "Mejor página seguidores Perú",
-            "SocialBoost Perú confiable", "Panel SMM Perú 2025",
+            "SocialBoost Perú confiable", "Panel SMM Perú 2026",
             "Seguidores baratos Perú", "Boost redes sociales Perú",
             "Comprar seguidores reales Perú", "Crecer en redes sociales Perú",
             "Marketing redes sociales Perú"

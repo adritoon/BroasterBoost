@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { MessageCircle } from 'lucide-react';
 // Importa el tipo Product de donde lo tengas definido (ajusta la ruta si es necesario)
 import { Product } from '@/lib/products';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const PREMIUM_SERVICES = [
   {
@@ -38,12 +39,18 @@ interface PremiumServicesProps {
 export function PremiumServices({ onOpenYapeModal }: PremiumServicesProps) {
   // El estado de los links se queda aquí, porque solo le importa a este componente
   const [premiumLinks, setPremiumLinks] = useState<Record<string, string>>({});
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const showError = (msg: string) => {
+    setErrorMessage(msg);
+    setTimeout(() => setErrorMessage(null), 4000);
+  };
 
   const handlePayment = (service: any) => {
     const currentLink = premiumLinks[service.id];
 
     if (!currentLink || currentLink.length < 3) {
-      alert("Por favor ingresa un enlace o usuario válido.");
+      showError("Por favor ingresa un enlace o usuario válido.");
       return;
     }
 
@@ -145,6 +152,27 @@ export function PremiumServices({ onOpenYapeModal }: PremiumServicesProps) {
           </div>
         </div>
       ))}
+
+      {/* TOAST ERROR */}
+      <AnimatePresence>
+        {errorMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, x: '-50%' }}
+            animate={{ opacity: 1, y: 0, x: '-50%' }}
+            exit={{ opacity: 0, y: -50, x: '-50%' }}
+            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 rounded-2xl bg-red-500/90 p-4 text-white shadow-2xl backdrop-blur-md border border-red-400"
+          >
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20">
+              <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <circle cx="12" cy="12" r="10" />
+                <line x1="12" y1="8" x2="12" y2="12" />
+                <line x1="12" y1="16" x2="12.01" y2="16" />
+              </svg>
+            </div>
+            <p className="text-sm font-medium leading-snug">{errorMessage}</p>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

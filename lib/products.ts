@@ -21,8 +21,11 @@ export interface Product {
   guarantee?: string;  // Ej: "🛡️ Garantía: 30 días"
   status?: 'active' | 'maintenance' | 'out_of_stock'; // Estado del producto
 }
+export const MAINTENANCE_SUBCATEGORIES: { type: ProductType; service_type: ServiceType }[] = [
+  { type: 'tiktok', service_type: 'streaming' }
+];
 
-export const PRODUCTS: Product[] = [
+const RAW_PRODUCTS: Product[] = [
   // =========================================
   // TIKTOK
   // =========================================
@@ -2249,6 +2252,16 @@ export const PRODUCTS: Product[] = [
     icon: 'saves'
   }
 ];
+
+export const PRODUCTS: Product[] = RAW_PRODUCTS.map(product => {
+  const isSubcategoryInMaintenance = MAINTENANCE_SUBCATEGORIES.some(
+    m => m.type === product.type && m.service_type === product.service_type
+  );
+  if (isSubcategoryInMaintenance) {
+    return { ...product, status: 'maintenance' };
+  }
+  return product;
+});
 
 export interface Category {
   id: string;

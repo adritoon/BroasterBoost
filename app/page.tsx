@@ -7,7 +7,7 @@ import {
   Instagram, Music, Headphones, Bookmark, Play, Facebook, Youtube, Gamepad2, Heart, Eye, 
   MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon 
 } from 'lucide-react';
-import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType } from '@/lib/products';
+import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES } from '@/lib/products';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
@@ -249,7 +249,11 @@ export default function Home() {
       <section className="container mx-auto px-4 pb-12">
         <div className="flex justify-center">
           <div className="inline-flex rounded-xl bg-white/5 p-1 border border-white/10">
-            {availableServices.map((service) => (
+            {availableServices.map((service) => {
+              const isServiceUnavailable = MAINTENANCE_SUBCATEGORIES.some(
+                m => m.type === activeCategory && m.service_type === service
+              );
+              return (
               <button
                 key={service}
                 onClick={() => {
@@ -257,7 +261,8 @@ export default function Home() {
                   setSelectedProductId(null);
                 }}
                 className={cn(
-                  "rounded-lg px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
+                  "flex items-center gap-1.5 rounded-lg px-4 py-1.5 text-xs font-bold uppercase tracking-wider transition-colors",
+                  isServiceUnavailable && "opacity-75 grayscale border border-slate-700/50",
                   activeService === service 
                     ? "bg-slate-800 text-white shadow-sm" 
                     // CORRECCIÓN CONTRASTE: text-slate-500 -> text-slate-400
@@ -265,8 +270,9 @@ export default function Home() {
                 )}
               >
                 {serviceLabels[service]}
+                {isServiceUnavailable && <span className="text-[10px]">⚙️</span>}
               </button>
-            ))}
+            )})}
           </div>
         </div>
       </section>

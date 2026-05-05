@@ -784,7 +784,7 @@ const RAW_PRODUCTS: Product[] = [
   // =========================================
   // KICK VIEWERS (Precios Agresivos / Estrategia Volumen)
   // =========================================
-  {
+  /*{
     id: 'kick-viewers-100-15',
     name: '100 Viewers (15 minutos)',
     price: 1.50, // Costo: 0.09 -> Venta: 2.00 (Ganancia x20). GANCHO TOTAL.
@@ -793,8 +793,8 @@ const RAW_PRODUCTS: Product[] = [
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
-  },
-  {
+  },*/
+  /*{
     id: 'kick-viewers-100-30',
     name: '100 Viewers (30 minutos)',
     price: 2.00, // Costo: 0.17 -> Venta: 4.00. Irresistible.
@@ -803,11 +803,11 @@ const RAW_PRODUCTS: Product[] = [
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
-  },
+  },*/
   {
     id: 'kick-viewers-100-1',
     name: '100 Viewers (1 Hora)',
-    price: 2.90, // Costo: 0.40 -> Venta: 6.00. (Antes S/ 15).
+    price: 5.90, // Costo: 0.40 -> Venta: 5.90 (Precio base)
     provider_id: 3771,
     provider_quantity: 100,
     type: 'kick',
@@ -819,47 +819,47 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-200-1',
     name: '200 Viewers (1 Hora)',
-    price: 3.50, // Costo: 0.70 -> Venta: 10.00. (Antes S/ 25).
+    price: 9.90, // Costo: 0.70 -> Venta: 9.90 (Ahorro de S/ 1.90)
     provider_id: 3771,
     provider_quantity: 200,
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
   },
-  {
+  /*{
     id: 'kick-viewers-500-30',
     name: '500 Viewers (30 minutos)',
-    price: 3.90, // Costo: 0.90 -> Venta: 15.00. (Antes S/ 30).
+    price: 3.90, // Costo: 0.90 -> Venta: 3.90
     provider_id: 3769,
     provider_quantity: 500,
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
-  },
+  },*/
   {
     id: 'kick-viewers-500-1',
     name: '500 Viewers (1 Hora)',
-    price: 6.90, // Costo: 1.70 -> Venta: 25.00. (Antes S/ 50).
+    price: 19.90, // Costo: 1.70 -> Venta: 19.90 (Ahorro de S/ 9.60)
     provider_id: 3771,
     provider_quantity: 500,
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
   },
-  {
+  /*{
     id: 'kick-viewers-1000-30',
     name: '1000 Viewers (30 minutos)',
-    price: 6.90, // Costo: 1.70 -> Venta: 20.00. (Antes S/ 45).
+    price: 6.90, // Costo: 1.70 -> Venta: 6.90
     provider_id: 3769,
     provider_quantity: 1000,
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
-  },
+  },*/
   {
     id: 'kick-viewers-1000-1',
     name: '1000 Viewers (1 Hora)',
-    price: 11.90, // Costo: 3.40 -> Venta: 35.00. (Antes S/ 80). ¡OFERTÓN!
+    price: 29.90, // Costo: 3.40 -> Venta: 29.90 (Descuento de ~50%)
     provider_id: 3771,
     provider_quantity: 1000,
     type: 'kick',
@@ -871,7 +871,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-1',
     name: '2000 Viewers (1 Hora)',
-    price: 22.90, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 49.90, // Costo: 6.80 -> Venta: 49.90 (Descuento de >50%)
     provider_id: 3771,
     provider_quantity: 2000,
     type: 'kick',
@@ -879,10 +879,41 @@ const RAW_PRODUCTS: Product[] = [
     icon: 'users'
   },
   // --- PACKS DE LARGA DURACIÓN (Márgenes más altos aquí) ---
+  // 2 Horas
+  {
+    id: 'kick-viewers-100-2',
+    name: '100 Viewers (2 Horas)',
+    price: 9.90,
+    provider_id: 3772,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-200-2',
+    name: '200 Viewers (2 Horas)',
+    price: 16.90,
+    provider_id: 3772,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-500-2',
+    name: '500 Viewers (2 Horas)',
+    price: 32.90,
+    provider_id: 3772,
+    provider_quantity: 500,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
   {
     id: 'kick-viewers-1000-2',
     name: '1000 Viewers (2 Horas)',
-    price: 24.90, // Costo: 6.80 -> Venta: 65.00. (Antes S/ 150).
+    price: 49.90, // Costo: 6.80 -> Venta: 49.90
     provider_id: 3772,
     provider_quantity: 1000,
     type: 'kick',
@@ -892,9 +923,40 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-2',
     name: '2000 Viewers (2 Horas)',
-    price: 44.90, // Costo: 13.60 -> Venta: 120.00. (Antes S/ 280).
+    price: 89.90, // Costo: 13.60 -> Venta: 89.90
     provider_id: 3772,
     provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  // 3 Horas
+  {
+    id: 'kick-viewers-100-3',
+    name: '100 Viewers (3 Horas)',
+    price: 13.90,
+    provider_id: 3773,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-200-3',
+    name: '200 Viewers (3 Horas)',
+    price: 22.90,
+    provider_id: 3773,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-500-3',
+    name: '500 Viewers (3 Horas)',
+    price: 46.90,
+    provider_id: 3773,
+    provider_quantity: 500,
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
@@ -902,7 +964,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-3',
     name: '1000 Viewers (3 Horas)',
-    price: 34.90, // Costo: 10.20 -> Venta: 90.00. (Antes S/ 210).
+    price: 69.90, // Costo: 10.20 -> Venta: 69.90
     provider_id: 3773,
     provider_quantity: 1000,
     type: 'kick',
@@ -912,9 +974,40 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-3',
     name: '2000 Viewers (3 Horas)',
-    price: 69.90, // Costo: 20.50 -> Venta: 180.00. (Antes S/ 400).
+    price: 119.90, // Costo: 20.50 -> Venta: 119.90
     provider_id: 3773,
     provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  // 5 Horas
+  {
+    id: 'kick-viewers-100-5',
+    name: '100 Viewers (5 Horas)',
+    price: 19.90,
+    provider_id: 3775,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-200-5',
+    name: '200 Viewers (5 Horas)',
+    price: 34.90,
+    provider_id: 3775,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'kick-viewers-500-5',
+    name: '500 Viewers (5 Horas)',
+    price: 69.90,
+    provider_id: 3775,
+    provider_quantity: 500,
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
@@ -922,7 +1015,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-1000-5',
     name: '1000 Viewers (5 Horas)',
-    price: 59.90, // Costo: 17.00 -> Venta: 150.00. (Antes S/ 340).
+    price: 99.90, // Costo: 17.00 -> Venta: 99.90
     provider_id: 3775,
     provider_quantity: 1000,
     type: 'kick',
@@ -932,7 +1025,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'kick-viewers-2000-5',
     name: '2000 Viewers (5 Horas)',
-    price: 109.90, // Costo: 34.00 -> Venta: 280.00. (Antes S/ 650).
+    price: 169.90, // Costo: 34.00 -> Venta: 169.90
     provider_id: 3775,
     provider_quantity: 2000,
     type: 'kick',

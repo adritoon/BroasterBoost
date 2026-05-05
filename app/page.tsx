@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { 
@@ -85,6 +85,28 @@ export default function Home() {
     const firstService = PRODUCTS.find(p => p.type === cat)?.service_type || 'followers';
     setActiveService(firstService);
   };
+
+  useEffect(() => {
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      const isValidCategory = CATEGORIES.some(c => c.id === hash);
+      const isMaintenance = CATEGORIES.find(c => c.id === hash)?.status === 'maintenance';
+      if (isValidCategory && !isMaintenance) {
+        handleCategoryChange(hash as ProductType);
+      }
+    } else {
+      const params = new URLSearchParams(window.location.search);
+      const categoryParam = params.get('categoria') || params.get('category');
+      if (categoryParam) {
+        const isValidCategory = CATEGORIES.some(c => c.id === categoryParam);
+        const isMaintenance = CATEGORIES.find(c => c.id === categoryParam)?.status === 'maintenance';
+        if (isValidCategory && !isMaintenance) {
+          handleCategoryChange(categoryParam as ProductType);
+        }
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSelectProduct = (id: string) => {
     if (selectedProductId === id) return;

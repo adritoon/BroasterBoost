@@ -14,6 +14,7 @@ import { FAQSection } from '@/components/FAQSection';
 import { HowItWorks } from '@/components/HowItWorks';
 import { SeoContent } from '@/components/SeoContent';
 import { PremiumServices } from '@/components/PremiumServices';
+import { GrowthPackages } from '@/components/GrowthPackages';
 import Image from 'next/image';
 
 // --- CONFIGURACIÓN ---
@@ -299,6 +300,7 @@ export default function Home() {
         </div>
       </section>
 
+
       {/* GRID PRODUCTOS */}
       <section className="container mx-auto max-w-6xl px-4 pb-24">
         {/* CORRECCIÓN SEO: Otro título invisible para estructura */}
@@ -469,6 +471,9 @@ export default function Home() {
           </AnimatePresence>
         </motion.div>
       </section>
+
+      {/* --- SECCIÓN: PAQUETES DE CRECIMIENTO --- */}
+      <GrowthPackages onOpenYapeModal={handleOpenModalFromChild} />
       
       {/* --- SECCIÓN: PRODUCTOS PREMIUM (SOLO YAPE) --- */}
       <PremiumServices onOpenYapeModal={handleOpenModalFromChild} />

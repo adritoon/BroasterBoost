@@ -4,7 +4,7 @@ import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircl
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'spotify';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
+export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
 
 export interface Product {
   id: string;             // ID único interno
@@ -20,6 +20,7 @@ export interface Product {
   speed?: string;      // Ej: "⚡ Inicio: Inmediato"
   guarantee?: string;  // Ej: "🛡️ Garantía: 30 días"
   status?: 'active' | 'maintenance' | 'out_of_stock'; // Estado del producto
+  yapeOnly?: boolean;    // Si true, solo permite pago vía Yape QR (sin MercadoPago)
 }
 export const MAINTENANCE_SUBCATEGORIES: { type: ProductType; service_type: ServiceType }[] = [
   { type: 'tiktok', service_type: 'streaming' }
@@ -1031,6 +1032,240 @@ const RAW_PRODUCTS: Product[] = [
     type: 'kick',
     service_type: 'streaming',
     icon: 'users'
+  },
+
+  // =========================================
+  // KICK EN VIVO + CHAT (Viewers + 120 comments/hora tasa fija)
+  // Comentarios: 60 normales + 60 IA por hora (2/min)
+  // Precio = precio viewers solo + premium chat
+  // =========================================
+  // 1 Hora (+S/ 10)
+  {
+    id: 'kick-chat-100-1',
+    name: '100 Viewers + Chat (1 Hora)',
+    price: 15.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true,
+    popular: true,
+    label: 'Pack Streamer'
+  },
+  {
+    id: 'kick-chat-200-1',
+    name: '200 Viewers + Chat (1 Hora)',
+    price: 19.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-500-1',
+    name: '500 Viewers + Chat (1 Hora)',
+    price: 29.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-1000-1',
+    name: '1000 Viewers + Chat (1 Hora)',
+    price: 39.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true,
+    popular: true,
+    label: 'Más Popular'
+  },
+  {
+    id: 'kick-chat-2000-1',
+    name: '2000 Viewers + Chat (1 Hora)',
+    price: 59.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  // 2 Horas (+S/ 18)
+  {
+    id: 'kick-chat-100-2',
+    name: '100 Viewers + Chat (2 Horas)',
+    price: 27.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-200-2',
+    name: '200 Viewers + Chat (2 Horas)',
+    price: 34.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-500-2',
+    name: '500 Viewers + Chat (2 Horas)',
+    price: 50.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-1000-2',
+    name: '1000 Viewers + Chat (2 Horas)',
+    price: 67.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-2000-2',
+    name: '2000 Viewers + Chat (2 Horas)',
+    price: 107.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  // 3 Horas (+S/ 25)
+  {
+    id: 'kick-chat-100-3',
+    name: '100 Viewers + Chat (3 Horas)',
+    price: 38.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-200-3',
+    name: '200 Viewers + Chat (3 Horas)',
+    price: 47.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-500-3',
+    name: '500 Viewers + Chat (3 Horas)',
+    price: 71.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-1000-3',
+    name: '1000 Viewers + Chat (3 Horas)',
+    price: 94.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-2000-3',
+    name: '2000 Viewers + Chat (3 Horas)',
+    price: 144.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  // 5 Horas (+S/ 40)
+  {
+    id: 'kick-chat-100-5',
+    name: '100 Viewers + Chat (5 Horas)',
+    price: 59.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-200-5',
+    name: '200 Viewers + Chat (5 Horas)',
+    price: 74.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-500-5',
+    name: '500 Viewers + Chat (5 Horas)',
+    price: 109.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-1000-5',
+    name: '1000 Viewers + Chat (5 Horas)',
+    price: 139.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'kick-chat-2000-5',
+    name: '2000 Viewers + Chat (5 Horas)',
+    price: 209.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'kick',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
   },
 
   // =========================================

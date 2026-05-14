@@ -41,6 +41,7 @@ const serviceLabels: Record<ServiceType, string> = {
   comments: 'Comentarios',
   shares: 'Compartidos',
   streaming: 'En Vivo',
+  streaming_chat: 'En Vivo + Chat',
   plays: 'Plays',
   listeners: 'Oyentes Mensuales',
   saves: 'Guardados'
@@ -435,6 +436,25 @@ export default function Home() {
                            <div className="wallet-container">
                              <Wallet initialization={{ preferenceId }} />
                            </div>
+                        ) : product.yapeOnly ? (
+                          <div className="space-y-2">
+                             <div className="flex gap-2">
+                               <button 
+                                onClick={() => setSelectedProductId(null)}
+                                className="px-4 py-2 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5"
+                               >
+                                 Cancelar
+                               </button>
+                               <button
+                                 onClick={() => handleManualPayment(product)}
+                                 className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#752384] text-white font-bold py-2.5 hover:bg-[#8e2aa0] hover:scale-[1.02] active:scale-[0.98] transition-all text-sm"
+                               >
+                                 <MessageCircle size={16} />
+                                 Yapear Directo (QR)
+                               </button>
+                             </div>
+                             <p className="text-xs text-center text-slate-500">Solo pago manual vía Yape/Plin</p>
+                          </div>
                         ) : (
                           <div className="space-y-2">
                              <div className="flex gap-2">

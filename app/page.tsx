@@ -307,6 +307,17 @@ export default function Home() {
         {/* CORRECCIÓN SEO: Otro título invisible para estructura */}
         <h2 className="sr-only">Catálogo de Servicios</h2>
 
+        {/* AVISO CHAT: Solo visible en servicios En Vivo + Chat */}
+        {activeService === 'streaming_chat' && (
+          <div className="mb-6 flex items-start gap-3 rounded-xl bg-amber-500/10 border border-amber-500/20 p-4">
+            <span className="text-lg mt-0.5">⚠️</span>
+            <p className="text-sm text-amber-200/90 leading-relaxed">
+              <strong className="text-amber-400">Importante:</strong> El chat de tu stream <strong>no debe estar en modo "Solo seguidores"</strong> ni restringido. 
+              Debe estar abierto para que los bots puedan comentar durante la transmisión.
+            </p>
+          </div>
+        )}
+
         <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <AnimatePresence mode='popLayout'>
             {finalProducts.map((product) => {
@@ -585,7 +596,7 @@ export default function Home() {
           {/* CORRECCIÓN CONTRASTE: text-slate-600 -> text-slate-500 */}
           <p className="text-xs text-slate-500">
             © 2026 SocialBoost Perú. Todos los derechos reservados. <br/>
-            Este sitio no está afiliado con TikTok, Instagram, Facebook ni YouTube.
+            Este sitio no está afiliado con TikTok, Instagram, Facebook, YouTube ni Twitch.
           </p>
         </div>
       </footer>

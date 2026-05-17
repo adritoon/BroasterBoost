@@ -1,7 +1,7 @@
 import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircle, Share2, Users, Clock, ThumbsUp } from 'lucide-react';
 
 // 1. Definimos las Categorías (Redes)
-export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'spotify';
+export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'twitch' | 'spotify';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
 export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
@@ -23,7 +23,6 @@ export interface Product {
   yapeOnly?: boolean;    // Si true, solo permite pago vía Yape QR (sin MercadoPago)
 }
 export const MAINTENANCE_SUBCATEGORIES: { type: ProductType; service_type: ServiceType }[] = [
-  { type: 'tiktok', service_type: 'streaming' }
 ];
 
 const RAW_PRODUCTS: Product[] = [
@@ -233,93 +232,27 @@ const RAW_PRODUCTS: Product[] = [
   },
   // =========================================
   // TIKTOK VIEWERS STREAMS
+  // Costo proveedor: $4.50/1K/hr = S/ 17.10/1K/hr
+  // Provider IDs: 1120 (1hr), 1122 (2hr), 1123 (3hr)
+  // Margen objetivo: 55-75%
   // =========================================
-  {
-    id: 'tt-viewers-50-15',
-    name: '50 Viewers (15 minutos)',
-    price: 1.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 50,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-100-15',
-    name: '100 Viewers (15 minutos)',
-    price: 2.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 100,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-500-15',
-    name: '500 Viewers (15 minutos)',
-    price: 10.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 500,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-1000-15',
-    name: '1000 Viewers (15 minutos)',
-    price: 15.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 1000,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-2000-15',
-    name: '2000 Viewers (15 minutos)',
-    price: 34.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 2000,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-5000-15',
-    name: '5000 Viewers (15 minutos)',
-    price: 70.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 5000,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-8000-15',
-    name: '8000 Viewers (15 minutos)',
-    price: 108.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1118,
-    provider_quantity: 8000,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
-  {
-    id: 'tt-viewers-50-1',
-    name: '50 Viewers (1 Hora)',
-    price: 3.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1120,
-    provider_quantity: 50,
-    type: 'tiktok',
-    service_type: 'streaming',
-    icon: 'users'
-  },
+  // 1 Hora
   {
     id: 'tt-viewers-100-1',
     name: '100 Viewers (1 Hora)',
-    price: 6.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 7.90, // Costo: ~S/ 1.71 → Margen: 78%
     provider_id: 1120,
     provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-200-1',
+    name: '200 Viewers (1 Hora)',
+    price: 12.90, // Costo: ~S/ 3.42 → Margen: 73%
+    provider_id: 1120,
+    provider_quantity: 200,
     type: 'tiktok',
     service_type: 'streaming',
     icon: 'users'
@@ -327,39 +260,54 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-500-1',
     name: '500 Viewers (1 Hora)',
-    price: 22.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 24.90, // Costo: ~S/ 8.55 → Margen: 66%
     provider_id: 1120,
     provider_quantity: 500,
     type: 'tiktok',
     service_type: 'streaming',
-    icon: 'users'
+    icon: 'users',
+    popular: true,
+    label: 'Pack Streamer'
   },
   {
     id: 'tt-viewers-1000-1',
     name: '1000 Viewers (1 Hora)',
-    price: 35.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 39.90, // Costo: ~S/ 17.10 → Margen: 57%
     provider_id: 1120,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'streaming',
-    icon: 'users'
+    icon: 'users',
+    popular: true,
+    label: 'Más Popular'
   },
   {
-    id: 'tt-viewers-50-2',
-    name: '50 Viewers (2 Horas)',
-    price: 5.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    id: 'tt-viewers-2000-1',
+    name: '2000 Viewers (1 Hora)',
+    price: 69.90, // Costo: ~S/ 34.20 → Margen: 51%
+    provider_id: 1120,
+    provider_quantity: 2000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  // 2 Horas
+  {
+    id: 'tt-viewers-100-2',
+    name: '100 Viewers (2 Horas)',
+    price: 12.90, // Costo: ~S/ 3.42 → Margen: 73%
     provider_id: 1122,
-    provider_quantity: 50,
+    provider_quantity: 100,
     type: 'tiktok',
     service_type: 'streaming',
     icon: 'users'
   },
   {
-    id: 'tt-viewers-100-2',
-    name: '100 Viewers (2 Hora)',
-    price: 10.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    id: 'tt-viewers-200-2',
+    name: '200 Viewers (2 Horas)',
+    price: 22.90, // Costo: ~S/ 6.84 → Margen: 70%
     provider_id: 1122,
-    provider_quantity: 100,
+    provider_quantity: 200,
     type: 'tiktok',
     service_type: 'streaming',
     icon: 'users'
@@ -367,7 +315,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-500-2',
     name: '500 Viewers (2 Horas)',
-    price: 40.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 42.90, // Costo: ~S/ 17.10 → Margen: 60%
     provider_id: 1122,
     provider_quantity: 500,
     type: 'tiktok',
@@ -375,19 +323,30 @@ const RAW_PRODUCTS: Product[] = [
     icon: 'users'
   },
   {
-    id: 'tt-viewers-50-3',
-    name: '50 Viewers (3 Horas)',
-    price: 7.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
-    provider_id: 1123,
-    provider_quantity: 50,
+    id: 'tt-viewers-1000-2',
+    name: '1000 Viewers (2 Horas)',
+    price: 69.90, // Costo: ~S/ 34.20 → Margen: 51%
+    provider_id: 1122,
+    provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'streaming',
     icon: 'users'
   },
   {
+    id: 'tt-viewers-2000-2',
+    name: '2000 Viewers (2 Horas)',
+    price: 119.90, // Costo: ~S/ 68.40 → Margen: 43%
+    provider_id: 1122,
+    provider_quantity: 2000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  // 3 Horas
+  {
     id: 'tt-viewers-100-3',
     name: '100 Viewers (3 Horas)',
-    price: 13.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 17.90, // Costo: ~S/ 5.13 → Margen: 71%
     provider_id: 1123,
     provider_quantity: 100,
     type: 'tiktok',
@@ -395,11 +354,41 @@ const RAW_PRODUCTS: Product[] = [
     icon: 'users'
   },
   {
+    id: 'tt-viewers-200-3',
+    name: '200 Viewers (3 Horas)',
+    price: 29.90, // Costo: ~S/ 10.26 → Margen: 66%
+    provider_id: 1123,
+    provider_quantity: 200,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
     id: 'tt-viewers-500-3',
     name: '500 Viewers (3 Horas)',
-    price: 58.50, // Costo: 3.50 -> Venta: 60.00. (Antes S/ 150).
+    price: 59.90, // Costo: ~S/ 25.65 → Margen: 57%
     provider_id: 1123,
     provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-1000-3',
+    name: '1000 Viewers (3 Horas)',
+    price: 94.90, // Costo: ~S/ 51.30 → Margen: 46%
+    provider_id: 1123,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
+  {
+    id: 'tt-viewers-2000-3',
+    name: '2000 Viewers (3 Horas)',
+    price: 169.90, // Costo: ~S/ 102.60 → Margen: 40%
+    provider_id: 1123,
+    provider_quantity: 2000,
     type: 'tiktok',
     service_type: 'streaming',
     icon: 'users'
@@ -2199,6 +2188,430 @@ const RAW_PRODUCTS: Product[] = [
   },
 
   // =========================================
+  // TWITCH SEGUIDORES
+  // Costo proveedor: $0.30/1K = S/ 1.14/1K
+  // Provider ID: 2758
+  // =========================================
+  {
+    id: 'twitch-followers-100',
+    name: '100 Seguidores Twitch',
+    price: 5.00,
+    provider_id: 2758,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'twitch-followers-500',
+    name: '500 Seguidores Twitch',
+    price: 12.00,
+    provider_id: 2758,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'twitch-followers-1k',
+    name: '1,000 Seguidores Twitch',
+    price: 20.00,
+    provider_id: 2758,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'followers',
+    icon: 'users',
+    popular: true,
+    label: 'Más Vendido'
+  },
+  {
+    id: 'twitch-followers-5k',
+    name: '5,000 Seguidores Twitch',
+    price: 85.00,
+    provider_id: 2758,
+    provider_quantity: 5000,
+    type: 'twitch',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'twitch-followers-10k',
+    name: '10,000 Seguidores Twitch',
+    price: 155.00,
+    provider_id: 2758,
+    provider_quantity: 10000,
+    type: 'twitch',
+    service_type: 'followers',
+    icon: 'users',
+    label: 'Pack Streamer'
+  },
+  {
+    id: 'twitch-followers-20k',
+    name: '20,000 Seguidores Twitch',
+    price: 280.00,
+    provider_id: 2758,
+    provider_quantity: 20000,
+    type: 'twitch',
+    service_type: 'followers',
+    icon: 'users'
+  },
+
+  // =========================================
+  // TWITCH VIEWERS (Solo Viewers - Yape Only)
+  // Costo proveedor: $2.60/1K = S/ 9.88/1K (1 hora)
+  // Sin código de proveedor - manual
+  // =========================================
+  {
+    id: 'twitch-viewers-100-1',
+    name: '100 Viewers (1 Hora)',
+    price: 5.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-200-1',
+    name: '200 Viewers (1 Hora)',
+    price: 9.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-500-1',
+    name: '500 Viewers (1 Hora)',
+    price: 19.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true,
+    popular: true,
+    label: 'Pack Streamer'
+  },
+  {
+    id: 'twitch-viewers-1000-1',
+    name: '1000 Viewers (1 Hora)',
+    price: 29.90, // Costo: $2.60 = S/ 9.88
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true,
+    popular: true,
+    label: 'Más Popular'
+  },
+  {
+    id: 'twitch-viewers-2000-1',
+    name: '2000 Viewers (1 Hora)',
+    price: 49.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  // 2 Horas
+  {
+    id: 'twitch-viewers-100-2',
+    name: '100 Viewers (2 Horas)',
+    price: 9.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-200-2',
+    name: '200 Viewers (2 Horas)',
+    price: 16.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-500-2',
+    name: '500 Viewers (2 Horas)',
+    price: 32.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-1000-2',
+    name: '1000 Viewers (2 Horas)',
+    price: 49.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-2000-2',
+    name: '2000 Viewers (2 Horas)',
+    price: 89.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  // 3 Horas
+  {
+    id: 'twitch-viewers-100-3',
+    name: '100 Viewers (3 Horas)',
+    price: 13.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-200-3',
+    name: '200 Viewers (3 Horas)',
+    price: 22.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-500-3',
+    name: '500 Viewers (3 Horas)',
+    price: 46.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-1000-3',
+    name: '1000 Viewers (3 Horas)',
+    price: 69.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-viewers-2000-3',
+    name: '2000 Viewers (3 Horas)',
+    price: 119.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'twitch',
+    service_type: 'streaming',
+    icon: 'users',
+    yapeOnly: true
+  },
+
+  // =========================================
+  // TWITCH EN VIVO + CHAT (Viewers + 120 comments/hora tasa fija)
+  // Comentarios: 60 normales ($0.45) + 60 IA ($0.80) por hora = $1.25/hr = S/ 4.75/hr
+  // Precio = precio viewers solo + premium chat
+  // =========================================
+  // 1 Hora (+S/ 10)
+  {
+    id: 'twitch-chat-100-1',
+    name: '100 Viewers + Chat (1 Hora)',
+    price: 15.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true,
+    popular: true,
+    label: 'Pack Streamer'
+  },
+  {
+    id: 'twitch-chat-200-1',
+    name: '200 Viewers + Chat (1 Hora)',
+    price: 19.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-500-1',
+    name: '500 Viewers + Chat (1 Hora)',
+    price: 29.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-1000-1',
+    name: '1000 Viewers + Chat (1 Hora)',
+    price: 39.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true,
+    popular: true,
+    label: 'Más Popular'
+  },
+  {
+    id: 'twitch-chat-2000-1',
+    name: '2000 Viewers + Chat (1 Hora)',
+    price: 59.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  // 2 Horas (+S/ 18)
+  {
+    id: 'twitch-chat-100-2',
+    name: '100 Viewers + Chat (2 Horas)',
+    price: 27.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-200-2',
+    name: '200 Viewers + Chat (2 Horas)',
+    price: 34.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-500-2',
+    name: '500 Viewers + Chat (2 Horas)',
+    price: 50.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-1000-2',
+    name: '1000 Viewers + Chat (2 Horas)',
+    price: 67.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-2000-2',
+    name: '2000 Viewers + Chat (2 Horas)',
+    price: 107.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  // 3 Horas (+S/ 25)
+  {
+    id: 'twitch-chat-100-3',
+    name: '100 Viewers + Chat (3 Horas)',
+    price: 38.90,
+    provider_id: 0,
+    provider_quantity: 100,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-200-3',
+    name: '200 Viewers + Chat (3 Horas)',
+    price: 47.90,
+    provider_id: 0,
+    provider_quantity: 200,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-500-3',
+    name: '500 Viewers + Chat (3 Horas)',
+    price: 71.90,
+    provider_id: 0,
+    provider_quantity: 500,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-1000-3',
+    name: '1000 Viewers + Chat (3 Horas)',
+    price: 94.90,
+    provider_id: 0,
+    provider_quantity: 1000,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+  {
+    id: 'twitch-chat-2000-3',
+    name: '2000 Viewers + Chat (3 Horas)',
+    price: 144.90,
+    provider_id: 0,
+    provider_quantity: 2000,
+    type: 'twitch',
+    service_type: 'streaming_chat',
+    icon: 'message-circle',
+    yapeOnly: true
+  },
+
+  // =========================================
   // SPOTIFY
   // =========================================
   {
@@ -2605,4 +3018,5 @@ export const CATEGORIES: Category[] = [
   { id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
   { id: 'spotify', label: 'Spotify', color: 'from-green-500 to-green-700' },
   { id: 'kick', label: 'Kick', color: 'from-green-400 to-green-600' },
+  { id: 'twitch', label: 'Twitch', color: 'from-purple-500 to-purple-700' },
 ];

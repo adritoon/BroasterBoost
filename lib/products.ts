@@ -33,7 +33,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-100',
     name: '100 Seguidores TikTok',
-    price: 8.00,
+    price: 20.00,
     provider_id: 2560,
     provider_quantity: 100,
     type: 'tiktok',
@@ -48,7 +48,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-500',
     name: '500 Seguidores TikTok',
-    price: 18.00,
+    price: 45.00,
     provider_id: 2560,
     provider_quantity: 500,
     type: 'tiktok',
@@ -58,7 +58,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-1k',
     name: '1,000 Seguidores TikTok',
-    price: 30.00,
+    price: 75.00,
     provider_id: 2560,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -70,7 +70,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-5k',
     name: '5,000 Seguidores TikTok',
-    price: 100.00,
+    price: 245.00,
     provider_id: 2560,
     provider_quantity: 5000,
     type: 'tiktok',
@@ -80,7 +80,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-10k',
     name: '10,000 Seguidores TikTok',
-    price: 180.00,
+    price: 445.00,
     provider_id: 2560,
     provider_quantity: 10000,
     type: 'tiktok',
@@ -172,7 +172,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-views-1k',
     name: '1,000 Vistas Tiktok',
-    price: 10.00,
+    price: 7.00,
     provider_id: 5791,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -182,7 +182,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-views-5k',
     name: '5,000 Vistas Tiktok',
-    price: 25.00,
+    price: 17.50,
     provider_id: 5791,
     provider_quantity: 5000,
     type: 'tiktok',
@@ -194,7 +194,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-views-10k',
     name: '10,000 Vistas Tiktok',
-    price: 40.00,
+    price: 28.00,
     provider_id: 5791,
     provider_quantity: 10000,
     type: 'tiktok',
@@ -204,7 +204,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-views-20k',
     name: '20,000 Vistas Tiktok',
-    price: 60.00,
+    price: 42.00,
     provider_id: 5791,
     provider_quantity: 20000,
     type: 'tiktok',
@@ -214,7 +214,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-views-50k',
     name: '50,000 Vistas Tiktok',
-    price: 100.00,
+    price: 70.00,
     provider_id: 5791,
     provider_quantity: 50000,
     type: 'tiktok',
@@ -224,7 +224,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-views-100k',
     name: '100,000 Vistas Tiktok',
-    price: 150.00,
+    price: 105.00,
     provider_id: 5791,
     provider_quantity: 100000,
     type: 'tiktok',

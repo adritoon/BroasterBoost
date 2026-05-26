@@ -32,7 +32,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-100',
     name: '100 Seguidores TikTok',
-    price: 20.00,
+    price: 10.00,
     provider_id: 2560,
     provider_quantity: 100,
     type: 'tiktok',
@@ -47,7 +47,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-500',
     name: '500 Seguidores TikTok',
-    price: 45.00,
+    price: 23.00,
     provider_id: 2560,
     provider_quantity: 500,
     type: 'tiktok',
@@ -57,7 +57,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-1k',
     name: '1,000 Seguidores TikTok',
-    price: 75.00,
+    price: 38.00,
     provider_id: 2560,
     provider_quantity: 1000,
     type: 'tiktok',
@@ -69,7 +69,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-5k',
     name: '5,000 Seguidores TikTok',
-    price: 245.00,
+    price: 125.00,
     provider_id: 2560,
     provider_quantity: 5000,
     type: 'tiktok',
@@ -79,7 +79,7 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-followers-10k',
     name: '10,000 Seguidores TikTok',
-    price: 445.00,
+    price: 220.00,
     provider_id: 2560,
     provider_quantity: 10000,
     type: 'tiktok',

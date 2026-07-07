@@ -40,3 +40,12 @@ body {
 ::-webkit-scrollbar-thumb:hover {
   background: #475569; /* Slate 600 */
 }
+
+/* Ocultar scrollbar para contenedores con scroll horizontal (ej: tabs móvil) */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

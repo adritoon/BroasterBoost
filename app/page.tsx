@@ -343,7 +343,7 @@ export default function Home() {
       {/* SUB-FILTROS (SERVICIOS) */}
       <section className="container mx-auto px-4 pb-12">
         <div className="flex justify-center">
-          <div className="inline-flex rounded-xl bg-white/5 p-1 border border-white/10">
+          <div className="flex flex-wrap justify-center gap-1 rounded-xl bg-white/5 p-1 border border-white/10">
             {availableServices.map((service) => {
               const isServiceUnavailable = MAINTENANCE_SUBCATEGORIES.some(
                 m => m.type === activeCategory && m.service_type === service

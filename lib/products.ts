@@ -21,6 +21,10 @@ export interface Product {
   guarantee?: string;  // Ej: "🛡️ Garantía: 30 días"
   status?: 'active' | 'maintenance' | 'out_of_stock'; // Estado del producto
   yapeOnly?: boolean;    // Si true, solo permite pago vía Yape QR (sin MercadoPago)
+  isCustomQuantity?: boolean;  // Si true, el cliente elige la cantidad
+  minQuantity?: number;        // Cantidad mínima (ej: 5)
+  maxQuantity?: number;        // Cantidad máxima (ej: 100)
+  requiresComments?: boolean;  // Si true, el cliente debe ingresar texto de comentarios
 }
 export const MAINTENANCE_SUBCATEGORIES: { type: ProductType; service_type: ServiceType }[] = [
 ];
@@ -2991,6 +2995,30 @@ const RAW_PRODUCTS: Product[] = [
     type: 'spotify',
     service_type: 'saves',
     icon: 'saves'
+  },
+
+  // =========================================
+  // YOUTUBE COMENTARIOS PERSONALIZADOS
+  // Costo proveedor: $0.019/5 comentarios = ~S/ 0.015/comentario
+  // Precio venta: escala degresiva (ver getYouTubeCommentPrice)
+  // Solo Yape - proceso manual
+  // =========================================
+  {
+    id: 'yt-comments-custom',
+    name: 'Comentarios YouTube Personalizados',
+    price: 1.00,  // Precio base por comentario (UI lo calcula dinámicamente)
+    provider_id: 0,
+    provider_quantity: 5,
+    type: 'youtube',
+    service_type: 'comments',
+    icon: 'message-circle',
+    yapeOnly: true,
+    isCustomQuantity: true,
+    minQuantity: 5,
+    maxQuantity: 100,
+    requiresComments: true,
+    popular: true,
+    label: '📝 Personalizado'
   }
 ];
 
@@ -3003,6 +3031,21 @@ export const PRODUCTS: Product[] = RAW_PRODUCTS.map(product => {
   }
   return product;
 });
+
+// Escala degresiva de precios para Comentarios YouTube Personalizados
+export function getYouTubeCommentPrice(qty: number): { pricePerUnit: number; total: number } {
+  let pricePerUnit: number;
+  if (qty >= 50) {
+    pricePerUnit = 0.50;
+  } else if (qty >= 25) {
+    pricePerUnit = 0.60;
+  } else if (qty >= 10) {
+    pricePerUnit = 0.80;
+  } else {
+    pricePerUnit = 1.00;
+  }
+  return { pricePerUnit, total: parseFloat((pricePerUnit * qty).toFixed(2)) };
+}
 
 export interface Category {
   id: string;

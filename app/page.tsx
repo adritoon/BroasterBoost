@@ -5,9 +5,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { 
   Instagram, Music, Headphones, Bookmark, Play, Facebook, Youtube, Gamepad2, Heart, Eye, 
-  MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon 
+  MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon,
+  Minus, Plus 
 } from 'lucide-react';
-import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES } from '@/lib/products';
+import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES, getYouTubeCommentPrice } from '@/lib/products';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
@@ -59,6 +60,12 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  // --- ESTADOS PARA COMENTARIOS PERSONALIZADOS ---
+  const [customQuantity, setCustomQuantity] = useState(5);
+  const [customQuantityInput, setCustomQuantityInput] = useState('5');
+  const [customComments, setCustomComments] = useState<string[]>(['', '', '', '', '']);
+  const [manualTotalPrice, setManualTotalPrice] = useState<number | null>(null);
+
   const showError = (msg: string) => {
     setErrorMessage(msg);
     setTimeout(() => setErrorMessage(null), 4000);
@@ -84,6 +91,9 @@ export default function Home() {
     setSelectedProductId(null);
     setPreferenceId(null);
     setTargetLink('');
+    setCustomQuantity(5);
+    setCustomQuantityInput('5');
+    setCustomComments(['', '', '', '', '']);
     const firstService = PRODUCTS.find(p => p.type === cat)?.service_type || 'followers';
     setActiveService(firstService);
   };
@@ -116,6 +126,54 @@ export default function Home() {
     setPreferenceId(null);
     setTargetLink('');
     setIsPublicConfirmed(false);
+    setCustomQuantity(5);
+    setCustomQuantityInput('5');
+    setCustomComments(['', '', '', '', '']);
+  };
+
+  // --- HELPERS PARA CANTIDAD PERSONALIZADA ---
+  const handleQuantityChange = (newQty: number, product: Product) => {
+    const min = product.minQuantity || 5;
+    const max = product.maxQuantity || 100;
+    const clamped = Math.max(min, Math.min(max, newQty));
+    setCustomQuantity(clamped);
+    setCustomQuantityInput(String(clamped));
+    // Ajustar array de comentarios
+    setCustomComments(prev => {
+      if (clamped > prev.length) {
+        return [...prev, ...Array(clamped - prev.length).fill('')];
+      }
+      return prev.slice(0, clamped);
+    });
+  };
+
+  // Permite escribir libremente sin clampear (para poder escribir "10", "50", etc.)
+  const handleQuantityInputChange = (value: string) => {
+    // Solo permitir dígitos
+    const cleaned = value.replace(/\D/g, '');
+    setCustomQuantityInput(cleaned);
+  };
+
+  // Al salir del campo, clampear al rango válido
+  const handleQuantityInputBlur = (product: Product) => {
+    const parsed = parseInt(customQuantityInput);
+    const min = product.minQuantity || 5;
+    const max = product.maxQuantity || 100;
+    if (isNaN(parsed) || parsed < min) {
+      handleQuantityChange(min, product);
+    } else if (parsed > max) {
+      handleQuantityChange(max, product);
+    } else {
+      handleQuantityChange(parsed, product);
+    }
+  };
+
+  const updateComment = (index: number, value: string) => {
+    setCustomComments(prev => {
+      const updated = [...prev];
+      updated[index] = value;
+      return updated;
+    });
   };
 
   // --- LÓGICA MERCADO PAGO ---
@@ -161,6 +219,19 @@ export default function Home() {
     if (!isPublicConfirmed) {
       showError("Por favor, confirma que tu perfil es público y el enlace es correcto marcando la casilla correspondiente.");
       return;
+    }
+    // Validar comentarios si es producto con comentarios personalizados
+    if (product.requiresComments) {
+      const filledComments = customComments.filter(c => c.trim().length > 0);
+      if (filledComments.length < customQuantity) {
+        showError(`Por favor escribe los ${customQuantity} comentarios. Faltan ${customQuantity - filledComments.length}.`);
+        return;
+      }
+      // Guardar el precio calculado para el modal
+      const { total } = getYouTubeCommentPrice(customQuantity);
+      setManualTotalPrice(total);
+    } else {
+      setManualTotalPrice(null);
     }
     setManualProduct(product);
     setShowYapeModal(true);
@@ -318,7 +389,7 @@ export default function Home() {
           </div>
         )}
 
-        <motion.div layout className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <motion.div layout className={cn("grid gap-4", finalProducts.length === 1 ? "max-w-md mx-auto" : "sm:grid-cols-2 lg:grid-cols-3")}>
           <AnimatePresence mode='popLayout'>
             {finalProducts.map((product) => {
               const Icon = iconMap[product.icon] || Users;
@@ -359,7 +430,15 @@ export default function Home() {
                       <Icon className="text-slate-200" size={24} />
                     </div>
                     <div className="text-right">
+                      {product.isCustomQuantity ? (
+                        <>
+                          <span className="text-sm text-slate-400">Desde</span>
+                          <span className="text-2xl font-bold text-white ml-1">S/ {product.price.toFixed(2)}</span>
+                          <span className="text-xs text-slate-400 block">por comentario</span>
+                        </>
+                      ) : (
                         <span className="text-2xl font-bold text-white">S/ {product.price.toFixed(2)}</span>
+                      )}
                     </div>
                   </div>
 
@@ -411,7 +490,9 @@ export default function Home() {
                           <input 
                             type="text" 
                             placeholder={
-                              product.service_type === 'likes' || product.service_type === 'views' 
+                              product.service_type === 'comments'
+                              ? "Pega el link del video de YouTube"
+                              : product.service_type === 'likes' || product.service_type === 'views' 
                               ? "Pega el link del video/foto" 
                               : "Pega el link del perfil"
                             }
@@ -421,6 +502,99 @@ export default function Home() {
                             autoFocus
                           />
                         </div>
+
+                        {/* --- SELECTOR DE CANTIDAD + COMENTARIOS PERSONALIZADOS --- */}
+                        {product.isCustomQuantity && product.requiresComments && (() => {
+                          const { pricePerUnit, total } = getYouTubeCommentPrice(customQuantity);
+                          return (
+                            <div className="space-y-3">
+                              {/* Selector de cantidad */}
+                              <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">Cantidad de comentarios</label>
+                                <div className="flex items-center justify-between gap-3">
+                                  <button
+                                    onClick={() => handleQuantityChange(customQuantity - 1, product)}
+                                    disabled={customQuantity <= (product.minQuantity || 5)}
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-white border border-slate-600 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                  >
+                                    <Minus size={16} />
+                                  </button>
+                                  <input
+                                    type="text"
+                                    inputMode="numeric"
+                                    value={customQuantityInput}
+                                    onChange={(e) => handleQuantityInputChange(e.target.value)}
+                                    onBlur={() => handleQuantityInputBlur(product)}
+                                    onKeyDown={(e) => { if (e.key === 'Enter') handleQuantityInputBlur(product); }}
+                                    className="w-20 text-center rounded-lg bg-slate-800 border border-slate-600 py-1.5 text-lg font-bold text-white focus:border-pink-500 focus:outline-none"
+                                  />
+                                  <button
+                                    onClick={() => handleQuantityChange(customQuantity + 1, product)}
+                                    disabled={customQuantity >= (product.maxQuantity || 100)}
+                                    className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-800 text-white border border-slate-600 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                                  >
+                                    <Plus size={16} />
+                                  </button>
+                                </div>
+
+                                {/* Tabla de precios degresivos — clickeable */}
+                                <div className="mt-3 grid grid-cols-4 gap-1 text-[10px]">
+                                  {[
+                                    { range: '5-9', price: 1.00, min: 5, max: 9 },
+                                    { range: '10-24', price: 0.80, min: 10, max: 24 },
+                                    { range: '25-49', price: 0.60, min: 25, max: 49 },
+                                    { range: '50+', price: 0.50, min: 50, max: 100 },
+                                  ].map(tier => (
+                                    <button
+                                      key={tier.range}
+                                      type="button"
+                                      onClick={() => handleQuantityChange(tier.min, product)}
+                                      className={cn(
+                                        "rounded-md px-1.5 py-1 text-center border transition-all cursor-pointer hover:scale-105 active:scale-95",
+                                        customQuantity >= tier.min && customQuantity <= tier.max
+                                          ? "bg-pink-500/20 border-pink-500/50 text-pink-300"
+                                          : "bg-slate-800/50 border-slate-700/50 text-slate-500 hover:border-slate-600 hover:text-slate-400"
+                                      )}
+                                    >
+                                      <div className="font-bold">{tier.range}</div>
+                                      <div>S/{tier.price.toFixed(2)}/c.u.</div>
+                                    </button>
+                                  ))}
+                                </div>
+
+                                {/* Precio total */}
+                                <div className="mt-3 flex items-baseline justify-between border-t border-slate-700 pt-3">
+                                  <span className="text-xs text-slate-400">{customQuantity} comentarios × S/ {pricePerUnit.toFixed(2)}</span>
+                                  <span className="text-xl font-bold text-white">S/ {total.toFixed(2)}</span>
+                                </div>
+                              </div>
+
+                              {/* Campos individuales de comentarios */}
+                              <div className="bg-slate-900 rounded-xl p-4 border border-slate-700">
+                                <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                                  📝 Escribe tus {customQuantity} comentarios
+                                </label>
+                                <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+                                  {customComments.map((comment, index) => (
+                                    <div key={index} className="flex items-start gap-2">
+                                      <span className="mt-2 text-xs font-bold text-slate-500 w-5 shrink-0 text-right">{index + 1}.</span>
+                                      <input
+                                        type="text"
+                                        placeholder={`Comentario ${index + 1}...`}
+                                        value={comment}
+                                        onChange={(e) => updateComment(index, e.target.value)}
+                                        className="flex-1 rounded-lg bg-slate-800 border border-slate-600 py-2 px-3 text-sm text-white placeholder:text-slate-600 focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 transition-all"
+                                      />
+                                    </div>
+                                  ))}
+                                </div>
+                                <p className="mt-2 text-[10px] text-slate-500">
+                                  {customComments.filter(c => c.trim()).length}/{customQuantity} comentarios escritos
+                                </p>
+                              </div>
+                            </div>
+                          );
+                        })()}
 
                         {/* CHECKBOX CONFIRMACIÓN */}
                         <label className="flex items-start gap-2 mt-2 cursor-pointer group">
@@ -544,14 +718,16 @@ export default function Home() {
 
               <div className="space-y-4">
                 <div className="bg-slate-800 p-3 rounded-lg text-sm text-slate-300 space-y-1">
-                  <p>1. Yapea <strong>S/ {manualProduct.price.toFixed(2)}</strong> al QR.</p>
+                  <p>1. Yapea <strong>S/ {(manualTotalPrice ?? manualProduct.price).toFixed(2)}</strong> al QR.</p>
                   <p>2. Toma una captura de pantalla.</p>
                   <p>3. Envíala a nuestro WhatsApp para activar.</p>
                 </div>
 
                 <a 
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                    `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
+                    manualProduct.requiresComments
+                      ? `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} Comentarios YouTube Personalizados.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}`
+                      : `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

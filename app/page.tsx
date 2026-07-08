@@ -17,7 +17,6 @@ import { SeoContent } from '@/components/SeoContent';
 import { PremiumServices } from '@/components/PremiumServices';
 import { GrowthPackages } from '@/components/GrowthPackages';
 import Image from 'next/image';
-import { track } from '@vercel/analytics';
 
 // --- CONFIGURACIÓN ---
 if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
@@ -783,7 +782,6 @@ export default function Home() {
         href={`https://wa.me/${WHATSAPP_NUMBER}?text=Hola,%20tengo%20una%20consulta%20sobre%20los%20servicios%20de%20SocialBoost.`}
         target="_blank"
         rel="noopener noreferrer"
-        onClick={() => track('Click_WhatsApp')}
         className="fixed bottom-6 right-6 z-50 flex items-center justify-center rounded-full bg-[#25D366] p-3 shadow-[0_4px_14px_0_rgba(37,211,102,0.39)] transition-transform hover:scale-110 active:scale-95"
         aria-label="Contactar por WhatsApp"
       >

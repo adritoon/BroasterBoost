@@ -16,6 +16,7 @@ import { HowItWorks } from '@/components/HowItWorks';
 import { SeoContent } from '@/components/SeoContent';
 import { PremiumServices } from '@/components/PremiumServices';
 import { GrowthPackages } from '@/components/GrowthPackages';
+import { CustomPackBuilder } from '@/components/CustomPackBuilder';
 import Image from 'next/image';
 
 // --- CONFIGURACIÓN ---
@@ -47,7 +48,8 @@ const serviceLabels: Record<ServiceType, string> = {
   plays: 'Plays',
   listeners: 'Oyentes Mensuales',
   saves: 'Guardados',
-  retweets: 'Retweets'
+  retweets: 'Retweets',
+  custom_pack: '🛒 Arma tu Pack'
 };
 
 export default function Home() {
@@ -85,7 +87,12 @@ export default function Home() {
 
   // --- LÓGICA DE FILTROS ---
   const productsByCategory = PRODUCTS.filter(p => p.type === activeCategory);
-  const availableServices = Array.from(new Set(productsByCategory.map(p => p.service_type)));
+  const rawServices = Array.from(new Set(productsByCategory.map(p => p.service_type)));
+  // Agregar pestaña "Arma tu Pack" si hay 2+ tipos de servicio combinables
+  const builderEligible = rawServices.filter(s => !['streaming_chat', 'pkbattle'].includes(s));
+  const availableServices = builderEligible.length >= 2
+    ? [...rawServices, 'custom_pack' as ServiceType]
+    : rawServices;
   const finalProducts = productsByCategory.filter(p => p.service_type === activeService);
 
   const handleCategoryChange = (cat: ProductType) => {
@@ -391,6 +398,9 @@ export default function Home() {
           </div>
         )}
 
+        {activeService === 'custom_pack' ? (
+          <CustomPackBuilder key={activeCategory} activeCategory={activeCategory} />
+        ) : (
         <motion.div layout className={cn("grid gap-4", finalProducts.length === 1 ? "max-w-md mx-auto" : "sm:grid-cols-2 lg:grid-cols-3")}>
           <AnimatePresence mode='popLayout'>
             {finalProducts.map((product) => {
@@ -679,6 +689,7 @@ export default function Home() {
             })}
           </AnimatePresence>
         </motion.div>
+        )}
       </section>
 
       {/* --- SECCIÓN: PAQUETES DE CRECIMIENTO --- */}

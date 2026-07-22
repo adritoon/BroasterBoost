@@ -4,7 +4,7 @@ import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircl
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'twitch' | 'spotify' | 'twitter';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves' | 'retweets';
+export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves' | 'retweets' | 'custom_pack';
 
 export interface Product {
   id: string;             // ID único interno
@@ -3297,6 +3297,11 @@ export function getCustomCommentPrice(qty: number): { pricePerUnit: number; tota
 
 /** @deprecated Use getCustomCommentPrice instead */
 export const getYouTubeCommentPrice = getCustomCommentPrice;
+
+// --- CUSTOM PACK BUILDER ---
+export const CUSTOM_PACK_DISCOUNT = 0.05; // 5% descuento al combinar 2+ servicios
+export const BUILDER_EXCLUDED_SERVICES: ServiceType[] = ['streaming_chat', 'pkbattle', 'custom_pack'];
+export const PROFILE_LINK_SERVICES: ServiceType[] = ['followers', 'streaming', 'listeners'];
 
 export interface Category {
   id: string;

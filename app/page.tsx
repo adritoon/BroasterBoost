@@ -6,7 +6,7 @@ import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
 import { 
   Instagram, Music, Headphones, Bookmark, Play, Facebook, Youtube, Gamepad2, Heart, Eye, 
   MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon,
-  Minus, Plus 
+  Minus, Plus, Repeat 
 } from 'lucide-react';
 import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES, getYouTubeCommentPrice } from '@/lib/products';
 import { cn } from '@/lib/utils';
@@ -28,7 +28,8 @@ const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999'
 const iconMap: Record<string, any> = {
   instagram: Instagram, music: Music, plays: Play, listeners: Headphones, saves: Bookmark, facebook: Facebook, youtube: Youtube,
   'gamepad-2': Gamepad2, heart: Heart, eye: Eye, 'message-circle': MessageCircle,
-  'share-2': Share2, users: Users, sword: Swords, clock: Clock, 'thumbs-up': ThumbsUp
+  'share-2': Share2, users: Users, sword: Swords, clock: Clock, 'thumbs-up': ThumbsUp,
+  repeat: Repeat
 };
 
 const serviceLabels: Record<ServiceType, string> = {
@@ -45,7 +46,8 @@ const serviceLabels: Record<ServiceType, string> = {
   streaming_chat: 'En Vivo + Chat',
   plays: 'Plays',
   listeners: 'Oyentes Mensuales',
-  saves: 'Guardados'
+  saves: 'Guardados',
+  retweets: 'Retweets'
 };
 
 export default function Home() {
@@ -491,7 +493,9 @@ export default function Home() {
                             type="text" 
                             placeholder={
                               product.service_type === 'comments'
-                              ? "Pega el link del video de YouTube"
+                              ? "Pega el link del video/publicación"
+                              : product.service_type === 'retweets'
+                              ? "Pega el link del tweet"
                               : product.service_type === 'likes' || product.service_type === 'views' 
                               ? "Pega el link del video/foto" 
                               : "Pega el link del perfil"
@@ -726,7 +730,7 @@ export default function Home() {
                 <a 
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
                     manualProduct.requiresComments
-                      ? `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} Comentarios YouTube Personalizados.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}`
+                      ? `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}`
                       : `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
                   )}`}
                   target="_blank"
@@ -772,7 +776,7 @@ export default function Home() {
           {/* CORRECCIÓN CONTRASTE: text-slate-600 -> text-slate-500 */}
           <p className="text-xs text-slate-500">
             © 2026 SocialBoost Perú. Todos los derechos reservados. <br/>
-            Este sitio no está afiliado con TikTok, Instagram, Facebook, YouTube ni Twitch.
+            Este sitio no está afiliado con TikTok, Instagram, X/Twitter, Facebook, YouTube ni Twitch.
           </p>
         </div>
       </footer>

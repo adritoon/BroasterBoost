@@ -1,10 +1,10 @@
-import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircle, Share2, Users, Clock, ThumbsUp } from 'lucide-react';
+import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircle, Share2, Users, Clock, ThumbsUp, Repeat, Twitter } from 'lucide-react';
 
 // 1. Definimos las Categorías (Redes)
-export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'twitch' | 'spotify';
+export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'twitch' | 'spotify' | 'twitter';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
-export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves';
+export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves' | 'retweets';
 
 export interface Product {
   id: string;             // ID único interno
@@ -3000,7 +3000,7 @@ const RAW_PRODUCTS: Product[] = [
   // =========================================
   // YOUTUBE COMENTARIOS PERSONALIZADOS
   // Costo proveedor: $0.019/5 comentarios = ~S/ 0.015/comentario
-  // Precio venta: escala degresiva (ver getYouTubeCommentPrice)
+  // Precio venta: escala degresiva (ver getCustomCommentPrice)
   // Solo Yape - proceso manual
   // =========================================
   {
@@ -3010,6 +3010,254 @@ const RAW_PRODUCTS: Product[] = [
     provider_id: 0,
     provider_quantity: 5,
     type: 'youtube',
+    service_type: 'comments',
+    icon: 'message-circle',
+    yapeOnly: true,
+    isCustomQuantity: true,
+    minQuantity: 5,
+    maxQuantity: 100,
+    requiresComments: true,
+    popular: true,
+    label: '📝 Personalizado'
+  },
+
+  // =========================================
+  // TIKTOK COMENTARIOS PERSONALIZADOS
+  // Replica del sistema de YouTube
+  // Solo Yape - proceso manual
+  // =========================================
+  {
+    id: 'tt-comments-custom',
+    name: 'Comentarios TikTok Personalizados',
+    price: 1.00,
+    provider_id: 0,
+    provider_quantity: 5,
+    type: 'tiktok',
+    service_type: 'comments',
+    icon: 'message-circle',
+    yapeOnly: true,
+    isCustomQuantity: true,
+    minQuantity: 5,
+    maxQuantity: 100,
+    requiresComments: true,
+    popular: true,
+    label: '📝 Personalizado'
+  },
+
+  // =========================================
+  // INSTAGRAM COMENTARIOS PERSONALIZADOS
+  // Replica del sistema de YouTube
+  // Solo Yape - proceso manual
+  // =========================================
+  {
+    id: 'ig-comments-custom',
+    name: 'Comentarios Instagram Personalizados',
+    price: 1.00,
+    provider_id: 0,
+    provider_quantity: 5,
+    type: 'instagram',
+    service_type: 'comments',
+    icon: 'message-circle',
+    yapeOnly: true,
+    isCustomQuantity: true,
+    minQuantity: 5,
+    maxQuantity: 100,
+    requiresComments: true,
+    popular: true,
+    label: '📝 Personalizado'
+  },
+
+  // =========================================
+  // X/TWITTER
+  // =========================================
+
+  // =========================================
+  // X/TWITTER SEGUIDORES
+  // Costo proveedor: $0.153/100 = S/ 0.58/100
+  // Provider ID: 8587
+  // =========================================
+  {
+    id: 'tw-followers-100',
+    name: '100 Seguidores X/Twitter',
+    price: 8.00, // Costo: S/ 0.58 → Margen: 93%
+    provider_id: 8587,
+    provider_quantity: 100,
+    type: 'twitter',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'tw-followers-500',
+    name: '500 Seguidores X/Twitter',
+    price: 20.00, // Costo: S/ 2.91 → Margen: 85%
+    provider_id: 8587,
+    provider_quantity: 500,
+    type: 'twitter',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'tw-followers-1k',
+    name: '1,000 Seguidores X/Twitter',
+    price: 35.00, // Costo: S/ 5.81 → Margen: 83%
+    provider_id: 8587,
+    provider_quantity: 1000,
+    type: 'twitter',
+    service_type: 'followers',
+    icon: 'users',
+    popular: true,
+    label: 'Más Vendido'
+  },
+  {
+    id: 'tw-followers-5k',
+    name: '5,000 Seguidores X/Twitter',
+    price: 120.00, // Costo: S/ 29.07 → Margen: 76%
+    provider_id: 8587,
+    provider_quantity: 5000,
+    type: 'twitter',
+    service_type: 'followers',
+    icon: 'users'
+  },
+  {
+    id: 'tw-followers-10k',
+    name: '10,000 Seguidores X/Twitter',
+    price: 200.00, // Costo: S/ 58.14 → Margen: 71%
+    provider_id: 8587,
+    provider_quantity: 10000,
+    type: 'twitter',
+    service_type: 'followers',
+    icon: 'users',
+    label: 'Pack Influencer'
+  },
+
+  // =========================================
+  // X/TWITTER LIKES
+  // Costo proveedor: $0.209/100 = S/ 0.79/100
+  // Provider ID: 9553
+  // =========================================
+  {
+    id: 'tw-likes-100',
+    name: '100 Likes X/Twitter',
+    price: 7.00, // Costo: S/ 0.79 → Margen: 89%
+    provider_id: 9553,
+    provider_quantity: 100,
+    type: 'twitter',
+    service_type: 'likes',
+    icon: 'heart'
+  },
+  {
+    id: 'tw-likes-500',
+    name: '500 Likes X/Twitter',
+    price: 15.00, // Costo: S/ 3.97 → Margen: 74%
+    provider_id: 9553,
+    provider_quantity: 500,
+    type: 'twitter',
+    service_type: 'likes',
+    icon: 'heart'
+  },
+  {
+    id: 'tw-likes-1k',
+    name: '1,000 Likes X/Twitter',
+    price: 20.00, // Costo: S/ 7.94 → Margen: 60%
+    provider_id: 9553,
+    provider_quantity: 1000,
+    type: 'twitter',
+    service_type: 'likes',
+    icon: 'heart',
+    popular: true,
+    label: 'Top Ventas'
+  },
+  {
+    id: 'tw-likes-5k',
+    name: '5,000 Likes X/Twitter',
+    price: 75.00, // Costo: S/ 39.71 → Margen: 47%
+    provider_id: 9553,
+    provider_quantity: 5000,
+    type: 'twitter',
+    service_type: 'likes',
+    icon: 'heart'
+  },
+  {
+    id: 'tw-likes-10k',
+    name: '10,000 Likes X/Twitter',
+    price: 125.00, // Costo: S/ 79.42 → Margen: 37%
+    provider_id: 9553,
+    provider_quantity: 10000,
+    type: 'twitter',
+    service_type: 'likes',
+    icon: 'heart'
+  },
+
+  // =========================================
+  // X/TWITTER RETWEETS
+  // Costo proveedor: $0.289/100 = S/ 1.10/100
+  // Provider ID: 3308
+  // =========================================
+  {
+    id: 'tw-retweets-100',
+    name: '100 Retweets X/Twitter',
+    price: 8.00, // Costo: S/ 1.10 → Margen: 86%
+    provider_id: 3308,
+    provider_quantity: 100,
+    type: 'twitter',
+    service_type: 'retweets',
+    icon: 'repeat'
+  },
+  {
+    id: 'tw-retweets-500',
+    name: '500 Retweets X/Twitter',
+    price: 18.00, // Costo: S/ 5.49 → Margen: 69%
+    provider_id: 3308,
+    provider_quantity: 500,
+    type: 'twitter',
+    service_type: 'retweets',
+    icon: 'repeat'
+  },
+  {
+    id: 'tw-retweets-1k',
+    name: '1,000 Retweets X/Twitter',
+    price: 25.00, // Costo: S/ 10.98 → Margen: 56%
+    provider_id: 3308,
+    provider_quantity: 1000,
+    type: 'twitter',
+    service_type: 'retweets',
+    icon: 'repeat',
+    popular: true,
+    label: 'Más Vendido'
+  },
+  {
+    id: 'tw-retweets-5k',
+    name: '5,000 Retweets X/Twitter',
+    price: 90.00, // Costo: S/ 54.91 → Margen: 39%
+    provider_id: 3308,
+    provider_quantity: 5000,
+    type: 'twitter',
+    service_type: 'retweets',
+    icon: 'repeat'
+  },
+  {
+    id: 'tw-retweets-10k',
+    name: '10,000 Retweets X/Twitter',
+    price: 160.00, // Costo: S/ 109.82 → Margen: 31%
+    provider_id: 3308,
+    provider_quantity: 10000,
+    type: 'twitter',
+    service_type: 'retweets',
+    icon: 'repeat'
+  },
+
+  // =========================================
+  // X/TWITTER COMENTARIOS PERSONALIZADOS
+  // Replica del sistema de YouTube
+  // Solo Yape - proceso manual
+  // =========================================
+  {
+    id: 'tw-comments-custom',
+    name: 'Comentarios X/Twitter Personalizados',
+    price: 1.00,
+    provider_id: 0,
+    provider_quantity: 5,
+    type: 'twitter',
     service_type: 'comments',
     icon: 'message-circle',
     yapeOnly: true,
@@ -3032,8 +3280,8 @@ export const PRODUCTS: Product[] = RAW_PRODUCTS.map(product => {
   return product;
 });
 
-// Escala degresiva de precios para Comentarios YouTube Personalizados
-export function getYouTubeCommentPrice(qty: number): { pricePerUnit: number; total: number } {
+// Escala degresiva de precios para Comentarios Personalizados (YouTube, TikTok, Instagram, X/Twitter)
+export function getCustomCommentPrice(qty: number): { pricePerUnit: number; total: number } {
   let pricePerUnit: number;
   if (qty >= 50) {
     pricePerUnit = 0.50;
@@ -3047,6 +3295,9 @@ export function getYouTubeCommentPrice(qty: number): { pricePerUnit: number; tot
   return { pricePerUnit, total: parseFloat((pricePerUnit * qty).toFixed(2)) };
 }
 
+/** @deprecated Use getCustomCommentPrice instead */
+export const getYouTubeCommentPrice = getCustomCommentPrice;
+
 export interface Category {
   id: string;
   label: string;
@@ -3057,6 +3308,7 @@ export interface Category {
 export const CATEGORIES: Category[] = [
   { id: 'tiktok', label: 'TikTok', status: 'active', color: 'from-black to-gray-800' },
   { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
+  { id: 'twitter', label: 'X/Twitter', color: 'from-sky-400 to-blue-600' },
   { id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
   { id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
   { id: 'spotify', label: 'Spotify', color: 'from-green-500 to-green-700' },

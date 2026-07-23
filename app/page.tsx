@@ -17,6 +17,7 @@ import { SeoContent } from '@/components/SeoContent';
 import { PremiumServices } from '@/components/PremiumServices';
 import { GrowthPackages } from '@/components/GrowthPackages';
 import { CustomPackBuilder } from '@/components/CustomPackBuilder';
+import { CustomQuantityCard } from '@/components/CustomQuantityCard';
 import Image from 'next/image';
 
 // --- CONFIGURACIÓN ---
@@ -401,7 +402,8 @@ export default function Home() {
         {activeService === 'custom_pack' ? (
           <CustomPackBuilder key={activeCategory} activeCategory={activeCategory} />
         ) : (
-        <motion.div layout className={cn("grid gap-4", finalProducts.length === 1 ? "max-w-md mx-auto" : "sm:grid-cols-2 lg:grid-cols-3")}>
+          <>
+            <motion.div layout className={cn("grid gap-4", finalProducts.length === 1 ? "max-w-md mx-auto" : "sm:grid-cols-2 lg:grid-cols-3")}>
           <AnimatePresence mode='popLayout'>
             {finalProducts.map((product) => {
               const Icon = iconMap[product.icon] || Users;
@@ -689,6 +691,12 @@ export default function Home() {
             })}
           </AnimatePresence>
         </motion.div>
+
+            {/* Tarjeta de cantidad exacta — fuera del grid para evitar overflow */}
+            <div className="mt-4">
+              <CustomQuantityCard activeCategory={activeCategory} activeService={activeService} />
+            </div>
+          </>
         )}
       </section>
 

@@ -10,7 +10,7 @@ import { Product } from '@/lib/products';
 // =============================================
 
 type PackagePlatform = 'tiktok' | 'instagram' | 'youtube' | 'facebook' | 'multi';
-type PackageTier = 'starter' | 'growth' | 'premium';
+type PackageTier = 'starter' | 'growth' | 'premium' | 'multi';
 
 interface GrowthPackage {
   id: string;

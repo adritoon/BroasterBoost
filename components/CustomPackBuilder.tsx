@@ -4,7 +4,7 @@ import { useState, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, Heart, Eye, MessageCircle, Repeat, ThumbsUp, Clock,
-  Package, Link as LinkIcon, Minus, Plus, X,
+  Package, Link as LinkIcon, Minus, Plus, X, ChevronDown,
   Headphones, Bookmark, Play, Share2
 } from 'lucide-react';
 import {
@@ -87,6 +87,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   const [isPublicConfirmed, setIsPublicConfirmed] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
@@ -258,16 +259,16 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   return (
     <div className="space-y-6">
       {/* ---- HEADER ---- */}
-      <div className="rounded-2xl bg-gradient-to-br from-pink-500/10 via-purple-500/5 to-transparent border border-pink-500/20 p-5 sm:p-6">
-        <div className="flex items-center gap-3">
-          <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-pink-500 to-purple-600 shadow-lg shadow-pink-500/20">
-            <Package className="text-white" size={22} />
+      <div className="bg-[#111] border-2 border-[#333] p-5 sm:p-6">
+        <div className="flex items-center gap-4">
+          <div className="flex h-12 w-12 items-center justify-center bg-[#ccff00] shadow-[4px_4px_0px_white]">
+            <Package className="text-black" size={24} strokeWidth={3} />
           </div>
           <div>
-            <h3 className="text-lg font-bold text-white">Arma tu Pack {platform.name}</h3>
-            <p className="text-sm text-slate-400">
+            <h3 className="text-xl font-black text-white uppercase tracking-wider">Arma tu Pack {platform.name}</h3>
+            <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest mt-1">
               Combina servicios y obtén{' '}
-              <span className="text-pink-400 font-semibold">5% de descuento</span>
+              <span className="text-[#ccff00]">5% de descuento</span>
             </p>
           </div>
         </div>
@@ -285,41 +286,75 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
           return (
             <div
               key={serviceType}
-              className={cn(
-                'flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 rounded-xl p-3 sm:p-4 border transition-all',
-                selectedId
-                  ? 'bg-pink-500/5 border-pink-500/20'
-                  : 'bg-white/5 border-white/10 hover:border-white/20'
-              )}
+              className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 transition-colors border-2 bg-[#111] ${
+                  selectedId 
+                  ? 'border-[#ccff00]' 
+                  : 'border-[#333] hover:border-[#555]'
+                }`}
             >
               <div className="flex items-center gap-3 flex-1 min-w-0">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-800">
-                  <Icon className="text-slate-300" size={18} />
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-[#222] border-2 border-[#333]">
+                  <Icon className="text-zinc-400" size={18} />
                 </div>
-                <span className="text-sm font-medium text-white">{label}</span>
+                <span className="text-sm font-black text-white uppercase tracking-widest">{label}</span>
               </div>
 
-              <div className="flex items-center gap-2 sm:gap-3">
-                <select
-                  value={selectedId || ''}
-                  onChange={e => handleSelectProduct(serviceType, e.target.value)}
-                  className="flex-1 sm:w-[220px] rounded-lg bg-slate-800 border border-slate-600 py-2 px-3 text-sm text-white appearance-none cursor-pointer focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500 truncate"
+              <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto relative">
+                <button
+                  onClick={() => setOpenDropdown(openDropdown === serviceType ? null : serviceType)}
+                  className="flex-1 sm:w-[220px] bg-[#050505] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white focus:border-[#ccff00] focus:outline-none flex justify-between items-center"
                 >
-                  <option value="">No incluir</option>
-                  {products.map(p => (
-                    <option key={p.id} value={p.id}>
-                      {cleanProductName(p.name)} — S/ {p.price.toFixed(2)}
-                    </option>
-                  ))}
-                </select>
-                <span
-                  className={cn(
-                    'w-[85px] text-right text-sm font-bold shrink-0',
-                    selectedId ? 'text-pink-400' : 'text-slate-600'
+                  <span className="truncate">
+                    {selectedProduct ? `${cleanProductName(selectedProduct.name)} — S/ ${selectedProduct.price.toFixed(2)}` : 'No incluir'}
+                  </span>
+                  <ChevronDown size={16} className={`shrink-0 transition-transform ${openDropdown === serviceType ? 'rotate-180 text-[#ccff00]' : 'text-zinc-500'}`} />
+                </button>
+
+                <AnimatePresence>
+                  {openDropdown === serviceType && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -5 }}
+                      className="absolute top-[110%] left-0 right-0 sm:right-auto sm:w-[220px] bg-[#050505] border-2 border-[#333] z-50 max-h-60 overflow-y-auto custom-scrollbar shadow-[4px_4px_0px_#ccff00]"
+                    >
+                      <button
+                        onClick={() => {
+                          handleSelectProduct(serviceType, '');
+                          setOpenDropdown(null);
+                        }}
+                        className={`w-full text-left px-3 py-2.5 text-sm font-bold hover:bg-[#222] transition-colors ${!selectedId ? 'text-[#ccff00] bg-[#111]' : 'text-zinc-400'}`}
+                      >
+                        No incluir
+                      </button>
+                      {products.map(p => (
+                        <button
+                          key={p.id}
+                          onClick={() => {
+                            handleSelectProduct(serviceType, p.id);
+                            setOpenDropdown(null);
+                          }}
+                          className={`w-full text-left px-3 py-2.5 text-sm font-bold hover:bg-[#222] transition-colors truncate ${selectedId === p.id ? 'text-[#ccff00] bg-[#111]' : 'text-white'}`}
+                        >
+                          {cleanProductName(p.name)} — S/ {p.price.toFixed(2)}
+                        </button>
+                      ))}
+                    </motion.div>
                   )}
-                >
-                  {selectedProduct ? `S/ ${selectedProduct.price.toFixed(2)}` : '—'}
-                </span>
+                </AnimatePresence>
+
+                {openDropdown && (
+                  <div 
+                    className="fixed inset-0 z-40" 
+                    onClick={() => setOpenDropdown(null)} 
+                  />
+                )}
+                
+                <div className={`text-xs font-bold uppercase tracking-widest shrink-0 ${
+                    selectedId ? 'text-[#ccff00]' : 'text-zinc-500'
+                  }`}>
+                    {selectedProduct ? `S/ ${selectedProduct.price.toFixed(2)}` : 'S/ 0.00'}
+                  </div>
               </div>
             </div>
           );
@@ -328,24 +363,23 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
         {/* ---- COMENTARIOS (TOGGLE + EXPANDIBLE) ---- */}
         {hasComments && (
           <div
-            className={cn(
-              'rounded-xl border transition-all overflow-hidden',
+            className={`rounded-xl border-2 transition-all overflow-hidden bg-[#111] ${
               includeComments
-                ? 'bg-pink-500/5 border-pink-500/20'
-                : 'bg-white/5 border-white/10 hover:border-white/20'
-            )}
+                ? 'border-[#ccff00]'
+                : 'border-[#333]'
+            }`}
           >
             {/* Toggle */}
             <div className="flex items-center gap-3 p-3 sm:p-4">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-slate-800">
-                <MessageCircle className="text-slate-300" size={18} />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-[#222] border-2 border-[#333]">
+                <MessageCircle className="text-zinc-400" size={18} />
               </div>
-              <span className="text-sm font-medium text-white flex-1">Comentarios Personalizados</span>
+              <span className="text-sm font-black text-white uppercase tracking-widest flex-1">Comentarios Personalizados</span>
               <button
                 onClick={() => setIncludeComments(!includeComments)}
                 className={cn(
                   'relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors duration-200',
-                  includeComments ? 'bg-pink-500' : 'bg-slate-700'
+                  includeComments ? 'bg-[#ccff00]' : 'bg-slate-700'
                 )}
               >
                 <span
@@ -355,14 +389,11 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                   )}
                 />
               </button>
-              <span
-                className={cn(
-                  'w-[85px] text-right text-sm font-bold shrink-0',
-                  includeComments ? 'text-pink-400' : 'text-slate-600'
-                )}
-              >
-                {includeComments ? `S/ ${commentTotal.toFixed(2)}` : '—'}
-              </span>
+              <div className={`text-xs font-bold uppercase tracking-widest ${
+                  includeComments ? 'text-[#ccff00]' : 'text-zinc-500'
+                }`}>
+                  {includeComments ? `S/ ${commentTotal.toFixed(2)}` : 'S/ 0.00'}
+                </div>
             </div>
 
             {/* Expandible: cantidad + campos */}
@@ -377,17 +408,17 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                 >
                   <div className="px-3 sm:px-4 pb-4 space-y-3">
                     {/* Selector de cantidad */}
-                    <div className="bg-slate-900 rounded-lg p-3 border border-slate-700">
-                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                    <div className="bg-[#050505] p-4 border-2 border-[#333]">
+                      <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
                         Cantidad de comentarios
                       </label>
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-2">
                         <button
                           onClick={() => handleCommentQtyChange(commentQuantity - 1)}
                           disabled={commentQuantity <= 5}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-white border border-slate-600 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                          className="flex h-12 w-12 items-center justify-center bg-[#222] text-white border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
                         >
-                          <Minus size={14} />
+                          <Minus size={16} />
                         </button>
                         <input
                           type="text"
@@ -396,19 +427,15 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                           onChange={e => setCommentQuantityInput(e.target.value.replace(/\D/g, ''))}
                           onBlur={handleCommentInputBlur}
                           onKeyDown={e => { if (e.key === 'Enter') handleCommentInputBlur(); }}
-                          className="w-16 text-center rounded-lg bg-slate-800 border border-slate-600 py-1 text-sm font-bold text-white focus:border-pink-500 focus:outline-none"
+                          className="flex-1 min-w-0 text-center bg-[#050505] border-2 border-[#333] py-2.5 text-xl font-black text-white focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00]"
                         />
                         <button
                           onClick={() => handleCommentQtyChange(commentQuantity + 1)}
                           disabled={commentQuantity >= 100}
-                          className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-800 text-white border border-slate-600 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                          className="flex h-12 w-12 items-center justify-center bg-[#222] text-white border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
                         >
-                          <Plus size={14} />
+                          <Plus size={16} />
                         </button>
-                        <span className="text-xs text-slate-400 ml-auto">
-                          {commentQuantity} × S/ {commentPPU.toFixed(2)} ={' '}
-                          <span className="text-white font-bold">S/ {commentTotal.toFixed(2)}</span>
-                        </span>
                       </div>
 
                       {/* Tiers de precio */}
@@ -423,23 +450,29 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                             key={tier.range}
                             type="button"
                             onClick={() => handleCommentQtyChange(tier.min)}
-                            className={cn(
-                              'rounded-md px-1.5 py-1 text-center border transition-all cursor-pointer hover:scale-105 active:scale-95',
-                              commentQuantity >= tier.min && commentQuantity <= tier.max
-                                ? 'bg-pink-500/20 border-pink-500/50 text-pink-300'
-                                : 'bg-slate-800/50 border-slate-700/50 text-slate-500 hover:border-slate-600'
-                            )}
+                              className={cn(
+                                'px-2 py-1 text-center border-2 transition-all cursor-pointer hover:-translate-y-0.5 active:translate-y-0',
+                                commentQuantity >= tier.min && commentQuantity <= tier.max
+                                  ? 'bg-[#ccff00] border-[#ccff00] text-black shadow-[2px_2px_0px_white]'
+                                  : 'bg-[#222] border-[#333] text-zinc-500 hover:text-white hover:border-zinc-500'
+                              )}
                           >
                             <div className="font-bold">{tier.range}</div>
                             <div>S/{tier.price.toFixed(2)}/c.u.</div>
                           </button>
                         ))}
                       </div>
+
+                      {/* Precio total */}
+                      <div className="mt-3 flex items-baseline justify-between border-t-2 border-[#333] pt-3">
+                        <span className="text-xs text-slate-400">{commentQuantity} comentarios × S/ {commentPPU.toFixed(2)}</span>
+                        <span className="text-xl font-bold text-white">S/ {commentTotal.toFixed(2)}</span>
+                      </div>
                     </div>
 
                     {/* Campos de texto */}
-                    <div className="bg-slate-900 rounded-lg p-3 border border-slate-700">
-                      <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-2 block">
+                    <div className="bg-[#050505] p-4 border-2 border-[#333]">
+                      <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
                         📝 Escribe tus {commentQuantity} comentarios
                       </label>
                       <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
@@ -457,7 +490,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                                 updated[i] = e.target.value;
                                 setCommentTexts(updated);
                               }}
-                              className="flex-1 rounded-lg bg-slate-800 border border-slate-600 py-1.5 px-2.5 text-sm text-white placeholder:text-slate-600 focus:border-pink-500 focus:outline-none transition-all"
+                              className="flex-1 bg-[#111] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00] transition-colors"
                             />
                           </div>
                         ))}
@@ -489,7 +522,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                 placeholder={platform.profileLabel}
                 value={profileLink}
                 onChange={e => setProfileLink(e.target.value)}
-                className="w-full rounded-lg bg-slate-950 border border-slate-700 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                className="w-full bg-[#111] border-2 border-[#333] py-3 pl-10 pr-4 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00]"
               />
             </div>
           )}
@@ -501,25 +534,25 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                 placeholder={platform.postLabel}
                 value={postLink}
                 onChange={e => setPostLink(e.target.value)}
-                className="w-full rounded-lg bg-slate-950 border border-slate-700 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-pink-500 focus:outline-none focus:ring-1 focus:ring-pink-500"
+                className="w-full bg-[#111] border-2 border-[#333] py-3 pl-10 pr-4 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00]"
               />
             </div>
           )}
 
-          <label className="flex items-start gap-2 cursor-pointer group">
-            <div className="relative flex items-center justify-center mt-0.5">
+          <label className="flex items-center gap-3 cursor-pointer group">
+            <div className="relative flex items-center justify-center shrink-0">
               <input
                 type="checkbox"
                 checked={isPublicConfirmed}
                 onChange={e => setIsPublicConfirmed(e.target.checked)}
-                className="peer h-4 w-4 shrink-0 appearance-none rounded border border-slate-600 bg-slate-900 checked:border-pink-500 checked:bg-pink-500 focus:outline-none focus:ring-2 focus:ring-pink-500/30 transition-all"
+                className="peer h-5 w-5 shrink-0 appearance-none border-2 border-[#333] bg-[#111] checked:border-[#ccff00] checked:bg-[#ccff00] focus:outline-none transition-all"
               />
               <svg
-                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
+                className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-black opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none"
                 viewBox="0 0 24 24"
                 fill="none"
                 stroke="currentColor"
-                strokeWidth="3"
+                strokeWidth="4"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               >
@@ -539,45 +572,45 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          className="rounded-xl bg-slate-900/80 border border-slate-700 p-4 space-y-3 backdrop-blur-sm"
+          className="bg-[#050505] border-2 border-[#333] p-5 space-y-4"
         >
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {selectedItems.map((item, i) => (
               <div key={i} className="flex justify-between text-sm">
-                <span className="text-slate-400 truncate mr-2">{item.name}</span>
-                <span className="text-white font-medium shrink-0">S/ {item.price.toFixed(2)}</span>
+                <span className="text-zinc-500 font-bold uppercase tracking-widest truncate mr-2">{item.name}</span>
+                <span className="text-white font-black shrink-0">S/ {item.price.toFixed(2)}</span>
               </div>
             ))}
           </div>
 
-          <div className="border-t border-slate-700 pt-3 space-y-1.5">
+          <div className="border-t-2 border-[#333] pt-4 space-y-2">
             <div className="flex justify-between text-sm">
-              <span className="text-slate-400">Subtotal</span>
-              <span className="text-white">S/ {subtotal.toFixed(2)}</span>
+              <span className="text-zinc-500 font-bold uppercase tracking-widest">Subtotal</span>
+              <span className="text-white font-black">S/ {subtotal.toFixed(2)}</span>
             </div>
             {discount > 0 && (
-              <div className="flex justify-between text-sm">
-                <span className="text-emerald-400 flex items-center gap-1">🏷️ Descuento Pack (-5%)</span>
-                <span className="text-emerald-400 font-medium">-S/ {discount.toFixed(2)}</span>
+              <div className="flex justify-between text-[#ccff00] border-t-2 border-[#333] pt-2 mt-2 font-black uppercase tracking-widest text-xs">
+                <span className="text-[#ccff00] flex items-center gap-1">🏷️ Descuento Pack (-5%)</span>
+                <span className="text-[#ccff00] font-black">-S/ {discount.toFixed(2)}</span>
               </div>
             )}
-            <div className="flex justify-between items-baseline pt-1">
-              <span className="text-base font-bold text-white">Total a pagar</span>
-              <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-400">
+            <div className="flex justify-between items-baseline pt-2">
+              <span className="text-sm font-black text-zinc-500 uppercase tracking-widest">Total a pagar</span>
+              <span className="text-4xl font-black text-[#ccff00] tracking-tighter">
                 S/ {total.toFixed(2)}
               </span>
             </div>
           </div>
 
           {selectedCount < 2 && (
-            <p className="text-xs text-amber-400/80 text-center">
+            <p className="text-[10px] text-zinc-500 uppercase tracking-widest font-black text-center mt-2">
               💡 Agrega otro servicio para activar el 5% de descuento
             </p>
           )}
 
           <button
             onClick={handleCheckout}
-            className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#752384] text-white font-bold py-3 hover:bg-[#8e2aa0] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-purple-900/30"
+            className="w-full flex items-center justify-center gap-2 bg-[#752384] text-white font-black py-4 hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest transition-transform text-sm shadow-[4px_4px_0px_white]"
           >
             <MessageCircle size={18} />
             Yapear Directo (QR)
@@ -607,21 +640,21 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-700 p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
+              className="w-full max-w-md border-2 border-[#333] bg-[#111] p-6 shadow-2xl relative max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-white">🛒 Pack Personalizado</h3>
+                <h3 className="text-xl font-bold text-white uppercase tracking-widest">🛒 Pack Personalizado</h3>
                 <button
                   onClick={() => setShowCheckout(false)}
-                  className="text-slate-400 hover:text-white bg-white/5 rounded-full p-1"
+                  className="text-slate-400 hover:text-white bg-[#222] p-1"
                   aria-label="Cerrar ventana modal"
                 >
                   <X size={18} />
                 </button>
               </div>
 
-              {/* Resumen del pack */}
-              <div className="bg-slate-800 rounded-lg p-3 mb-4 space-y-1.5 text-sm">
+              {/* INFO DEL PACK (MODAL) */}
+              <div className="bg-[#050505] border-2 border-[#333] p-4 mb-4 space-y-2 text-sm font-bold text-zinc-500 uppercase tracking-widest">
                 {selectedItems.map((item, i) => (
                   <div key={i} className="flex justify-between">
                     <span className="text-slate-300 truncate mr-2">• {item.name}</span>
@@ -629,26 +662,26 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                   </div>
                 ))}
                 {discount > 0 && (
-                  <div className="flex justify-between text-emerald-400 border-t border-slate-700 pt-1.5 mt-1.5">
+                  <div className="flex justify-between text-[#ccff00] border-t-2 border-[#333] pt-2 mt-2">
                     <span>🏷️ Descuento (-5%)</span>
                     <span>-S/ {discount.toFixed(2)}</span>
                   </div>
                 )}
-                <div className="flex justify-between font-bold text-base border-t border-slate-700 pt-1.5 mt-1.5">
+                <div className="flex justify-between font-bold text-base border-t-2 border-[#333] pt-2 mt-2">
                   <span className="text-white">Total</span>
-                  <span className="text-pink-400">S/ {total.toFixed(2)}</span>
+                  <span className="text-[#ccff00] font-black tracking-widest">S/ {total.toFixed(2)}</span>
                 </div>
               </div>
 
               {/* QR */}
-              <div className="bg-[#752384] p-4 rounded-xl mb-5 flex flex-col items-center">
+              <div className="bg-[#752384] p-4 mb-5 flex flex-col items-center">
                 <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
-                <p className="mt-3 text-white font-bold text-lg tracking-wide">Titular: Robert Sal*</p>
+                <p className="mt-3 text-white font-bold text-lg tracking-wide uppercase tracking-widest">Titular: Robert Sal*</p>
               </div>
 
               {/* Instrucciones */}
               <div className="space-y-4">
-                <div className="bg-slate-800 p-3 rounded-lg text-sm text-slate-300 space-y-1">
+                <div className="bg-[#050505] p-4 border-2 border-[#333] text-sm text-zinc-400 space-y-1 font-bold">
                   <p>
                     1. Yapea <strong>S/ {total.toFixed(2)}</strong> al QR.
                   </p>
@@ -660,7 +693,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#25D366] text-white font-bold py-3 hover:bg-[#20bd5a] transition-all"
+                  className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-black font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
                 >
                   <MessageCircle size={20} />
                   Enviar Comprobante
@@ -682,9 +715,9 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
             initial={{ opacity: 0, y: -50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 rounded-2xl bg-red-500/90 p-4 text-white shadow-2xl backdrop-blur-md border border-red-400"
+            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 bg-[#ff0000] p-4 text-white shadow-[8px_8px_0px_black] border-2 border-black uppercase font-black tracking-widest"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-black/20 border-2 border-black">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />

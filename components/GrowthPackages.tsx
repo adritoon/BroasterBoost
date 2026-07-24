@@ -245,28 +245,33 @@ const PACKAGES: GrowthPackage[] = [
 ];
 
 const PLATFORM_TABS: { id: PackagePlatform; label: string; color: string }[] = [
-  { id: 'tiktok', label: 'TikTok', color: 'from-black to-gray-700' },
-  { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
-  { id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
-  { id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
-  { id: 'multi', label: '🌐 Multi', color: 'from-indigo-500 to-purple-600' },
+  { id: 'tiktok', label: 'TikTok', color: 'bg-black text-white' },
+  { id: 'instagram', label: 'Instagram', color: 'bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white' },
+  { id: 'youtube', label: 'YouTube', color: 'bg-red-600 text-white' },
+  { id: 'facebook', label: 'Facebook', color: 'bg-blue-600 text-white' },
+  { id: 'multi', label: '🌐 Multi', color: 'bg-[#ccff00] text-black border-2 border-black' },
 ];
 
 const TIER_CONFIG: Record<PackageTier, { icon: any; gradient: string; border: string }> = {
   starter: {
     icon: Sprout,
-    gradient: 'from-emerald-500/20 to-teal-500/10',
-    border: 'border-emerald-500/30',
+    gradient: 'bg-[#111]',
+    border: 'border-[#333]',
   },
   growth: {
     icon: Rocket,
-    gradient: 'from-blue-500/20 to-purple-500/10',
-    border: 'border-blue-500/30',
+    gradient: 'bg-[#111]',
+    border: 'border-[#333]',
   },
   premium: {
     icon: Crown,
-    gradient: 'from-amber-500/20 to-orange-500/10',
-    border: 'border-amber-500/30',
+    gradient: 'bg-[#111]',
+    border: 'border-[#ccff00]',
+  },
+  multi: {
+    icon: Rocket,
+    gradient: 'bg-[#111]',
+    border: 'border-[#ccff00]',
   },
 };
 
@@ -313,52 +318,27 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
   };
 
   return (
-    <section className="relative py-20 overflow-hidden" id="paquetes">
-      {/* Background decoration */}
-      <div className="absolute inset-0 bg-gradient-to-b from-slate-950 via-slate-900/50 to-slate-950 pointer-events-none" />
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-purple-500/5 rounded-full blur-[120px] pointer-events-none" />
-
-      <div className="container mx-auto max-w-6xl px-4 relative">
-        {/* Header */}
-        <div className="text-center mb-12">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center gap-2 rounded-full bg-purple-500/10 border border-purple-500/20 px-4 py-1.5 mb-4"
-          >
-            <Package size={14} className="text-purple-400" />
-            <span className="text-xs font-bold text-purple-400 uppercase tracking-widest">
-              Paquetes para Creadores
+    <section className="relative py-24 overflow-hidden" id="paquetes">
+      <div className="container mx-auto max-w-6xl px-4 relative z-10">
+        {/* Header - Brutalist style */}
+        <div className="text-center mb-16">
+          <div className="inline-block border-2 border-[#333] px-4 py-1.5 mb-6">
+            <span className="text-xs font-black text-zinc-400 uppercase tracking-[0.2em]">
+              Paquetes Todo-en-Uno
             </span>
-          </motion.div>
+          </div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-4xl font-extrabold text-white mb-3"
-          >
-            Paquetes de{' '}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-pink-500">
-              Crecimiento
-            </span>
-          </motion.h2>
+          <h2 className="text-4xl sm:text-5xl font-black text-white mb-6 uppercase tracking-tight">
+            Crecimiento <span className="text-[#ccff00]">Acelerado</span>
+          </h2>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-slate-400 max-w-lg mx-auto text-sm sm:text-base"
-          >
-            Todo en un solo pago. Envíanos el link de la publicación que quieras boostear y lo activamos.
-          </motion.p>
+          <p className="text-zinc-400 max-w-lg mx-auto text-sm sm:text-base font-medium">
+            Un solo pago. Resultados reales. Envíanos tu link y nosotros hacemos el resto.
+          </p>
         </div>
 
-        {/* Platform Tabs */}
-        <div className="flex flex-wrap justify-center gap-2 mb-10">
+        {/* Platform Tabs - Solid blocks */}
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
           {PLATFORM_TABS.map((tab) => (
             <button
               key={tab.id}
@@ -366,20 +346,13 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
                 setActivePlatform(tab.id);
                 setExpandedPackage(null);
               }}
-              className={`relative rounded-full px-5 py-2 text-sm font-medium transition-all ${
+              className={`relative px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors border-2 ${
                 activePlatform === tab.id
-                  ? 'text-white'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5'
+                  ? 'border-[#ccff00] bg-[#ccff00] text-black'
+                  : 'border-[#333] bg-[#111] text-zinc-500 hover:text-white hover:border-zinc-500'
               }`}
             >
-              {activePlatform === tab.id && (
-                <motion.div
-                  layoutId="activePackTab"
-                  className={`absolute inset-0 z-0 rounded-full bg-gradient-to-r ${tab.color}`}
-                  transition={{ type: 'spring', bounce: 0.2, duration: 0.5 }}
-                />
-              )}
-              <span className="relative z-10">{tab.label}</span>
+              <span>{tab.label}</span>
             </button>
           ))}
         </div>
@@ -399,8 +372,6 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
             }`}
           >
             {filteredPackages.map((pkg, index) => {
-              const tierConfig = TIER_CONFIG[pkg.tier];
-              const TierIcon = tierConfig.icon;
               const isExpanded = expandedPackage === pkg.id;
 
               return (
@@ -409,36 +380,30 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
                   initial={{ opacity: 0, y: 30 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className={`relative group rounded-2xl border bg-gradient-to-br ${tierConfig.gradient} backdrop-blur-sm p-6 transition-all duration-300 ${
+                  className={`relative group bg-[#0a0a0a] border-2 p-8 transition-colors ${
                     pkg.highlight
-                      ? `${tierConfig.border} ring-1 ring-purple-500/20 shadow-lg shadow-purple-500/5`
-                      : 'border-white/10 hover:border-white/20'
+                      ? 'border-[#ccff00]'
+                      : 'border-[#222] hover:border-[#444]'
                   }`}
                 >
-                  {/* Highlight badge */}
+                  {/* Highlight badge - Solid block */}
                   {pkg.highlight && (
-                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10">
-                      <div className="flex items-center gap-1 rounded-full bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1 text-[10px] font-bold text-white uppercase tracking-wider shadow-lg">
-                        <Sparkles size={10} />
-                        Más Popular
-                      </div>
+                    <div className="absolute -top-3 left-1/2 -translate-x-1/2 z-10 bg-[#ccff00] px-4 py-1">
+                      <span className="text-[10px] font-black text-black uppercase tracking-widest">
+                        Recomendado
+                      </span>
                     </div>
                   )}
 
-                  {/* Tier icon + name */}
-                  <div className="flex items-start justify-between mb-4">
+                  {/* Tier + name */}
+                  <div className="flex items-start justify-between mb-6">
                     <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <div className={`flex h-8 w-8 items-center justify-center rounded-lg bg-white/10`}>
-                          <TierIcon size={16} className="text-white" />
-                        </div>
-                        <div>
-                          <span className="text-[10px] font-bold uppercase tracking-widest text-slate-500">
-                            {pkg.tier === 'starter' ? 'Despegue' : pkg.tier === 'growth' ? 'Crecimiento' : 'Premium'}
-                          </span>
-                        </div>
+                      <div className="mb-2">
+                        <span className="text-[10px] font-black uppercase tracking-[0.2em] text-zinc-500">
+                          {pkg.tier === 'starter' ? 'Nivel 1' : pkg.tier === 'growth' ? 'Nivel 2' : 'Nivel 3'}
+                        </span>
                       </div>
-                      <h3 className="text-lg font-bold text-white">{pkg.name}</h3>
+                      <h3 className="text-xl font-black text-white uppercase tracking-tight">{pkg.name}</h3>
                     </div>
 
                     {/* Savings badge */}
@@ -496,10 +461,10 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
                   {!isExpanded ? (
                     <button
                       onClick={() => setExpandedPackage(pkg.id)}
-                      className={`w-full rounded-xl font-bold py-3 transition-all text-sm ${
+                      className={`w-full py-4 text-sm font-black uppercase tracking-widest transition-transform hover:-translate-y-1 active:translate-y-0 ${
                         pkg.highlight
-                          ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:opacity-90 hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-purple-500/20'
-                          : 'bg-white/10 text-white hover:bg-white/15 hover:scale-[1.02] active:scale-[0.98]'
+                          ? 'bg-[#ccff00] text-black shadow-[4px_4px_0px_white]'
+                          : 'bg-[#222] text-white hover:bg-[#333]'
                       }`}
                     >
                       Elegir Plan
@@ -508,10 +473,10 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
                     <motion.div
                       initial={{ opacity: 0, height: 0 }}
                       animate={{ opacity: 1, height: 'auto' }}
-                      className="space-y-3"
+                      className="space-y-4"
                     >
                       <div>
-                        <label className="block text-[10px] font-bold text-slate-500 mb-1.5 uppercase tracking-wider">
+                        <label className="block text-[10px] font-black text-zinc-500 mb-2 uppercase tracking-wider">
                           Enlace de tu perfil
                         </label>
                         <input
@@ -521,28 +486,27 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
                           onChange={(e) =>
                             setPackageLinks({ ...packageLinks, [pkg.id]: e.target.value })
                           }
-                          className="w-full rounded-lg bg-slate-950 border border-slate-700 py-2.5 px-3 text-sm text-white placeholder:text-slate-600 focus:border-purple-500 focus:outline-none focus:ring-1 focus:ring-purple-500"
+                          className="w-full bg-[#111] border-2 border-[#333] py-3 px-4 text-sm text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none transition-colors rounded-none"
                           autoFocus
                         />
                       </div>
 
-                      <p className="text-[10px] text-slate-500 leading-relaxed">
-                        📲 Envíanos el link de cualquier publicación (nueva o antigua) por WhatsApp y activamos tu boost. Tú decides cuáles boostear.
+                      <p className="text-[10px] text-zinc-500 leading-relaxed font-medium">
+                        Envíanos el link de cualquier publicación (nueva o antigua) por WhatsApp y activamos tu boost. Tú decides cuáles boostear.
                       </p>
 
                       <div className="flex gap-2">
                         <button
                           onClick={() => setExpandedPackage(null)}
-                          className="px-4 py-2.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white hover:bg-white/5"
+                          className="px-4 py-3 text-sm font-black text-zinc-500 hover:text-white uppercase tracking-wider"
                         >
                           Cancelar
                         </button>
                         <button
                           onClick={() => handlePayment(pkg)}
-                          className="flex-1 flex items-center justify-center gap-2 rounded-lg bg-[#752384] text-white font-bold py-2.5 hover:bg-[#8e2aa0] hover:scale-[1.02] active:scale-[0.98] transition-all text-sm shadow-lg shadow-[#752384]/20"
+                          className="flex-1 flex items-center justify-center gap-2 bg-[#752384] text-white font-black py-3 hover:-translate-y-1 active:translate-y-0 uppercase tracking-wider transition-transform text-sm shadow-[4px_4px_0px_white]"
                         >
-                          <MessageCircle size={16} />
-                          Yapear y Activar
+                          Yapear
                         </button>
                       </div>
                     </motion.div>
@@ -572,9 +536,9 @@ export function GrowthPackages({ onOpenYapeModal }: GrowthPackagesProps) {
             initial={{ opacity: 0, y: -50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 rounded-2xl bg-red-500/90 p-4 text-white shadow-2xl backdrop-blur-md border border-red-400"
+            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 bg-[#ff0000] p-4 text-white shadow-[8px_8px_0px_black] border-2 border-black uppercase font-black tracking-widest"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-black/20 border-2 border-black">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />

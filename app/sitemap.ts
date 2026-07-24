@@ -1,9 +1,10 @@
 import { MetadataRoute } from 'next';
+import { PRODUCTS } from '@/lib/products';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = 'https://www.socialboostperu.store';
 
-  return [
+  const staticRoutes: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -62,4 +63,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
   ];
+
+  // Generar rutas dinámicas para cada combinación única de red/servicio
+  const uniquePairs = new Set<string>();
+  for (const product of PRODUCTS) {
+    const key = `${product.type}-${product.service_type}`;
+    if (!uniquePairs.has(key)) {
+      uniquePairs.add(key);
+      staticRoutes.push({
+        url: `${baseUrl}/${product.type}/${product.service_type}`,
+        lastModified: new Date(),
+        changeFrequency: 'weekly',
+        priority: 0.9,
+      });
+    }
+  }
+
+  return staticRoutes;
 }

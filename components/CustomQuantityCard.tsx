@@ -123,10 +123,10 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         className={cn(
-          'rounded-2xl border-2 border-dashed transition-all overflow-hidden max-w-xl mx-auto w-full',
+          'border-2 border-dashed transition-all overflow-hidden max-w-xl mx-auto w-full',
           isExpanded
-            ? 'border-amber-500/40 bg-gradient-to-br from-amber-500/5 to-orange-500/5'
-            : 'border-slate-600/50 bg-white/[0.02] hover:border-amber-500/30 hover:bg-white/[0.04]'
+            ? 'border-[#ccff00] bg-[#111]'
+            : 'border-[#333] bg-transparent hover:border-zinc-500 hover:bg-[#111]'
         )}
       >
         {/* Header / Toggle */}
@@ -134,8 +134,8 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
           onClick={() => setIsExpanded(!isExpanded)}
           className="w-full p-4 sm:p-5 flex items-center gap-3 text-left"
         >
-          <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-amber-500 to-orange-600 shadow-lg shadow-amber-500/20">
-            <Target className="text-white" size={22} />
+          <div className="flex h-14 w-14 shrink-0 items-center justify-center bg-[#ccff00] border-2 border-black shadow-[2px_2px_0px_black]">
+            <Target className="text-black" size={24} />
           </div>
           <div className="flex-1 min-w-0">
             <h4 className="text-base font-bold text-white">🎯 Cantidad Exacta</h4>
@@ -144,7 +144,7 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
             </p>
           </div>
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 rounded-full px-2.5 py-1">
+            <span className="text-[10px] font-black text-black bg-[#ccff00] border-2 border-black px-2 py-1 uppercase tracking-widest shadow-[2px_2px_0px_black]">
               Solo Yape
             </span>
             <motion.div
@@ -170,15 +170,15 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
             >
               <div className="px-4 sm:px-5 pb-5 space-y-4">
                 {/* Selector de cantidad */}
-                <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-700">
-                  <label className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3 block">
+                <div className="bg-[#050505] p-4 border-2 border-[#333]">
+                  <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
                     ¿Cuántos {serviceName.toLowerCase()} quieres?
                   </label>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleQtyChange(quantity - step)}
                       disabled={quantity <= minQty}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-white border border-slate-600 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
+                      className="flex h-12 w-12 items-center justify-center bg-[#222] text-white border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
                     >
                       <Minus size={16} />
                     </button>
@@ -189,12 +189,12 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                       onChange={e => setQuantityInput(e.target.value.replace(/\D/g, ''))}
                       onBlur={handleInputBlur}
                       onKeyDown={e => { if (e.key === 'Enter') handleInputBlur(); }}
-                      className="flex-1 min-w-0 text-center rounded-lg bg-slate-800 border border-slate-600 py-2 text-lg font-bold text-white focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="flex-1 min-w-0 text-center bg-[#050505] border-2 border-[#333] py-2.5 text-xl font-black text-white focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00]"
                     />
                     <button
                       onClick={() => handleQtyChange(quantity + step)}
                       disabled={quantity >= maxQty}
-                      className="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-white border border-slate-600 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
+                      className="flex h-12 w-12 items-center justify-center bg-[#222] text-white border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
                     >
                       <Plus size={16} />
                     </button>
@@ -214,10 +214,10 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                         key={p.id}
                         onClick={() => handleQtyChange(p.provider_quantity)}
                         className={cn(
-                          'rounded-md px-2.5 py-1 text-[11px] font-medium border transition-all hover:scale-105 active:scale-95',
+                          'px-3 py-1 text-xs font-black uppercase tracking-widest border-2 transition-all hover:-translate-y-0.5 active:translate-y-0',
                           quantity === p.provider_quantity
-                            ? 'bg-amber-500/20 border-amber-500/50 text-amber-300'
-                            : 'bg-slate-800/50 border-slate-700/50 text-slate-500 hover:border-slate-600'
+                            ? 'bg-[#ccff00] border-[#ccff00] text-black shadow-[2px_2px_0px_white]'
+                            : 'bg-[#222] border-[#333] text-zinc-500 hover:text-white hover:border-zinc-500'
                         )}
                       >
                         {p.provider_quantity >= 1000
@@ -229,10 +229,10 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                 </div>
 
                 {/* Precio calculado */}
-                <div className="bg-slate-900/80 rounded-xl p-4 border border-slate-700">
+                <div className="bg-[#050505] p-4 border-2 border-[#333]">
                   <div className="flex justify-between items-baseline">
-                    <span className="text-sm text-slate-400">Precio total</span>
-                    <span className="text-2xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">
+                    <span className="text-sm font-black uppercase tracking-widest text-zinc-500">Precio total</span>
+                    <span className="text-3xl font-black text-[#ccff00]">
                       S/ {total.toFixed(2)}
                     </span>
                   </div>
@@ -256,19 +256,19 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                       placeholder={needsProfileLink ? `Link de tu perfil ${platformName}` : `Link del video/publicación`}
                       value={targetLink}
                       onChange={e => setTargetLink(e.target.value)}
-                      className="w-full rounded-lg bg-slate-950 border border-slate-700 py-2.5 pl-9 pr-3 text-sm text-white placeholder:text-slate-500 focus:border-amber-500 focus:outline-none focus:ring-1 focus:ring-amber-500"
+                      className="w-full bg-[#111] border-2 border-[#333] py-3 pl-10 pr-4 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00]"
                     />
                   </div>
 
-                  <label className="flex items-start gap-2 cursor-pointer group">
-                    <div className="relative flex items-center justify-center mt-0.5">
+                  <label className="flex items-center gap-3 cursor-pointer group">
+                    <div className="relative flex items-center justify-center shrink-0">
                       <input
                         type="checkbox"
                         checked={isPublicConfirmed}
                         onChange={e => setIsPublicConfirmed(e.target.checked)}
-                        className="peer h-4 w-4 shrink-0 appearance-none rounded border border-slate-600 bg-slate-900 checked:border-amber-500 checked:bg-amber-500 focus:outline-none transition-all"
+                        className="peer h-5 w-5 shrink-0 appearance-none border-2 border-[#333] bg-[#111] checked:border-[#ccff00] checked:bg-[#ccff00] focus:outline-none transition-all"
                       />
-                      <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3 h-3 text-white opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+                      <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-black opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
                         <polyline points="20 6 9 17 4 12" />
                       </svg>
                     </div>
@@ -281,7 +281,7 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                 {/* Botón de pago */}
                 <button
                   onClick={handleCheckout}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-[#752384] text-white font-bold py-3 hover:bg-[#8e2aa0] hover:scale-[1.02] active:scale-[0.98] transition-all shadow-lg shadow-purple-900/30"
+                  className="w-full flex items-center justify-center gap-2 bg-[#752384] text-white font-black py-4 hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest transition-transform text-sm shadow-[4px_4px_0px_white]"
                 >
                   <MessageCircle size={18} />
                   Yapear S/ {total.toFixed(2)}
@@ -305,13 +305,13 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
             <motion.div
               initial={{ scale: 0.9, y: 20 }}
               animate={{ scale: 1, y: 0 }}
-              className="w-full max-w-md rounded-2xl bg-slate-900 border border-slate-700 p-6 shadow-2xl relative"
+              className="w-full max-w-md border-2 border-[#333] bg-[#111] p-6 shadow-[8px_8px_0px_#ccff00] relative"
             >
               <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-bold text-white">🎯 Cantidad Personalizada</h3>
+                <h3 className="text-xl font-bold text-white uppercase tracking-widest">🎯 Cantidad Personalizada</h3>
                 <button
                   onClick={() => setShowCheckout(false)}
-                  className="text-slate-400 hover:text-white bg-white/5 rounded-full p-1"
+                  className="text-slate-400 hover:text-white bg-[#222] p-1"
                   aria-label="Cerrar"
                 >
                   <X size={18} />
@@ -319,21 +319,21 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
               </div>
 
               {/* Resumen */}
-              <div className="bg-slate-800 rounded-lg p-3 mb-4 text-sm">
+              <div className="bg-[#050505] border-2 border-[#333] p-4 mb-4 space-y-2 text-sm font-bold text-zinc-500 uppercase tracking-widest">
                 <div className="flex justify-between">
-                  <span className="text-slate-300">{quantity.toLocaleString()} {serviceName} {platformName}</span>
-                  <span className="text-white font-bold">S/ {total.toFixed(2)}</span>
+                  <span className="text-zinc-500">{quantity.toLocaleString()} {serviceName} {platformName}</span>
+                  <span className="text-white font-black">S/ {total.toFixed(2)}</span>
                 </div>
               </div>
 
               {/* QR */}
-              <div className="bg-[#752384] p-4 rounded-xl mb-5 flex flex-col items-center">
+              <div className="bg-[#752384] p-4 mb-5 flex flex-col items-center">
                 <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
-                <p className="mt-3 text-white font-bold text-lg tracking-wide">Titular: Robert Sal*</p>
+                <p className="mt-3 text-white font-bold text-lg uppercase tracking-widest">Titular: Robert Sal*</p>
               </div>
 
               <div className="space-y-4">
-                <div className="bg-slate-800 p-3 rounded-lg text-sm text-slate-300 space-y-1">
+                <div className="bg-[#050505] p-4 border-2 border-[#333] text-sm text-zinc-400 space-y-1 font-bold">
                   <p>1. Yapea <strong>S/ {total.toFixed(2)}</strong> al QR.</p>
                   <p>2. Toma una captura de pantalla.</p>
                   <p>3. Envíala a nuestro WhatsApp para activar.</p>
@@ -343,7 +343,7 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(whatsAppMsg)}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full rounded-xl bg-[#25D366] text-white font-bold py-3 hover:bg-[#20bd5a] transition-all"
+                  className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-black font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
                 >
                   <MessageCircle size={20} />
                   Enviar Comprobante
@@ -365,9 +365,9 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
             initial={{ opacity: 0, y: -50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 rounded-2xl bg-red-500/90 p-4 text-white shadow-2xl backdrop-blur-md border border-red-400"
+            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 bg-[#ff0000] p-4 text-white shadow-[8px_8px_0px_black] border-2 border-black uppercase font-black tracking-widest"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-black/20 border-2 border-black">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />

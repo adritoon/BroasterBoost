@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShieldCheck, ShoppingBag } from 'lucide-react';
+import { ShieldCheck, Zap } from 'lucide-react';
 import { PRODUCTS } from '@/lib/products';
 
 const TIMES = ['Hace un momento', 'Hace 2 min', 'Hace 5 min', 'Hace 12 min', 'Hace 28 min'];
@@ -11,17 +11,17 @@ const TIMES = ['Hace un momento', 'Hace 2 min', 'Hace 5 min', 'Hace 12 min', 'Ha
 const ALLOWED_NETWORKS = ['tiktok', 'youtube', 'instagram', 'kick', 'spotify', 'twitch'];
 
 // 2. ESTILOS VISUALES
-const NETWORK_STYLES: Record<string, { label: string; color: string }> = {
-  tiktok:    { label: 'TikTok',    color: 'from-black to-slate-800' },
-  instagram: { label: 'Instagram', color: 'from-pink-600 via-red-500 to-yellow-500' },
-  facebook:  { label: 'Facebook',  color: 'from-blue-600 to-blue-800' },
-  youtube:   { label: 'YouTube',   color: 'from-red-600 to-red-700' },
-  kick:      { label: 'Kick',      color: 'from-green-400 to-green-600' },
-  spotify:   { label: 'Spotify',   color: 'from-green-500 to-emerald-600' },
-  twitch:    { label: 'Twitch',    color: 'from-purple-600 to-indigo-700' },
+const PLATFORMS: Record<string, { label: string; color: string }> = {
+  tiktok:    { label: 'TikTok',    color: 'bg-black text-white' },
+  instagram: { label: 'Instagram', color: 'bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white' },
+  facebook:  { label: 'Facebook',  color: 'bg-blue-600 text-white' },
+  youtube:   { label: 'YouTube',   color: 'bg-red-600 text-white' },
+  kick:      { label: 'Kick',      color: 'bg-green-400 text-black' },
+  spotify:   { label: 'Spotify',   color: 'bg-green-500 text-black' },
+  twitch:    { label: 'Twitch',    color: 'bg-purple-600 text-white' },
 };
 
-const DEFAULT_STYLE = { label: 'SocialBoost', color: 'from-slate-700 to-slate-900' };
+const DEFAULT_STYLE = { label: 'SocialBoost', color: 'bg-slate-700 text-white' };
 
 export function SalesNotification() {
   const [visible, setVisible] = useState(false);
@@ -36,16 +36,16 @@ export function SalesNotification() {
 
     if (product.type) {
       const typeKey = product.type.toLowerCase().trim();
-      if (NETWORK_STYLES[typeKey]) return NETWORK_STYLES[typeKey];
+      if (PLATFORMS[typeKey]) return PLATFORMS[typeKey];
     }
     
     const nameLower = product.name ? product.name.toLowerCase() : '';
-    if (nameLower.includes('tiktok')) return NETWORK_STYLES['tiktok'];
-    if (nameLower.includes('insta')) return NETWORK_STYLES['instagram'];
-    if (nameLower.includes('face')) return NETWORK_STYLES['facebook'];
-    if (nameLower.includes('tube')) return NETWORK_STYLES['youtube'];
-    if (nameLower.includes('kick')) return NETWORK_STYLES['kick'];
-    if (nameLower.includes('spotify')) return NETWORK_STYLES['spotify'];
+    if (nameLower.includes('tiktok')) return PLATFORMS['tiktok'];
+    if (nameLower.includes('insta')) return PLATFORMS['instagram'];
+    if (nameLower.includes('face')) return PLATFORMS['facebook'];
+    if (nameLower.includes('tube')) return PLATFORMS['youtube'];
+    if (nameLower.includes('kick')) return PLATFORMS['kick'];
+    if (nameLower.includes('spotify')) return PLATFORMS['spotify'];
 
     return DEFAULT_STYLE;
   };
@@ -128,29 +128,19 @@ export function SalesNotification() {
           initial={{ opacity: 0, y: 50, x: -20 }}
           animate={{ opacity: 1, y: 0, x: 0 }}
           exit={{ opacity: 0, y: 20, scale: 0.9 }}
-          className="fixed bottom-4 left-4 z-50 max-w-[320px] md:bottom-6 md:left-6"
+          className="fixed bottom-6 left-6 z-50 flex w-64 md:w-72 overflow-hidden border-2 border-black bg-[#ccff00] p-2.5 text-black shadow-[4px_4px_0px_white]"
         >
-          <div className="flex items-center gap-4 rounded-xl border border-white/10 bg-slate-950/90 p-4 shadow-2xl backdrop-blur-md ring-1 ring-white/5">
-            <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${currentColor} shadow-lg`}>
-               <ShoppingBag className="text-white h-5 w-5" />
-            </div>
-            <div className="flex flex-col">
-              <span className="text-sm font-bold text-slate-100 flex items-center gap-1">
-                Nuevo Pedido
-                {currentLabel !== 'SocialBoost' && (
-                  <>
-                    <span className="text-slate-500">•</span>
-                    <span className="text-slate-200">{currentLabel}</span>
-                  </>
-                )}
-              </span>
-              <span className="text-xs text-slate-400 line-clamp-1 mt-0.5">
-                <span className="text-white font-medium">{notification.item}</span>
-              </span>
-              <div className="mt-1 flex items-center gap-1 text-[10px] text-slate-500">
-                <ShieldCheck size={10} className="text-blue-400" />
-                <span>Pago Verificado • {notification.time}</span>
-              </div>
+          <div className={`shrink-0 flex items-center justify-center h-8 w-8 border-2 border-black ${currentStyle.color}`}>
+            <Zap size={14} strokeWidth={2.5} className="text-current" />
+          </div>
+          <div className="flex flex-col ml-3">
+            <span className="text-[10px] font-black text-black tracking-widest">{currentStyle.label.toUpperCase()}</span>
+            <span className="text-xs font-bold text-black line-clamp-1">{notification.item}</span>
+            <div className="mt-0.5 flex items-center gap-1 text-[9px] text-zinc-600 font-bold">
+              <ShieldCheck size={9} className="text-zinc-500" />
+              <span>Compra verificada</span>
+              <span className="mx-1">•</span>
+              <span>{notification.time}</span>
             </div>
           </div>
         </motion.div>

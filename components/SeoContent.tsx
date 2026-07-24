@@ -28,7 +28,7 @@ export function SeoContent() {
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
 
         {/* --- 1. SPOTIFY (La Joya Oculta) --- */}
-        <article className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-green-500/50 transition-colors">
+        <article className="bg-[#111] p-6 border-2 border-[#333] hover:border-[#ccff00] transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-green-500/20 p-2 rounded-lg text-green-500">
               <Music size={24} />
@@ -69,7 +69,7 @@ export function SeoContent() {
         </article>
 
         {/* --- 3. YOUTUBE (Monetización) --- */}
-        <article className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-red-500/50 transition-colors">
+        <article className="bg-[#111] p-6 border-2 border-[#333] hover:border-[#ccff00] transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-red-500/20 p-2 rounded-lg text-red-500">
               <Youtube size={24} />
@@ -110,7 +110,7 @@ export function SeoContent() {
         </article>
 
         {/* --- 5. INSTAGRAM (Marca Personal) --- */}
-        <article className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-pink-500/50 transition-colors">
+        <article className="bg-[#111] p-6 border-2 border-[#333] hover:border-[#ccff00] transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-pink-500/20 p-2 rounded-lg text-pink-500">
               <Instagram size={24} />
@@ -129,7 +129,7 @@ export function SeoContent() {
         </article>
 
         {/* --- 6. FACEBOOK (Fanpages) --- */}
-        <article className="bg-white/5 rounded-2xl p-6 border border-white/10 hover:border-blue-600/50 transition-colors">
+        <article className="bg-[#111] p-6 border-2 border-[#333] hover:border-[#ccff00] transition-colors">
           <div className="flex items-center gap-3 mb-4">
             <div className="bg-blue-600/20 p-2 rounded-lg text-blue-500">
               <Facebook size={24} />
@@ -145,9 +145,9 @@ export function SeoContent() {
 
       {/* --- SECCIÓN DE "ETIQUETAS" (SEO TÉCNICO) --- */}
       {/* Esto se ve como una nube de tags al final, Google lo ama para long-tail keywords */}
-      <div className="border-t border-white/5 pt-8">
-        <h4 className="text-sm font-bold text-slate-500 mb-4 uppercase tracking-wider">Búsquedas Frecuentes en Perú:</h4>
-        <div className="flex flex-wrap gap-2 text-xs text-slate-600">
+      <div className="border-t-2 border-[#333] pt-8 mt-12">
+        <h4 className="text-sm font-black text-[#ccff00] mb-4 uppercase tracking-widest">Búsquedas Frecuentes en Perú:</h4>
+        <div className="flex flex-wrap gap-2 text-[10px] font-bold uppercase tracking-wider text-zinc-500">
           {[
             // TikTok
             "Comprar seguidores TikTok Perú", "Seguidores TikTok baratos", "Likes TikTok con Yape",
@@ -182,7 +182,7 @@ export function SeoContent() {
             "Comprar seguidores reales Perú", "Crecer en redes sociales Perú",
             "Marketing redes sociales Perú"
           ].map((tag, i) => (
-            <span key={i} className="bg-slate-900 px-3 py-1 rounded-full border border-slate-800">
+            <span key={i} className="bg-[#111] px-3 py-1.5 border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] transition-colors cursor-default">
               {tag}
             </span>
           ))}

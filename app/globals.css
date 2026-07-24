@@ -13,8 +13,8 @@
 }
 
 body {
-  /* Slate 950 = #020617 */
-  background-color: #020617; 
+  /* Fondo Negro Sólido */
+  background-color: #000000; 
   color: #ffffff;
   
   /* Suavizado de fuente */
@@ -22,23 +22,25 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* --- Scrollbar Oscuro (Para que no se vea blanco feo) --- */
-::-webkit-scrollbar {
-  width: 10px;
+/* --- Scrollbar Brutalista --- */
+::-webkit-scrollbar, .custom-scrollbar::-webkit-scrollbar {
+  width: 12px;
 }
 
-::-webkit-scrollbar-track {
-  background: #020617;
+::-webkit-scrollbar-track, .custom-scrollbar::-webkit-scrollbar-track {
+  background: #050505;
+  border-left: 2px solid #333;
 }
 
-::-webkit-scrollbar-thumb {
-  background: #334155; /* Slate 700 */
-  border-radius: 5px;
-  border: 2px solid #020617;
+::-webkit-scrollbar-thumb, .custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #222;
+  border-left: 2px solid #333;
+  border-radius: 0px;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #475569; /* Slate 600 */
+::-webkit-scrollbar-thumb:hover, .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #ccff00;
+  border-left: 2px solid #000;
 }
 
 /* Ocultar scrollbar para contenedores con scroll horizontal (ej: tabs móvil) */
@@ -48,4 +50,30 @@ body {
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ===== FADE IN UP ANIMATION ===== */
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out both;
+}
+
+/* ===== PROMO BANNER PULSE ===== */
+@keyframes promo-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+.animate-promo-pulse {
+  animation: promo-pulse 2s ease-in-out infinite;
 }

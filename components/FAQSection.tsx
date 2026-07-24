@@ -30,11 +30,11 @@ const FAQS = [
 
 export function FAQSection() {
   return (
-    <section className="container mx-auto max-w-3xl px-4 pb-24">
-      <h2 className="mb-8 text-center text-3xl font-bold text-white">
-        Preguntas Frecuentes
-      </h2>
-      
+    <section className="container mx-auto max-w-4xl px-4 py-24">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 uppercase tracking-tight">Preguntas Frecuentes</h2>
+        <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm">Todo lo que necesitas saber</p>
+      </div>
       <div className="space-y-4">
         {FAQS.map((faq, index) => (
           <FAQItem key={index} question={faq.question} answer={faq.answer} />
@@ -49,15 +49,15 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="overflow-hidden rounded-xl border border-white/10 bg-white/5 transition-colors hover:border-pink-500/30">
+    <div className="border-2 border-[#333] bg-[#111] transition-colors hover:border-[#555]">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex w-full items-center justify-between p-4 text-left font-medium text-slate-200 transition-colors hover:bg-white/5"
+        className="flex w-full items-center justify-between p-5 text-left font-black text-white transition-colors hover:bg-[#222] uppercase tracking-wider text-sm"
         aria-expanded={isOpen}
       >
         <span>{question}</span>
         <ChevronDown 
-          className={`ml-4 h-5 w-5 text-slate-400 transition-transform duration-300 ${isOpen ? 'rotate-180 text-pink-500' : ''}`} 
+          className={`ml-4 h-6 w-6 text-zinc-500 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#ccff00]' : ''}`} 
         />
       </button>
       <AnimatePresence>
@@ -69,7 +69,7 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
             transition={{ duration: 0.3, ease: "easeInOut" }}
             className="overflow-hidden"
           >
-            <div className="border-t border-white/10 p-4 text-sm leading-relaxed text-slate-400 bg-black/20">
+            <div className="border-t-2 border-[#333] p-5 text-sm leading-relaxed text-zinc-400 font-medium bg-[#0a0a0a]">
               {answer}
             </div>
           </motion.div>

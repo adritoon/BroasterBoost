@@ -4,46 +4,46 @@ export function HowItWorks() {
   const steps = [
     {
       icon: MousePointerClick,
-      color: "text-pink-500",
-      bg: "bg-pink-500/10",
+      color: "text-[#ccff00]",
+      bg: "bg-[#111]",
       title: "1. Elige tu Pack",
       desc: "Selecciona cuántos seguidores o likes necesitas para despegar."
     },
     {
       icon: Link,
-      color: "text-purple-500",
-      bg: "bg-purple-500/10",
+      color: "text-white",
+      bg: "bg-[#111]",
       title: "2. Pega tu Link",
-      desc: "Ingresa el enlace de tu perfil o video. No pedimos contraseña."
+      desc: "Ingresa el enlace de tu perfil o video. Cero contraseñas."
     },
     {
       icon: Zap,
-      color: "text-blue-500",
-      bg: "bg-blue-500/10",
+      color: "text-black",
+      bg: "bg-[#ccff00]",
       title: "3. Recibe la Magia",
-      desc: "Paga seguro con Yape/Tarjeta y mira cómo suben tus números."
+      desc: "Paga seguro con Yape o Tarjeta y mira cómo suben tus números."
     }
   ];
 
   return (
-    <section className="container mx-auto px-4 py-20 border-t border-white/5">
-      <div className="text-center mb-12">
-        <h2 className="text-3xl font-bold text-white mb-4">¿Cómo funciona?</h2>
-        <p className="text-slate-400">Impulsa tu cuenta en 3 pasos sencillos</p>
+    <section className="container mx-auto px-4 py-24 border-t-2 border-[#333]">
+      <div className="text-center mb-16">
+        <h2 className="text-4xl sm:text-5xl font-black text-white mb-4 uppercase tracking-tight">¿Cómo funciona?</h2>
+        <p className="text-zinc-500 font-bold uppercase tracking-widest text-sm">Impulsa tu cuenta en 3 pasos directos</p>
       </div>
 
-      <div className="grid gap-8 md:grid-cols-3 relative">
+      <div className="grid gap-6 md:grid-cols-3 relative">
         {/* Línea conectora (solo visible en desktop) */}
-        <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-0.5 bg-gradient-to-r from-pink-500/20 via-purple-500/20 to-blue-500/20 -z-10" />
+        <div className="hidden md:block absolute top-12 left-[16%] right-[16%] h-1 bg-[#333] -z-10" />
 
         {steps.map((step, idx) => (
           <div key={idx} className="relative flex flex-col items-center text-center group">
-            <div className={`w-24 h-24 rounded-2xl ${step.bg} flex items-center justify-center mb-6 transition-transform group-hover:scale-110 duration-300 border border-white/5`}>
-              <step.icon size={40} className={step.color} />
+            <div className={`w-24 h-24 ${step.bg} flex items-center justify-center mb-6 transition-transform group-hover:-translate-y-2 duration-300 border-2 border-[#333]`}>
+              <step.icon size={40} className={step.color} strokeWidth={2.5} />
             </div>
             
-            <h3 className="text-xl font-bold text-white mb-2">{step.title}</h3>
-            <p className="text-sm text-slate-400 max-w-xs">{step.desc}</p>
+            <h3 className="text-xl font-black text-white mb-3 uppercase tracking-wider">{step.title}</h3>
+            <p className="text-sm font-medium text-zinc-400 max-w-xs">{step.desc}</p>
           </div>
         ))}
       </div>

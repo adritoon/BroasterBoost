@@ -1,10 +1,105 @@
 import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircle, Share2, Users, Clock, ThumbsUp, Repeat, Twitter } from 'lucide-react';
 
+// ==========================================
+// CONFIGURACIÓN DEL BANNER DE PROMOCIÓN
+// ==========================================
+export const PROMO_CONFIG = {
+  isActive: false, // Cambia a false para apagar el banner
+  title: "Oferta Especial:", // Texto antes del código si quieres que diga el mes actual automáticamente en el título, puedes poner Oferta de {mes}
+  code: "BOOST15", // El código promocional
+  description: "por WhatsApp y recibe un extra gratis", // Texto después del código
+  showTimer: true, // Mostrar u ocultar el reloj de cuenta regresiva
+};
+
 // 1. Definimos las Categorías (Redes)
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'twitch' | 'spotify' | 'twitter';
 
 // 2. Definimos los Tipos de Servicio (Sub-filtros)
 export type ServiceType = 'followers' | 'likes' | 'reactions' | 'views' | 'viewsShorts' | 'watchtime' | 'comments' | 'shares' | 'streaming' | 'streaming_chat' | 'plays' | 'pkbattle' | 'listeners' | 'saves' | 'retweets' | 'custom_pack';
+
+export const serviceLabels: Record<ServiceType, string> = {
+  followers: 'Seguidores',
+  likes: 'Likes',
+  views: 'Vistas',
+  reactions: 'Reacciones',
+  viewsShorts: 'Shorts',
+  pkbattle: 'Batallas',
+  watchtime: 'Watchtime',
+  comments: 'Comentarios',
+  shares: 'Compartidos',
+  streaming: 'En Vivo',
+  streaming_chat: 'En Vivo + Chat',
+  plays: 'Plays',
+  listeners: 'Oyentes Mensuales',
+  saves: 'Guardados',
+  retweets: 'Retweets',
+  custom_pack: '🛒 Arma tu Pack'
+};
+
+export function getSeoMetadataForService(service: ServiceType) {
+  const baseName = serviceLabels[service] || service;
+  let titleServiceName = baseName;
+  let descriptionServiceName = baseName.toLowerCase();
+
+  switch(service) {
+    case 'views':
+    case 'viewsShorts':
+      titleServiceName = 'Views / Vistas';
+      descriptionServiceName = 'vistas, views y reproducciones';
+      break;
+    case 'followers':
+      titleServiceName = 'Seguidores / Followers';
+      descriptionServiceName = 'seguidores reales y followers';
+      break;
+    case 'likes':
+      titleServiceName = 'Likes / Me Gusta';
+      descriptionServiceName = 'likes y me gusta';
+      break;
+    case 'comments':
+      titleServiceName = 'Comentarios / Comments';
+      descriptionServiceName = 'comentarios y comments';
+      break;
+    case 'shares':
+      titleServiceName = 'Compartidos / Shares';
+      descriptionServiceName = 'compartidos y shares';
+      break;
+    case 'streaming':
+    case 'streaming_chat':
+      titleServiceName = 'Viewers / Espectadores en Vivo';
+      descriptionServiceName = 'espectadores, viewers y vistas en vivo';
+      break;
+    case 'plays':
+      titleServiceName = 'Plays / Reproducciones';
+      descriptionServiceName = 'plays y reproducciones';
+      break;
+    case 'listeners':
+      titleServiceName = 'Oyentes Mensuales / Listeners';
+      descriptionServiceName = 'oyentes mensuales y listeners';
+      break;
+    case 'saves':
+      titleServiceName = 'Guardados / Saves';
+      descriptionServiceName = 'guardados y saves';
+      break;
+    case 'reactions':
+      titleServiceName = 'Reacciones / Reactions';
+      descriptionServiceName = 'reacciones y reactions';
+      break;
+    case 'watchtime':
+      titleServiceName = 'Horas de Reproducción / Watchtime';
+      descriptionServiceName = 'horas de reproducción y watchtime';
+      break;
+    case 'pkbattle':
+      titleServiceName = 'Batallas PK / PK Battles';
+      descriptionServiceName = 'puntos de batallas pk y pk battles';
+      break;
+    case 'retweets':
+      titleServiceName = 'Retweets / Reposts';
+      descriptionServiceName = 'retweets y reposts';
+      break;
+  }
+
+  return { titleServiceName, descriptionServiceName };
+}
 
 export interface Product {
   id: string;             // ID único interno
@@ -3374,12 +3469,12 @@ export interface Category {
 }
 
 export const CATEGORIES: Category[] = [
-  { id: 'tiktok', label: 'TikTok', status: 'active', color: 'from-black to-gray-800' },
-  { id: 'instagram', label: 'Instagram', color: 'from-pink-500 to-purple-500' },
-  { id: 'twitter', label: 'X/Twitter', color: 'from-sky-400 to-blue-600' },
-  { id: 'youtube', label: 'YouTube', color: 'from-red-500 to-red-700' },
-  { id: 'facebook', label: 'Facebook', color: 'from-blue-500 to-blue-700' },
-  { id: 'spotify', label: 'Spotify', color: 'from-green-500 to-green-700' },
-  { id: 'kick', label: 'Kick', color: 'from-green-400 to-green-600' },
-  { id: 'twitch', label: 'Twitch', color: 'from-purple-500 to-purple-700' },
+  { id: 'tiktok', label: 'TikTok', status: 'active', color: 'bg-black text-white' },
+  { id: 'instagram', label: 'Instagram', color: 'bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white' },
+  { id: 'twitter', label: 'X/Twitter', color: 'bg-sky-400 text-black' },
+  { id: 'youtube', label: 'YouTube', color: 'bg-red-600 text-white' },
+  { id: 'facebook', label: 'Facebook', color: 'bg-blue-600 text-white' },
+  { id: 'spotify', label: 'Spotify', color: 'bg-green-500 text-black' },
+  { id: 'kick', label: 'Kick', color: 'bg-green-400 text-black' },
+  { id: 'twitch', label: 'Twitch', color: 'bg-purple-600 text-white' },
 ];

@@ -75,23 +75,23 @@ export function PremiumServices({ onOpenYapeModal }: PremiumServicesProps) {
       {PREMIUM_SERVICES.filter(s => s.isActive !== false).map((service) => (
         <div 
           key={service.id}
-          className={`relative overflow-hidden rounded-3xl border bg-gradient-to-br from-slate-900 to-slate-950 p-8 md:p-12 shadow-2xl transition-all ${
-            service.isAvailable === false ? 'border-slate-800 opacity-90' : 'border-pink-500/30 shadow-pink-500/10'
+          className={`relative overflow-hidden p-8 transition-all border-2 bg-[#111] ${
+            service.isAvailable === false ? 'border-[#333] opacity-90' : 'border-[#ccff00]'
           }`}
         >
-          {/* Brillo decorativo */}
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-pink-500/10 blur-3xl pointer-events-none"></div>
 
           <div className="relative flex flex-col md:flex-row gap-10 items-center justify-between">
             
             {/* Lado Izquierdo: Textos */}
             <div className="flex-1 space-y-5 text-center md:text-left">
               <div className="flex flex-wrap items-center justify-center md:justify-start gap-3">
-                <span className="inline-block rounded-full bg-pink-500/20 px-3 py-1 text-xs font-bold text-pink-400 border border-pink-500/30 uppercase tracking-widest">
-                  {service.badge}
-                </span>
+                {service.badge && (
+                  <span className="inline-block bg-[#ccff00] text-black px-3 py-1 text-xs font-black uppercase tracking-widest mb-2">
+                    {service.badge}
+                  </span>
+                )}
                 {service.isAvailable === false && (
-                  <span className="inline-block rounded-full bg-red-500/20 px-3 py-1 text-xs font-bold text-red-400 border border-red-500/30 uppercase tracking-widest">
+                  <span className="inline-block bg-[#333] px-3 py-1 text-xs font-bold text-white uppercase tracking-widest">
                     Agotado
                   </span>
                 )}
@@ -103,16 +103,16 @@ export function PremiumServices({ onOpenYapeModal }: PremiumServicesProps) {
               <p className="text-slate-400 text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0">
                 {service.description}
               </p>
-              <div className={`text-4xl font-black ${service.isAvailable === false ? 'text-slate-500' : 'text-transparent bg-clip-text bg-gradient-to-r from-pink-400 to-purple-500'}`}>
+              <div className={`text-4xl font-black ${service.isAvailable === false ? 'text-zinc-500' : 'text-white'}`}>
                 S/ {service.price.toFixed(2)}
               </div>
             </div>
 
             {/* Lado Derecho: Inputs y Botón */}
-            <div className="w-full md:w-96 rounded-2xl bg-white/5 p-6 border border-white/10 backdrop-blur-md">
+            <div className="w-full md:w-96 bg-[#111] p-6 border border-[#333]">
               <div className="space-y-5">
                 <div>
-                  <label className="block text-xs font-bold text-slate-400 mb-2 uppercase tracking-wider">
+                  <label className="block text-xs font-bold text-zinc-500 mb-2 uppercase tracking-wider">
                     {service.inputLabel || "Enlace o Nombre de Usuario"}
                   </label>
                   <input
@@ -121,20 +121,20 @@ export function PremiumServices({ onOpenYapeModal }: PremiumServicesProps) {
                     value={premiumLinks[service.id] || ''}
                     onChange={(e) => setPremiumLinks({...premiumLinks, [service.id]: e.target.value})}
                     disabled={service.isAvailable === false}
-                    className={`w-full rounded-xl py-3.5 px-4 text-sm outline-none transition-all ${
+                    className={`w-full py-3 px-4 text-sm transition-colors border-2 ${
                       service.isAvailable === false 
-                      ? 'bg-slate-900 border-slate-800 text-slate-600 cursor-not-allowed' 
-                      : 'bg-slate-950 border-slate-700 text-white placeholder:text-slate-600 focus:border-pink-500 focus:ring-1 focus:ring-pink-500'
+                      ? 'bg-[#111] border-[#333] text-zinc-600 cursor-not-allowed' 
+                      : 'bg-[#050505] border-[#333] text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none'
                     }`}
                   />
                 </div>
                 <button
                   onClick={() => handlePayment(service)}
                   disabled={service.isAvailable === false}
-                  className={`w-full flex items-center justify-center gap-2 rounded-xl font-bold py-4 transition-all border shadow-lg ${
+                  className={`w-full flex items-center justify-center gap-2 font-black py-4 transition-all border-2 ${
                     service.isAvailable === false
-                    ? 'bg-slate-800 text-slate-500 border-slate-700 cursor-not-allowed shadow-none'
-                    : 'bg-[#752384] text-white hover:bg-[#8e2aa0] hover:scale-[1.02] active:scale-[0.98] border-[#9b2eb0]/50 shadow-[#752384]/20'
+                    ? 'bg-[#111] text-[#333] border-[#333] cursor-not-allowed'
+                    : 'bg-[#ccff00] text-black border-[#ccff00] hover:bg-transparent hover:text-[#ccff00]'
                   }`}
                 >
                   {service.isAvailable === false ? (
@@ -160,9 +160,9 @@ export function PremiumServices({ onOpenYapeModal }: PremiumServicesProps) {
             initial={{ opacity: 0, y: -50, x: '-50%' }}
             animate={{ opacity: 1, y: 0, x: '-50%' }}
             exit={{ opacity: 0, y: -50, x: '-50%' }}
-            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 rounded-2xl bg-red-500/90 p-4 text-white shadow-2xl backdrop-blur-md border border-red-400"
+            className="fixed top-20 left-1/2 z-[100] flex w-[90%] max-w-sm items-center gap-3 bg-[#ff0000] p-4 text-white shadow-[8px_8px_0px_black] border-2 border-black uppercase font-black tracking-widest"
           >
-            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/20">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center bg-black/20 border-2 border-black">
               <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                 <circle cx="12" cy="12" r="10" />
                 <line x1="12" y1="8" x2="12" y2="12" />

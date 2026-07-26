@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import {
   Product, ProductType, ServiceType, PRODUCTS,
-  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE
+  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, getCurrentPromo
 } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
@@ -111,7 +111,11 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
     setShowCheckout(true);
   };
 
-  const whatsAppMsg = `Hola! Acabo de yapear S/ ${total.toFixed(2)} por ${quantity.toLocaleString()} ${serviceName} ${platformName} (Cantidad Personalizada).\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`;
+  const whatsAppMsg = (() => {
+    const activePromo = getCurrentPromo();
+    const promoLine = activePromo ? `\n\n🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}` : '';
+    return `Hola! Acabo de yapear S/ ${total.toFixed(2)} por ${quantity.toLocaleString()} ${serviceName} ${platformName} (Cantidad Personalizada).\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}`;
+  })();
 
   // Incrementos rápidos basados en el rango
   const step = quantity >= 10000 ? 1000 : quantity >= 1000 ? 100 : quantity >= 100 ? 50 : 10;

@@ -1,15 +1,211 @@
 import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircle, Share2, Users, Clock, ThumbsUp, Repeat, Twitter } from 'lucide-react';
 
 // ==========================================
-// CONFIGURACIÓN DEL BANNER DE PROMOCIÓN
+// SISTEMA DE PROMOS ROTATIVAS (FLASH SALES)
 // ==========================================
-export const PROMO_CONFIG = {
-  isActive: false, // Cambia a false para apagar el banner
-  title: "Oferta Especial:", // Texto antes del código si quieres que diga el mes actual automáticamente en el título, puedes poner Oferta de {mes}
-  code: "BOOST15", // El código promocional
-  description: "por WhatsApp y recibe un extra gratis", // Texto después del código
-  showTimer: true, // Mostrar u ocultar el reloj de cuenta regresiva
-};
+
+export interface FlashPromo {
+  id: string;
+  title: string;          // Texto principal del banner
+  description: string;    // Texto secundario (qué obtiene el cliente)
+  code: string;           // Código promo a mencionar
+  durationMinutes: number; // Duración de esta promo
+  bgColor: string;        // Color de fondo del banner (tailwind bg class)
+  textColor: string;      // Color del texto (tailwind text class)
+  accentColor: string;    // Color de acentos (código, timer)
+  emoji: string;          // Emoji decorativo
+  // Restricciones de tiempo (opcional — hora Perú UTC-5)
+  hoursStart?: number;    // Hora inicio (0-23). Ej: 20 = 8pm
+  hoursEnd?: number;      // Hora fin (0-23). Ej: 6 = 6am. Si hoursEnd < hoursStart, cruza medianoche.
+  daysOfWeek?: number[];  // Días permitidos (0=Domingo, 1=Lunes, ..., 5=Viernes, 6=Sábado)
+}
+
+// Pool de promos que rotan automáticamente
+// Orden importa: se recorren en secuencia cíclica
+const FLASH_PROMO_POOL: FlashPromo[] = [
+  {
+    id: 'flash-extra-likes',
+    title: '⚡ FLASH: Likes Extra',
+    description: 'Compra Likes y recibe +50% gratis',
+    code: 'EXTRALIKE',
+    durationMinutes: 120,
+    bgColor: 'bg-[#ccff00]',
+    textColor: 'text-black',
+    accentColor: 'bg-black text-[#ccff00]',
+    emoji: '💚',
+  },
+  {
+    id: 'flash-tiktok-boost',
+    title: '🔥 TikTok Boost',
+    description: '+100 seguidores extra en cualquier pack TikTok',
+    code: 'TTBOOST',
+    durationMinutes: 30,
+    bgColor: 'bg-[#ff2d55]',
+    textColor: 'text-white',
+    accentColor: 'bg-white text-[#ff2d55]',
+    emoji: '🚀',
+  },
+  {
+    id: 'flash-ig-combo',
+    title: '💜 Combo Instagram',
+    description: 'Compra Seguidores IG y lleva +100 likes gratis',
+    code: 'IGCOMBO',
+    durationMinutes: 120,
+    bgColor: 'bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045]',
+    textColor: 'text-white',
+    accentColor: 'bg-white text-[#833ab4]',
+    emoji: '📸',
+  },
+  {
+    id: 'flash-yt-viral',
+    title: '🎬 YouTube Viral',
+    description: '+250 vistas gratis en packs de YouTube',
+    code: 'YTVIRAL',
+    durationMinutes: 60,
+    bgColor: 'bg-[#ff0000]',
+    textColor: 'text-white',
+    accentColor: 'bg-white text-[#ff0000]',
+    emoji: '▶️',
+  },
+  {
+    id: 'flash-multi-discount',
+    title: '🏷️ Multi Descuento',
+    description: '+100 seguidores extra en Packs de Crecimiento',
+    code: 'MULTI10',
+    durationMinutes: 120,
+    bgColor: 'bg-[#00d4aa]',
+    textColor: 'text-black',
+    accentColor: 'bg-black text-[#00d4aa]',
+    emoji: '🎁',
+  },
+  {
+    id: 'flash-nocturno',
+    title: '🌙 Flash Nocturno',
+    description: '+100 likes de regalo en cualquier compra nocturna',
+    code: 'NOCHE',
+    durationMinutes: 45,
+    bgColor: 'bg-[#1a1a2e]',
+    textColor: 'text-[#e0e0ff]',
+    accentColor: 'bg-[#ccff00] text-black',
+    emoji: '✨',
+    hoursStart: 20,  // Solo de 8pm a 6am
+    hoursEnd: 6,
+  },
+  {
+    id: 'flash-viernes',
+    title: '🎉 Followers Friday',
+    description: '+100 seguidores extra en cualquier red social',
+    code: 'VIERNES',
+    durationMinutes: 180,
+    bgColor: 'bg-[#ff6b35]',
+    textColor: 'text-white',
+    accentColor: 'bg-white text-[#ff6b35]',
+    emoji: '🔥',
+    daysOfWeek: [5],  // Solo viernes
+  },
+  {
+    id: 'flash-reels',
+    title: '🎞️ Combo Reels',
+    description: '+100 likes y +200 vistas para Reels de Instagram',
+    code: 'REELS',
+    durationMinutes: 90,
+    bgColor: 'bg-gradient-to-r from-[#405de6] to-[#e1306c]',
+    textColor: 'text-white',
+    accentColor: 'bg-white text-[#405de6]',
+    emoji: '🎶',
+  },
+];
+
+// Epoch base: un punto fijo en el tiempo para calcular ciclos
+// Usamos 1 de Enero 2026 00:00:00 UTC-5 (Peru) como referencia
+const PROMO_EPOCH = new Date('2026-01-01T05:00:00Z').getTime();
+
+/**
+ * Obtiene la hora y día actual en zona horaria de Perú (UTC-5).
+ */
+function getPeruTime(): { hour: number; dayOfWeek: number } {
+  const now = new Date();
+  // Construir hora en UTC-5 (Perú no tiene horario de verano)
+  const peruOffset = -5 * 60; // minutos
+  const utcMinutes = now.getUTCHours() * 60 + now.getUTCMinutes();
+  const peruMinutes = utcMinutes + peruOffset;
+
+  // Ajustar si cruza medianoche
+  const peruDate = new Date(now.getTime() + peruOffset * 60 * 1000);
+  return {
+    hour: ((Math.floor(peruMinutes / 60) % 24) + 24) % 24,
+    dayOfWeek: peruDate.getUTCDay(), // 0=Domingo, 5=Viernes, 6=Sábado
+  };
+}
+
+/**
+ * Verifica si una promo es elegible según hora y día actual (Perú).
+ */
+function isPromoEligible(promo: FlashPromo, hour: number, dayOfWeek: number): boolean {
+  // Verificar restricción de día
+  if (promo.daysOfWeek && !promo.daysOfWeek.includes(dayOfWeek)) {
+    return false;
+  }
+
+  // Verificar restricción de hora
+  if (promo.hoursStart !== undefined && promo.hoursEnd !== undefined) {
+    if (promo.hoursStart < promo.hoursEnd) {
+      // Rango normal (ej: 9-17)
+      if (hour < promo.hoursStart || hour >= promo.hoursEnd) return false;
+    } else {
+      // Cruza medianoche (ej: 20-6 → activo de 20:00 a 05:59)
+      if (hour < promo.hoursStart && hour >= promo.hoursEnd) return false;
+    }
+  }
+
+  return true;
+}
+
+/**
+ * Calcula qué promo está activa en este momento y cuánto tiempo queda.
+ * Es determinístico: todos los usuarios ven la misma promo al mismo tiempo.
+ * 
+ * Filtra promos por hora/día antes de calcular el ciclo, así que
+ * "NOCHE" solo aparece de noche y "VIERNES" solo los viernes.
+ */
+export function getCurrentPromo(): { promo: FlashPromo; remainingMs: number; totalMs: number } | null {
+  const { hour, dayOfWeek } = getPeruTime();
+
+  // Filtrar promos elegibles según hora y día
+  const eligiblePromos = FLASH_PROMO_POOL.filter(p => isPromoEligible(p, hour, dayOfWeek));
+  if (eligiblePromos.length === 0) return null;
+
+  // Duración total de un ciclo completo (solo promos elegibles)
+  const cycleDurationMinutes = eligiblePromos.reduce((sum, p) => sum + p.durationMinutes, 0);
+  const cycleDurationMs = cycleDurationMinutes * 60 * 1000;
+
+  const now = Date.now();
+  const elapsedMs = now - PROMO_EPOCH;
+
+  // Posición dentro del ciclo actual
+  const positionInCycle = ((elapsedMs % cycleDurationMs) + cycleDurationMs) % cycleDurationMs;
+
+  // Encontrar qué promo está activa
+  let accumulatedMs = 0;
+  for (const promo of eligiblePromos) {
+    const promoDurationMs = promo.durationMinutes * 60 * 1000;
+    if (positionInCycle < accumulatedMs + promoDurationMs) {
+      const elapsedInPromo = positionInCycle - accumulatedMs;
+      const remainingMs = promoDurationMs - elapsedInPromo;
+      return {
+        promo,
+        remainingMs,
+        totalMs: promoDurationMs,
+      };
+    }
+    accumulatedMs += promoDurationMs;
+  }
+
+  // Fallback (no debería llegar aquí)
+  return null;
+}
+
+
 
 // 1. Definimos las Categorías (Redes)
 export type ProductType = 'instagram' | 'tiktok' | 'facebook' | 'youtube' | 'kick' | 'twitch' | 'spotify' | 'twitter';

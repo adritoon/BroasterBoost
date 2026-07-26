@@ -8,7 +8,7 @@ import {
   MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon,
   Minus, Plus, Repeat 
 } from 'lucide-react';
-import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES, getYouTubeCommentPrice, serviceLabels, getSeoMetadataForService } from '@/lib/products';
+import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES, getYouTubeCommentPrice, serviceLabels, getSeoMetadataForService, getCurrentPromo } from '@/lib/products';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
@@ -770,9 +770,14 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
 
                 <a 
                   href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(
-                    manualProduct.requiresComments
-                      ? `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}`
-                      : `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}`
+                    (() => {
+                      const activePromo = getCurrentPromo();
+                      const promoLine = activePromo ? `\n\n🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}` : '';
+                      if (manualProduct.requiresComments) {
+                        return `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}${promoLine}`;
+                      }
+                      return `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}`;
+                    })()
                   )}`}
                   target="_blank"
                   rel="noopener noreferrer"

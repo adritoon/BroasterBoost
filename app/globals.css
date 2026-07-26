@@ -77,3 +77,13 @@ body {
 .animate-promo-pulse {
   animation: promo-pulse 2s ease-in-out infinite;
 }
+
+/* ===== PROMO URGENCY PULSE (< 5 min remaining) ===== */
+@keyframes promo-urgent {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-promo-urgent {
+  animation: promo-urgent 0.8s ease-in-out infinite;
+}

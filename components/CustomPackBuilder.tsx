@@ -10,7 +10,7 @@ import {
 import {
   PRODUCTS, ProductType, ServiceType,
   getCustomCommentPrice, CUSTOM_PACK_DISCOUNT,
-  BUILDER_EXCLUDED_SERVICES, PROFILE_LINK_SERVICES, getCurrentPromo
+  BUILDER_EXCLUDED_SERVICES, PROFILE_LINK_SERVICES, getPromoForProduct
 } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
@@ -247,7 +247,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
       commentTexts.forEach((c, i) => lines.push(`${i + 1}. ${c}`));
     }
     lines.push('', 'Aquí mi comprobante (adjunto foto).');
-    const activePromo = getCurrentPromo();
+    const activePromo = getPromoForProduct(activeCategory);
     if (activePromo) {
       lines.push('', `🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}`);
     }

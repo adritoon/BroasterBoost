@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import {
   Product, ProductType, ServiceType, PRODUCTS,
-  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, getCurrentPromo
+  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, getPromoForProduct
 } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
@@ -112,7 +112,7 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
   };
 
   const whatsAppMsg = (() => {
-    const activePromo = getCurrentPromo();
+    const activePromo = getPromoForProduct(activeCategory);
     const promoLine = activePromo ? `\n\n🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}` : '';
     return `Hola! Acabo de yapear S/ ${total.toFixed(2)} por ${quantity.toLocaleString()} ${serviceName} ${platformName} (Cantidad Personalizada).\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}`;
   })();

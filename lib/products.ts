@@ -18,6 +18,9 @@ export interface FlashPromo {
   hoursStart?: number;    // Hora inicio (0-23). Ej: 20 = 8pm
   hoursEnd?: number;      // Hora fin (0-23). Ej: 6 = 6am. Si hoursEnd < hoursStart, cruza medianoche.
   daysOfWeek?: number[];  // Días permitidos (0=Domingo, 1=Lunes, ..., 5=Viernes, 6=Sábado)
+  // Restricción de plataforma (opcional — si se omite, aplica a todas)
+  platforms?: ProductType[]; // Ej: ['tiktok'] = solo aplica a compras de TikTok
+  growthPackOnly?: boolean;  // Si true, solo aplica a Packs de Crecimiento (IDs que empiezan con 'pack-')
 }
 
 // Pool de promos que rotan automáticamente
@@ -44,6 +47,7 @@ const FLASH_PROMO_POOL: FlashPromo[] = [
     textColor: 'text-white',
     accentColor: 'bg-white text-[#ff2d55]',
     emoji: '🚀',
+    platforms: ['tiktok'],  // Solo TikTok
   },
   {
     id: 'flash-ig-combo',
@@ -55,6 +59,7 @@ const FLASH_PROMO_POOL: FlashPromo[] = [
     textColor: 'text-white',
     accentColor: 'bg-white text-[#833ab4]',
     emoji: '📸',
+    platforms: ['instagram'],  // Solo Instagram
   },
   {
     id: 'flash-yt-viral',
@@ -66,6 +71,7 @@ const FLASH_PROMO_POOL: FlashPromo[] = [
     textColor: 'text-white',
     accentColor: 'bg-white text-[#ff0000]',
     emoji: '▶️',
+    platforms: ['youtube'],  // Solo YouTube
   },
   {
     id: 'flash-multi-discount',
@@ -77,6 +83,7 @@ const FLASH_PROMO_POOL: FlashPromo[] = [
     textColor: 'text-black',
     accentColor: 'bg-black text-[#00d4aa]',
     emoji: '🎁',
+    growthPackOnly: true,  // Solo aplica a Packs de Crecimiento
   },
   {
     id: 'flash-nocturno',
@@ -113,6 +120,7 @@ const FLASH_PROMO_POOL: FlashPromo[] = [
     textColor: 'text-white',
     accentColor: 'bg-white text-[#405de6]',
     emoji: '🎶',
+    platforms: ['instagram'],  // Reels = Instagram
   },
 ];
 
@@ -203,6 +211,28 @@ export function getCurrentPromo(): { promo: FlashPromo; remainingMs: number; tot
 
   // Fallback (no debería llegar aquí)
   return null;
+}
+
+/**
+ * Devuelve la promo activa SOLO si aplica al producto que se está comprando.
+ * Verifica plataforma Y si es exclusivo de growth packs.
+ * Usar en mensajes de WhatsApp para evitar códigos irrelevantes.
+ */
+export function getPromoForProduct(platform: ProductType, productId?: string): { promo: FlashPromo; remainingMs: number; totalMs: number } | null {
+  const currentPromo = getCurrentPromo();
+  if (!currentPromo) return null;
+
+  // Verificar restricción de growth pack
+  if (currentPromo.promo.growthPackOnly) {
+    if (!productId || !productId.startsWith('pack-')) return null;
+  }
+
+  // Verificar restricción de plataforma
+  if (currentPromo.promo.platforms) {
+    if (!currentPromo.promo.platforms.includes(platform)) return null;
+  }
+
+  return currentPromo;
 }
 
 

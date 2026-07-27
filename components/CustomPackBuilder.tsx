@@ -10,7 +10,8 @@ import {
 import {
   PRODUCTS, ProductType, ServiceType,
   getCustomCommentPrice, CUSTOM_PACK_DISCOUNT,
-  BUILDER_EXCLUDED_SERVICES, PROFILE_LINK_SERVICES, getPromoForProduct
+  BUILDER_EXCLUDED_SERVICES, PROFILE_LINK_SERVICES, getPromoForProduct,
+  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, ABSOLUTE_MAX
 } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
@@ -63,9 +64,13 @@ const PLATFORM_INFO: Record<ProductType, { name: string; profileLabel: string; p
   twitch: { name: 'Twitch', profileLabel: 'Link de tu canal Twitch', postLabel: 'Link del stream' },
 };
 
-/** Quita el nombre de plataforma del nombre del producto para ahorrar espacio en dropdowns */
-const cleanProductName = (name: string) =>
-  name.replace(/\s+(TikTok|Instagram|X\/Twitter|YouTube|Facebook|Spotify|Kick|Twitch)/gi, '').trim();
+const getStep = (qty: number, minQty: number) => {
+  if (qty >= 50000) return 5000;
+  if (qty >= 10000) return 1000;
+  if (qty >= 1000) return 500;
+  if (qty >= 500) return 100;
+  return minQty;
+};
 
 // =============================================
 // COMPONENTE
@@ -77,7 +82,9 @@ interface CustomPackBuilderProps {
 
 export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   // --- ESTADO ---
-  const [selections, setSelections] = useState<Record<string, string>>({});
+  const [selections, setSelections] = useState<Record<string, number>>({});
+  const [selectionInputs, setSelectionInputs] = useState<Record<string, string>>({});
+  
   const [includeComments, setIncludeComments] = useState(false);
   const [commentQuantity, setCommentQuantity] = useState(5);
   const [commentQuantityInput, setCommentQuantityInput] = useState('5');
@@ -87,7 +94,6 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   const [isPublicConfirmed, setIsPublicConfirmed] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
@@ -131,13 +137,14 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
     let count = 0;
     const items: { name: string; price: number }[] = [];
 
-    Object.entries(selections).forEach(([, productId]) => {
-      if (productId) {
-        const product = PRODUCTS.find(p => p.id === productId);
-        if (product) {
-          sub += product.price;
-          count++;
-          items.push({ name: product.name, price: product.price });
+    Object.entries(selections).forEach(([serviceType, quantity]) => {
+      if (quantity > 0) {
+        const products = serviceGroups[serviceType];
+        if (products && products.length > 0) {
+           const { total: price } = getInterpolatedPrice(products, quantity);
+           sub += price;
+           count++;
+           items.push({ name: `${quantity.toLocaleString()} ${SERVICE_LABELS[serviceType as ServiceType] || serviceType}`, price });
         }
       }
     });
@@ -157,13 +164,13 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
       selectedCount: count,
       selectedItems: items,
     };
-  }, [selections, includeComments, commentQuantity]);
+  }, [selections, includeComments, commentQuantity, serviceGroups]);
 
   // --- LINKS INTELIGENTES ---
   const selectedServiceTypes = useMemo(() => {
     const types: ServiceType[] = [];
-    Object.entries(selections).forEach(([st, pid]) => {
-      if (pid) types.push(st as ServiceType);
+    Object.entries(selections).forEach(([st, qty]) => {
+      if (qty > 0) types.push(st as ServiceType);
     });
     if (includeComments) types.push('comments');
     return types;
@@ -173,16 +180,37 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   const needsPostLink = selectedServiceTypes.some(st => !PROFILE_LINK_SERVICES.includes(st));
 
   // --- HANDLERS ---
-  const handleSelectProduct = (serviceType: string, productId: string) => {
-    setSelections(prev => {
-      const next = { ...prev };
-      if (productId) {
-        next[serviceType] = productId;
-      } else {
+  const handleQtyChange = (serviceType: string, newQty: number, minQty: number, maxQty: number) => {
+    const clamped = Math.max(minQty, Math.min(maxQty, newQty));
+    setSelections(prev => ({ ...prev, [serviceType]: clamped }));
+    setSelectionInputs(prev => ({ ...prev, [serviceType]: String(clamped) }));
+  };
+
+  const handleInputBlur = (serviceType: string, minQty: number, maxQty: number) => {
+    const currentInput = selectionInputs[serviceType] || '0';
+    const parsed = parseInt(currentInput);
+    if (isNaN(parsed) || parsed < minQty) handleQtyChange(serviceType, minQty, minQty, maxQty);
+    else if (parsed > maxQty) handleQtyChange(serviceType, maxQty, minQty, maxQty);
+    else handleQtyChange(serviceType, parsed, minQty, maxQty);
+  };
+
+  const toggleService = (serviceType: string, minQty: number) => {
+    const isSelected = (selections[serviceType] || 0) > 0;
+    if (isSelected) {
+      setSelections(prev => {
+        const next = { ...prev };
         delete next[serviceType];
-      }
-      return next;
-    });
+        return next;
+      });
+      setSelectionInputs(prev => {
+        const next = { ...prev };
+        delete next[serviceType];
+        return next;
+      });
+    } else {
+      setSelections(prev => ({ ...prev, [serviceType]: minQty }));
+      setSelectionInputs(prev => ({ ...prev, [serviceType]: String(minQty) }));
+    }
   };
 
   const handleCommentQtyChange = (newQty: number) => {
@@ -284,82 +312,122 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
           const products = serviceGroups[serviceType];
           const Icon = SERVICE_ICON_MAP[serviceType] || Package;
           const label = SERVICE_LABELS[serviceType] || serviceType;
-          const selectedId = selections[serviceType];
-          const selectedProduct = selectedId ? products.find(p => p.id === selectedId) : null;
+          
+          let minQty = products.length > 0 ? products[0].provider_quantity : 50;
+          if (minQty > 100) minQty = 100;
+          const maxTierQty = products.length > 0 ? products[products.length - 1].provider_quantity : 10000;
+          const maxQty = Math.min(ABSOLUTE_MAX, maxTierQty * 2);
+
+          const isSelected = (selections[serviceType] || 0) > 0;
+          const currentQty = selections[serviceType] || minQty;
+          const currentInput = selectionInputs[serviceType] ?? String(minQty);
+          
+          let currentPrice = 0;
+          if (isSelected) {
+            const { total: price } = getInterpolatedPrice(products, currentQty);
+            currentPrice = price;
+          }
 
           return (
             <div
               key={serviceType}
-              className={`relative flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 transition-colors border-2 bg-[#111] ${
-                  selectedId 
+              className={`rounded-xl border-2 transition-all overflow-hidden bg-[#111] ${
+                  isSelected 
                   ? 'border-[#ccff00]' 
-                  : 'border-[#333] hover:border-[#555]'
+                  : 'border-[#333]'
                 }`}
             >
-              <div className="flex items-center gap-3 flex-1 min-w-0">
+              {/* Toggle Row */}
+              <div className="flex items-center gap-3 p-3 sm:p-4">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center bg-[#222] border-2 border-[#333]">
                   <Icon className="text-zinc-400" size={18} />
                 </div>
-                <span className="text-sm font-black text-white uppercase tracking-widest">{label}</span>
-              </div>
-
-              <div className="flex items-center gap-2 sm:gap-3 w-full sm:w-auto relative">
+                <span className="text-sm font-black text-white uppercase tracking-widest flex-1">{label}</span>
                 <button
-                  onClick={() => setOpenDropdown(openDropdown === serviceType ? null : serviceType)}
-                  className="flex-1 sm:w-[220px] bg-[#050505] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white focus:border-[#ccff00] focus:outline-none flex justify-between items-center"
-                >
-                  <span className="truncate">
-                    {selectedProduct ? `${cleanProductName(selectedProduct.name)} — S/ ${selectedProduct.price.toFixed(2)}` : 'No incluir'}
-                  </span>
-                  <ChevronDown size={16} className={`shrink-0 transition-transform ${openDropdown === serviceType ? 'rotate-180 text-[#ccff00]' : 'text-zinc-500'}`} />
-                </button>
-
-                <AnimatePresence>
-                  {openDropdown === serviceType && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -5 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -5 }}
-                      className="absolute top-[110%] left-0 right-0 sm:right-auto sm:w-[220px] bg-[#050505] border-2 border-[#333] z-50 max-h-60 overflow-y-auto custom-scrollbar shadow-[4px_4px_0px_#ccff00]"
-                    >
-                      <button
-                        onClick={() => {
-                          handleSelectProduct(serviceType, '');
-                          setOpenDropdown(null);
-                        }}
-                        className={`w-full text-left px-3 py-2.5 text-sm font-bold hover:bg-[#222] transition-colors ${!selectedId ? 'text-[#ccff00] bg-[#111]' : 'text-zinc-400'}`}
-                      >
-                        No incluir
-                      </button>
-                      {products.map(p => (
-                        <button
-                          key={p.id}
-                          onClick={() => {
-                            handleSelectProduct(serviceType, p.id);
-                            setOpenDropdown(null);
-                          }}
-                          className={`w-full text-left px-3 py-2.5 text-sm font-bold hover:bg-[#222] transition-colors truncate ${selectedId === p.id ? 'text-[#ccff00] bg-[#111]' : 'text-white'}`}
-                        >
-                          {cleanProductName(p.name)} — S/ {p.price.toFixed(2)}
-                        </button>
-                      ))}
-                    </motion.div>
+                  onClick={() => toggleService(serviceType, minQty)}
+                  className={cn(
+                    'relative inline-flex h-6 w-11 shrink-0 rounded-full transition-colors duration-200',
+                    isSelected ? 'bg-[#ccff00]' : 'bg-slate-700'
                   )}
-                </AnimatePresence>
-
-                {openDropdown && (
-                  <div 
-                    className="fixed inset-0 z-40" 
-                    onClick={() => setOpenDropdown(null)} 
+                >
+                  <span
+                    className={cn(
+                      'inline-block h-5 w-5 transform rounded-full bg-white shadow transition-transform duration-200 mt-0.5',
+                      isSelected ? 'translate-x-[22px]' : 'translate-x-0.5'
+                    )}
                   />
-                )}
-                
-                <div className={`text-xs font-bold uppercase tracking-widest shrink-0 ${
-                    selectedId ? 'text-[#ccff00]' : 'text-zinc-500'
+                </button>
+                <div className={`text-xs font-bold uppercase tracking-widest min-w-[70px] text-right ${
+                    isSelected ? 'text-[#ccff00]' : 'text-zinc-500'
                   }`}>
-                    {selectedProduct ? `S/ ${selectedProduct.price.toFixed(2)}` : 'S/ 0.00'}
+                    {isSelected ? `S/ ${currentPrice.toFixed(2)}` : 'S/ 0.00'}
                   </div>
               </div>
+
+              {/* Numeric Controls Row */}
+              <AnimatePresence>
+                {isSelected && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: 'auto', opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="px-3 sm:px-4 pb-4">
+                      <div className="bg-[#050505] p-4 border-2 border-[#333]">
+                        <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
+                          Cantidad de {label}
+                        </label>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleQtyChange(serviceType, currentQty - getStep(currentQty, minQty), minQty, maxQty)}
+                            disabled={currentQty <= minQty}
+                            className="flex h-12 w-12 items-center justify-center bg-[#222] text-white border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
+                          >
+                            <Minus size={16} />
+                          </button>
+                          <input
+                            type="text"
+                            inputMode="numeric"
+                            value={currentInput}
+                            onChange={e => setSelectionInputs(prev => ({ ...prev, [serviceType]: e.target.value.replace(/\D/g, '') }))}
+                            onBlur={() => handleInputBlur(serviceType, minQty, maxQty)}
+                            onKeyDown={e => { if (e.key === 'Enter') handleInputBlur(serviceType, minQty, maxQty); }}
+                            className="flex-1 min-w-0 text-center bg-[#050505] border-2 border-[#333] py-2.5 text-xl font-black text-white focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00]"
+                          />
+                          <button
+                            onClick={() => handleQtyChange(serviceType, currentQty + getStep(currentQty, minQty), minQty, maxQty)}
+                            disabled={currentQty >= maxQty}
+                            className="flex h-12 w-12 items-center justify-center bg-[#222] text-white border-2 border-[#333] hover:border-[#ccff00] hover:text-[#ccff00] disabled:opacity-30 disabled:cursor-not-allowed transition-all shrink-0"
+                          >
+                            <Plus size={16} />
+                          </button>
+                        </div>
+                        
+                        <div className="mt-2 flex justify-between text-[10px] text-slate-500">
+                          <span>Mín: {minQty.toLocaleString()}</span>
+                          <span>Máx: {maxQty.toLocaleString()}</span>
+                        </div>
+                        
+                        {/* Slider de cantidad */}
+                        <div className="mt-4">
+                          <input
+                            type="range"
+                            min={minQty}
+                            max={maxQty}
+                            step={minQty}
+                            value={currentQty}
+                            onChange={e => handleQtyChange(serviceType, parseInt(e.target.value), minQty, maxQty)}
+                            className="w-full h-2 bg-[#333] appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#ccff00] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#333]"
+                          />
+                        </div>
+
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           );
         })}
@@ -393,7 +461,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                   )}
                 />
               </button>
-              <div className={`text-xs font-bold uppercase tracking-widest ${
+              <div className={`text-xs font-bold uppercase tracking-widest min-w-[70px] text-right ${
                   includeComments ? 'text-[#ccff00]' : 'text-zinc-500'
                 }`}>
                   {includeComments ? `S/ ${commentTotal.toFixed(2)}` : 'S/ 0.00'}

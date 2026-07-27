@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import {
   Product, ProductType, ServiceType, PRODUCTS,
-  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, getPromoForProduct
+  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, getPromoForProduct, ABSOLUTE_MAX
 } from '@/lib/products';
 import { cn } from '@/lib/utils';
 
@@ -16,7 +16,6 @@ import { cn } from '@/lib/utils';
 // =============================================
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999';
-const ABSOLUTE_MAX = 100_000;
 
 const PLATFORM_NAMES: Record<ProductType, string> = {
   tiktok: 'TikTok', instagram: 'Instagram', twitter: 'X/Twitter',
@@ -58,7 +57,8 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
     [activeCategory, activeService]
   );
 
-  const minQty = tierProducts.length > 0 ? tierProducts[0].provider_quantity : 50;
+  let minQty = tierProducts.length > 0 ? tierProducts[0].provider_quantity : 50;
+  if (minQty > 100) minQty = 100;
   const maxTierQty = tierProducts.length > 0 ? tierProducts[tierProducts.length - 1].provider_quantity : 10000;
   const maxQty = Math.min(ABSOLUTE_MAX, maxTierQty * 2); // Hasta 2x del tier más alto, max 100K
 
@@ -206,6 +206,19 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                   <div className="mt-2 flex justify-between text-[10px] text-slate-500">
                     <span>Mín: {minQty.toLocaleString()}</span>
                     <span>Máx: {maxQty.toLocaleString()}</span>
+                  </div>
+
+                  {/* Slider de cantidad */}
+                  <div className="mt-4">
+                    <input
+                      type="range"
+                      min={minQty}
+                      max={maxQty}
+                      step={minQty}
+                      value={quantity}
+                      onChange={e => handleQtyChange(parseInt(e.target.value))}
+                      className="w-full h-2 bg-[#333] appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-5 [&::-webkit-slider-thumb]:h-5 [&::-webkit-slider-thumb]:bg-[#ccff00] [&::-webkit-slider-thumb]:border-2 [&::-webkit-slider-thumb]:border-[#333]"
+                    />
                   </div>
 
                   {/* Botones rápidos (deduplicados por cantidad) */}

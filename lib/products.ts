@@ -3631,6 +3631,8 @@ export const CUSTOM_QTY_ELIGIBLE: ServiceType[] = [
   'retweets', 'shares', 'watchtime', 'plays', 'listeners', 'saves'
 ];
 
+export const ABSOLUTE_MAX = 100000;
+
 /**
  * Calcula el precio para una cantidad arbitraria usando interpolación lineal
  * entre los tiers de precio existentes.
@@ -3663,28 +3665,41 @@ export function getInterpolatedPrice(
 
   // Encima del tier máximo
   if (quantity >= sorted[sorted.length - 1].provider_quantity) {
-    const ppu = sorted[sorted.length - 1].price / sorted[sorted.length - 1].provider_quantity;
-    return { pricePerUnit: ppu, total: parseFloat((ppu * quantity).toFixed(2)), nearestTier: sorted[sorted.length - 1] };
+    const ppuBase = sorted[sorted.length - 1].price / sorted[sorted.length - 1].provider_quantity;
+    let total = ppuBase * quantity;
+    if (quantity > sorted[sorted.length - 1].provider_quantity) {
+      total = total * 1.10; // Penalidad de 10% para cantidades custom por encima del máximo
+    }
+    const ppu = total / quantity;
+    return { pricePerUnit: ppu, total: parseFloat(total.toFixed(2)), nearestTier: sorted[sorted.length - 1] };
   }
 
   // Interpolación entre dos tiers
   for (let i = 0; i < sorted.length - 1; i++) {
     if (quantity >= sorted[i].provider_quantity && quantity <= sorted[i + 1].provider_quantity) {
-      const ppuLow = sorted[i].price / sorted[i].provider_quantity;
-      const ppuHigh = sorted[i + 1].price / sorted[i + 1].provider_quantity;
+      const priceLow = sorted[i].price;
+      const priceHigh = sorted[i + 1].price;
       const ratio = (quantity - sorted[i].provider_quantity) /
                     (sorted[i + 1].provider_quantity - sorted[i].provider_quantity);
-      const ppu = ppuLow + (ppuHigh - ppuLow) * ratio;
+      let total = priceLow + (priceHigh - priceLow) * ratio;
+      
+      // Aplicar penalidad del 10% si es cantidad personalizada, topada al precio del siguiente tier
+      if (quantity > sorted[i].provider_quantity && quantity < sorted[i + 1].provider_quantity) {
+         total = Math.min(total * 1.10, priceHigh);
+      }
+      
+      const ppu = total / quantity;
+      
       // El tier más cercano (arriba) para referencia del usuario
       const nearest = (quantity - sorted[i].provider_quantity) <= (sorted[i + 1].provider_quantity - quantity)
         ? sorted[i] : sorted[i + 1];
-      return { pricePerUnit: ppu, total: parseFloat((ppu * quantity).toFixed(2)), nearestTier: nearest };
+      return { pricePerUnit: ppu, total: parseFloat(total.toFixed(2)), nearestTier: nearest };
     }
   }
 
   // Fallback
-  const ppu = sorted[sorted.length - 1].price / sorted[sorted.length - 1].provider_quantity;
-  return { pricePerUnit: ppu, total: parseFloat((ppu * quantity).toFixed(2)), nearestTier: sorted[sorted.length - 1] };
+  const ppuBase = sorted[sorted.length - 1].price / sorted[sorted.length - 1].provider_quantity;
+  return { pricePerUnit: ppuBase, total: parseFloat((ppuBase * quantity).toFixed(2)), nearestTier: sorted[sorted.length - 1] };
 }
 
 export interface Category {

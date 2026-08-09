@@ -58,6 +58,9 @@ export async function POST(request: Request) {
 
         if (orderSnap.exists) {
           const orderData = orderSnap.data();
+          if (!orderData) {
+            return NextResponse.json({ error: "Datos de orden vacíos" }, { status: 404 });
+          }
 
           if (orderData?.status === 'pending') {
             console.log(`💰 Pago PayPal para Orden ${orderId} aprobado. Procesando items...`);

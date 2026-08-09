@@ -47,6 +47,9 @@ export async function POST(request: Request) {
     }
 
     const orderData = orderSnap.data();
+    if (!orderData) {
+      return NextResponse.json({ error: "Datos de orden vacíos" }, { status: 404 });
+    }
     
     // Precio en PEN calculado por nuestro backend
     const pricePEN = orderData.totalPEN;

@@ -358,7 +358,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-followers-100',
     name: '100 Seguidores TikTok',
     price: 10.00,
-    provider_id: 2560,
+    provider_id: 5447,
     provider_quantity: 100,
     type: 'tiktok',
     service_type: 'followers', // <--- Agregado
@@ -373,7 +373,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-followers-500',
     name: '500 Seguidores TikTok',
     price: 23.00,
-    provider_id: 2560,
+    provider_id: 5447,
     provider_quantity: 500,
     type: 'tiktok',
     service_type: 'followers',
@@ -383,7 +383,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-followers-1k',
     name: '1,000 Seguidores TikTok',
     price: 38.00,
-    provider_id: 2560,
+    provider_id: 5447,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'followers',
@@ -395,7 +395,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-followers-5k',
     name: '5,000 Seguidores TikTok',
     price: 125.00,
-    provider_id: 2560,
+    provider_id: 5447,
     provider_quantity: 5000,
     type: 'tiktok',
     service_type: 'followers',
@@ -405,7 +405,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-followers-10k',
     name: '10,000 Seguidores TikTok',
     price: 220.00,
-    provider_id: 2560,
+    provider_id: 5447,
     provider_quantity: 10000,
     type: 'tiktok',
     service_type: 'followers',
@@ -421,7 +421,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-100',
     name: '100 Likes TikTok',
     price: 7.00, // Ajustado para no competir con el de 1000
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 100,
     type: 'tiktok',
     service_type: 'likes',
@@ -431,7 +431,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-500',
     name: '500 Likes TikTok',
     price: 15.00, // Reducido para entrada fácil
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 500,
     type: 'tiktok',
     service_type: 'likes',
@@ -441,7 +441,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-1k',
     name: '1,000 Likes TikTok',
     price: 20.00, // GANCHO: De S/ 15 a S/ 6. Irresistible.
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'likes',
@@ -453,7 +453,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-5k',
     name: '5,000 Likes TikTok',
     price: 50.00, // De S/ 50 a S/ 25
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 5000,
     type: 'tiktok',
     service_type: 'likes',
@@ -463,7 +463,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-10k',
     name: '10,000 Likes TikTok',
     price: 85.00, // De S/ 90 a S/ 45
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 10000,
     type: 'tiktok',
     service_type: 'likes',
@@ -473,7 +473,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-20k',
     name: '20,000 Likes TikTok',
     price: 150.00, // De S/ 160 a S/ 80
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 20000,
     type: 'tiktok',
     service_type: 'likes',
@@ -483,7 +483,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-likes-50k',
     name: '50,000 Likes TikTok',
     price: 250.00, // De S/ 350 a S/ 180
-    provider_id: 2563,
+    provider_id: 8848,
     provider_quantity: 50000,
     type: 'tiktok',
     service_type: 'likes',
@@ -497,7 +497,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-views-1k',
     name: '1,000 Vistas Tiktok',
     price: 7.00,
-    provider_id: 5791,
+    provider_id: 1130,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'views',
@@ -507,7 +507,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-views-5k',
     name: '5,000 Vistas Tiktok',
     price: 17.50,
-    provider_id: 5791,
+    provider_id: 1130,
     provider_quantity: 5000,
     type: 'tiktok',
     service_type: 'views',
@@ -519,7 +519,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-views-10k',
     name: '10,000 Vistas Tiktok',
     price: 28.00,
-    provider_id: 5791,
+    provider_id: 1130,
     provider_quantity: 10000,
     type: 'tiktok',
     service_type: 'views',
@@ -529,7 +529,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-views-20k',
     name: '20,000 Vistas Tiktok',
     price: 42.00,
-    provider_id: 5791,
+    provider_id: 1130,
     provider_quantity: 20000,
     type: 'tiktok',
     service_type: 'views',
@@ -539,7 +539,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-views-50k',
     name: '50,000 Vistas Tiktok',
     price: 70.00,
-    provider_id: 5791,
+    provider_id: 1130,
     provider_quantity: 50000,
     type: 'tiktok',
     service_type: 'views',
@@ -549,7 +549,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tt-views-100k',
     name: '100,000 Vistas Tiktok',
     price: 105.00,
-    provider_id: 5791,
+    provider_id: 1130,
     provider_quantity: 100000,
     type: 'tiktok',
     service_type: 'views',
@@ -874,7 +874,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-100',
     name: '100 Likes Instagram',
     price: 7.00,
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 100,
     type: 'instagram',
     service_type: 'likes',
@@ -884,7 +884,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-500',
     name: '500 Likes Instagram',
     price: 15.00, // Ticket mínimo perfecto
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 500,
     type: 'instagram',
     service_type: 'likes',
@@ -894,7 +894,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-1k',
     name: '1,000 Likes Instagram',
     price: 20.00, // Bajado de 15 a 9.
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 1000,
     type: 'instagram',
     service_type: 'likes',
@@ -906,7 +906,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-5k',
     name: '5,000 Likes Instagram',
     price: 75.00, // Bajado de 50
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 5000,
     type: 'instagram',
     service_type: 'likes',
@@ -916,7 +916,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-10k',
     name: '10,000 Likes Instagram',
     price: 125.00, // Bajado de 90
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 10000,
     type: 'instagram',
     service_type: 'likes',
@@ -926,7 +926,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-50k',
     name: '50,000 Likes Instagram',
     price: 250.00, // Bajado de 420 (Descuento agresivo)
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 50000,
     type: 'instagram',
     service_type: 'likes',
@@ -936,7 +936,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-likes-100k',
     name: '100,000 Likes Instagram',
     price: 450.00, // Bajado de 820
-    provider_id: 8159,
+    provider_id: 2498,
     provider_quantity: 100000,
     type: 'instagram',
     service_type: 'likes',
@@ -3632,6 +3632,17 @@ export const CUSTOM_QTY_ELIGIBLE: ServiceType[] = [
 ];
 
 export const ABSOLUTE_MAX = 100000;
+export const VIEWS_MAX = 1000000; // 1M para servicios de views
+
+/**
+ * Devuelve el máximo absoluto según el tipo de servicio.
+ * Views y Shorts permiten hasta 1M; el resto hasta 100K.
+ */
+export function getAbsoluteMax(serviceType: ServiceType): number {
+  return serviceType === 'views' || serviceType === 'viewsShorts'
+    ? VIEWS_MAX
+    : ABSOLUTE_MAX;
+}
 
 /**
  * Calcula el precio para una cantidad arbitraria usando interpolación lineal

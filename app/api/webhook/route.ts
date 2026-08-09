@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { sendOrderToProvider } from '@/lib/provider';
+import { adminDb } from '@/lib/firebaseAdmin';
 
 const client = new MercadoPagoConfig({ 
   accessToken: process.env.MP_ACCESS_TOKEN! 
@@ -31,15 +32,34 @@ export async function POST(request: Request) {
 
       // 3. Verificamos que esté APROBADO
       if (paymentData.status === 'approved') {
-        
-        const { target_link, service_id, quantity } = paymentData.metadata;
+        const orderId = paymentData.external_reference || paymentData.metadata?.order_id;
 
-        console.log(`💰 Pago ${id} aprobado (Evento: ${body?.action || 'unknown'}). Procesando...`);
-        console.log(`Link: ${target_link} | Service: ${service_id} | Cant: ${quantity}`);
+        if (orderId) {
+          const orderRef = adminDb.collection('orders').doc(orderId);
+          const orderSnap = await orderRef.get();
 
-        // 4. Enviamos la orden
-        if (target_link && service_id && quantity) {
-           await sendOrderToProvider(Number(service_id), target_link, Number(quantity));
+          if (orderSnap.exists) {
+            const orderData = orderSnap.data();
+
+            if (orderData?.status === 'pending') {
+              console.log(`💰 Pago MP ${id} para Orden ${orderId} aprobado. Procesando items...`);
+              
+              // Marcar como completada ANTES de procesar para evitar doble envío si MP llama al webhook 2 veces
+              await orderRef.update({ status: 'completed', paymentId: id, gateway: 'mercadopago' });
+
+              // Iterar sobre los items y mandar al proveedor SMM
+              for (const item of orderData.items) {
+                if (item.serviceId && item.link && item.quantity) {
+                  // Si tiene comentarios, el proveedor SMM normalmente pide enviarlos en el 'link' o 'comments' parameter.
+                  // Nuestro 'sendOrderToProvider' por ahora solo toma link (el panel SMM deduce los comentarios del link o se los pasaremos en el futuro).
+                  // NOTA: Para custom comments de verdad, la API SMM requiere el parametro 'comments' (action=add&service=X&link=Y&comments=Z)
+                  await sendOrderToProvider(Number(item.serviceId), item.link, Number(item.quantity));
+                }
+              }
+            } else {
+              console.log(`Orden ${orderId} ya estaba procesada.`);
+            }
+          }
         }
       }
     }

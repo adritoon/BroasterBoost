@@ -11,13 +11,21 @@ import {
   PRODUCTS, ProductType, ServiceType,
   getCustomCommentPrice, CUSTOM_PACK_DISCOUNT,
   BUILDER_EXCLUDED_SERVICES, PROFILE_LINK_SERVICES, getPromoForProduct,
-  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, ABSOLUTE_MAX
+  getInterpolatedPrice, CUSTOM_QTY_ELIGIBLE, ABSOLUTE_MAX, getAbsoluteMax
 } from '@/lib/products';
 import { cn } from '@/lib/utils';
+import { initMercadoPago, Wallet } from '@mercadopago/sdk-react';
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js';
 
 // =============================================
 // CONSTANTES LOCALES
 // =============================================
+
+if (process.env.NEXT_PUBLIC_MP_PUBLIC_KEY) {
+  initMercadoPago(process.env.NEXT_PUBLIC_MP_PUBLIC_KEY, { locale: 'es-PE' });
+}
+const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '';
+const PAYPAL_SANDBOX = PAYPAL_CLIENT_ID === 'sb';
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999';
 
@@ -94,6 +102,12 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   const [isPublicConfirmed, setIsPublicConfirmed] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const [paymentMethod, setPaymentMethod] = useState<'web' | 'manual' | null>(null);
+  const [preferenceId, setPreferenceId] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [orderId, setOrderId] = useState<string | null>(null);
+  const [paypalOrderCreated, setPaypalOrderCreated] = useState(false);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
@@ -236,25 +250,95 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
       return;
     }
     if (needsProfileLink && (!profileLink || profileLink.length < 3)) {
-      showError('Ingresa el link de tu perfil/canal.');
+      showError(`Ingresa un enlace válido de tu perfil de ${platform.name}.`);
       return;
     }
     if (needsPostLink && (!postLink || postLink.length < 3)) {
-      showError('Ingresa el link del video/publicación.');
+      showError(`Ingresa un enlace válido para ${platform.postLabel.toLowerCase()}.`);
+      return;
+    }
+    if (includeComments && commentTexts.slice(0, commentQuantity).some(t => t.trim().length === 0)) {
+      showError('Completa todos los textos de los comentarios.');
       return;
     }
     if (!isPublicConfirmed) {
-      showError('Confirma que tu perfil es público y los enlaces son correctos.');
+      showError('Debes confirmar que los enlaces son correctos y el contenido es público.');
       return;
     }
-    if (includeComments) {
-      const filled = commentTexts.filter(c => c.trim().length > 0);
-      if (filled.length < commentQuantity) {
-        showError(`Faltan ${commentQuantity - filled.length} comentarios por escribir.`);
-        return;
-      }
-    }
+    setPaymentMethod(null);
+    setPreferenceId(null);
     setShowCheckout(true);
+  };
+
+  const handleCreatePayment = async () => {
+    try {
+      setLoading(true);
+
+      const items: any[] = [];
+      Object.entries(selections).forEach(([serviceType, qty]) => {
+        if (qty > 0) {
+           const link = PROFILE_LINK_SERVICES.includes(serviceType as ServiceType) ? profileLink : postLink;
+           items.push({
+             type: 'custom_quantity',
+             platform: activeCategory,
+             service: serviceType,
+             quantity: qty,
+             link: link
+           });
+        }
+      });
+
+      if (includeComments && commentQuantity > 0) {
+         // Buscamos el ID del producto de comentarios
+         const commentProduct = PRODUCTS.find(p => p.type === activeCategory && p.service_type === 'comments' && p.isCustomQuantity);
+         if (commentProduct) {
+           items.push({
+             type: 'custom_comments',
+             productId: commentProduct.id,
+             platform: activeCategory,
+             service: 'comments',
+             quantity: commentQuantity,
+             link: postLink,
+             comments: commentTexts.slice(0, commentQuantity)
+           });
+         }
+      }
+
+      // 1. Crear la orden en Firestore
+      const resOrder = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: activeCategory,
+          isCustomPack: true,
+          items: items
+        })
+      });
+      const dataOrder = await resOrder.json();
+      if (!resOrder.ok) throw new Error(dataOrder.error || 'Error al crear orden');
+      
+      const generatedOrderId = dataOrder.orderId;
+      setOrderId(generatedOrderId);
+
+      // 2. Crear la preferencia de MercadoPago
+      const resMp = await fetch('/api/checkout', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId: generatedOrderId }),
+      });
+      
+      const dataMp = await resMp.json();
+      if (!resMp.ok) throw new Error(dataMp.error || 'Error con MercadoPago');
+      
+      setPreferenceId(dataMp.preferenceId);
+      
+    } catch (err: any) {
+      console.error(err);
+      showError(err.message || 'Error al procesar el pago');
+      setPaymentMethod(null);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const buildWhatsAppMessage = () => {
@@ -316,7 +400,10 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
           let minQty = products.length > 0 ? products[0].provider_quantity : 50;
           if (minQty > 100) minQty = 100;
           const maxTierQty = products.length > 0 ? products[products.length - 1].provider_quantity : 10000;
-          const maxQty = Math.min(ABSOLUTE_MAX, maxTierQty * 2);
+          const isViewsService = serviceType === 'views' || serviceType === 'viewsShorts';
+          const maxQty = isViewsService
+            ? getAbsoluteMax(serviceType) // Views: hasta 1M directo
+            : Math.min(ABSOLUTE_MAX, maxTierQty * 2);
 
           const isSelected = (selections[serviceType] || 0) > 0;
           const currentQty = selections[serviceType] || minQty;
@@ -680,19 +767,21 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
             </p>
           )}
 
+          {/* BOTÓN CHECKOUT */}
           <button
             onClick={handleCheckout}
-            className="w-full flex items-center justify-center gap-2 bg-[#752384] text-white font-black py-4 hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest transition-transform text-sm shadow-[4px_4px_0px_white]"
+            disabled={total === 0}
+            className="w-full flex items-center justify-center gap-2 bg-[#ccff00] text-black font-black py-4 hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest transition-transform text-sm shadow-[4px_4px_0px_black] disabled:opacity-50 disabled:cursor-not-allowed mt-4"
           >
-            <MessageCircle size={18} />
-            Yapear Directo (QR)
+            <Package size={18} />
+            Continuar (S/ {total.toFixed(2)})
           </button>
-          <p className="text-xs text-center text-slate-500">Solo pago manual vía Yape/Plin</p>
+          <p className="text-xs text-center text-slate-500 mt-3">Paga con Tarjeta, Yape o PayPal</p>
         </motion.div>
       )}
 
       {/* ---- ESTADO VACÍO ---- */}
-      {selectedCount === 0 && (
+      {selectedCount === 0 && !includeComments && (
         <div className="text-center py-10">
           <Package className="mx-auto text-slate-600 mb-3" size={44} />
           <p className="text-slate-400 text-sm font-medium">Selecciona servicios arriba para armar tu pack</p>
@@ -745,36 +834,145 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                 </div>
               </div>
 
-              {/* QR */}
-              <div className="bg-[#752384] p-4 mb-5 flex flex-col items-center">
-                <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
-                <p className="mt-3 text-white font-bold text-lg tracking-wide uppercase tracking-widest">Titular: Robert Sal*</p>
-              </div>
+              {!paymentMethod ? (
+                 <div className="space-y-3 mt-4">
+                   <button 
+                     onClick={() => {
+                       setPaymentMethod('web');
+                       handleCreatePayment();
+                     }}
+                     disabled={loading}
+                     className="w-full border-2 border-[#333] bg-[#111] text-zinc-400 font-black uppercase tracking-widest py-4 hover:border-[#ccff00] hover:text-[#ccff00] transition-colors disabled:opacity-50 text-sm"
+                   >
+                     {loading ? 'Cargando...' : 'Pago Web'}
+                   </button>
+                   <button
+                     onClick={() => setPaymentMethod('manual')}
+                     className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
+                   >
+                     Yapear Directo (QR)
+                   </button>
+                 </div>
+              ) : paymentMethod === 'manual' ? (
+                 <div className="mt-4">
+                    <div className="bg-[#752384] p-4 mb-4 flex flex-col items-center">
+                      <img src="/qr-yape.png" alt="QR Yape" className="w-48 h-48 object-contain" />
+                      <p className="mt-3 text-white font-bold text-lg uppercase tracking-widest">Titular: Robert Sal*</p>
+                    </div>
+                    <div className="space-y-4">
+                      <div className="bg-[#050505] p-4 border-2 border-[#333] text-sm text-zinc-400 space-y-1 font-bold">
+                        <p>1. Yapea <strong>S/ {total.toFixed(2)}</strong> al QR.</p>
+                        <p>2. Toma una captura de pantalla.</p>
+                        <p>3. Envíala a nuestro WhatsApp para activar.</p>
+                      </div>
+                      <a
+                        href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-black font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
+                      >
+                        <MessageCircle size={20} />
+                        Enviar Comprobante
+                      </a>
+                    </div>
+                    <button
+                      onClick={() => setPaymentMethod(null)}
+                      className="w-full mt-4 text-xs text-slate-500 hover:text-white py-1 transition-colors"
+                    >
+                      Volver
+                    </button>
+                 </div>
+              ) : (
+                 <div className="mt-4 space-y-3">
+                   <button
+                     onClick={() => { setPaymentMethod(null); setPreferenceId(null); setPaypalOrderCreated(false); }}
+                     className="w-full text-xs text-slate-500 hover:text-white py-1 transition-colors"
+                   >
+                     Volver
+                   </button>
 
-              {/* Instrucciones */}
-              <div className="space-y-4">
-                <div className="bg-[#050505] p-4 border-2 border-[#333] text-sm text-zinc-400 space-y-1 font-bold">
-                  <p>
-                    1. Yapea <strong>S/ {total.toFixed(2)}</strong> al QR.
-                  </p>
-                  <p>2. Toma una captura de pantalla.</p>
-                  <p>3. Envíala a nuestro WhatsApp para activar.</p>
-                </div>
+                   {/* MercadoPago Wallet */}
+                   {preferenceId && (
+                     <div className="wallet-container">
+                       <Wallet initialization={{ preferenceId }} />
+                     </div>
+                   )}
 
-                <a
-                  href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(buildWhatsAppMessage())}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-[#25D366] text-black font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
-                >
-                  <MessageCircle size={20} />
-                  Enviar Comprobante
-                </a>
+                   {/* Divisor */}
+                   <div className="flex items-center gap-3">
+                     <div className="flex-1 h-px bg-[#333]" />
+                     <span className="text-xs text-zinc-600 font-bold uppercase tracking-widest">o paga con</span>
+                     <div className="flex-1 h-px bg-[#333]" />
+                   </div>
 
-                <p className="text-xs text-center text-slate-400">
-                  *La activación manual puede tomar 15-30 minutos.
-                </p>
-              </div>
+                   {/* PayPal */}
+                   <div className="bg-[#050505] border-2 border-[#333] p-4">
+                      <p className="text-xs text-slate-400 mb-1 text-center">
+                        Precio: <span className="text-white font-bold">S/ {total.toFixed(2)}</span>
+                        {' + '}
+                        <span className="text-amber-400">5.4% comisión PayPal</span>
+                      </p>
+                      <p className="text-[10px] text-slate-500 mb-3 text-center font-bold">
+                        Total: S/ {(total * 1.054).toFixed(2)} PEN (≈ ${(total * 1.054 / 3.40).toFixed(2)} USD)
+                      </p>
+                     {PAYPAL_CLIENT_ID ? (
+                       <PayPalScriptProvider options={{
+                         clientId: PAYPAL_CLIENT_ID,
+                         currency: 'USD',
+                         ...(PAYPAL_SANDBOX ? { 'data-sdk-integration-source': 'developer-studio' } : {}),
+                       }}>
+                         <PayPalButtons
+                           forceReRender={[orderId]}
+                           style={{ layout: "vertical", color: "gold", shape: "rect", label: "pay" }}
+                           createOrder={async () => {
+                             try {
+                               const res = await fetch('/api/paypal/create-order', {
+                                 method: 'POST',
+                                 headers: { 'Content-Type': 'application/json' },
+                                 body: JSON.stringify({ orderId: orderId })
+                               });
+                               const data = await res.json();
+                               if (data.orderID) {
+                                 setPaypalOrderCreated(true);
+                                 return data.orderID;
+                               } else {
+                                 showError(data.error || 'Error al conectar con PayPal');
+                                 throw new Error('Error al conectar con PayPal');
+                               }
+                             } catch (err: any) {
+                               showError(err.message);
+                               throw err;
+                             }
+                           }}
+                           onApprove={async (data, actions) => {
+                             try {
+                               const res = await fetch('/api/paypal/capture-order', {
+                                 method: 'POST',
+                                 headers: { 'Content-Type': 'application/json' },
+                                 body: JSON.stringify({ orderID: data.orderID })
+                               });
+                               const captureData = await res.json();
+                               if (captureData.status === 'COMPLETED') {
+                                 window.location.href = '/track';
+                               } else {
+                                 showError('Hubo un problema al procesar el pago.');
+                               }
+                             } catch (err) {
+                               showError('Hubo un error de conexión.');
+                             }
+                           }}
+                           onCancel={() => {
+                             setPaypalOrderCreated(false);
+                             showError('Pago cancelado');
+                           }}
+                         />
+                       </PayPalScriptProvider>
+                     ) : (
+                       <p className="text-xs text-slate-500 text-center py-2">PayPal no disponible temporalmente</p>
+                     )}
+                   </div>
+                 </div>
+              )}
             </motion.div>
           </motion.div>
         )}

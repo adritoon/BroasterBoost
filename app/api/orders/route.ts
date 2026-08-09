@@ -48,6 +48,11 @@ export async function POST(request: Request) {
         }
 
         const { total, nearestTier } = getInterpolatedPrice(tierProducts, item.quantity);
+
+        if (!nearestTier) {
+           return NextResponse.json({ error: `Error al calcular precio para ${item.platform} ${item.service}` }, { status: 400 });
+        }
+
         subtotal += total;
         orderItems.push({
           serviceId: nearestTier.provider_id,

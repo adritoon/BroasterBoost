@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Users, Heart, Eye, MessageCircle, Repeat, ThumbsUp, Clock,
@@ -89,6 +90,9 @@ interface CustomPackBuilderProps {
 }
 
 export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   // --- ESTADO ---
   const [selections, setSelections] = useState<Record<string, number>>({});
   const [selectionInputs, setSelectionInputs] = useState<Record<string, string>>({});
@@ -790,6 +794,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
       )}
 
       {/* ---- MODAL CHECKOUT ---- */}
+      {mounted && createPortal(
       <AnimatePresence>
         {showCheckout && (
           <motion.div
@@ -976,9 +981,12 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
             </motion.div>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
 
       {/* ---- TOAST ERROR ---- */}
+      {mounted && createPortal(
       <AnimatePresence>
         {errorMessage && (
           <motion.div
@@ -997,7 +1005,9 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
             <p className="text-sm font-medium leading-snug">{errorMessage}</p>
           </motion.div>
         )}
-      </AnimatePresence>
+      </AnimatePresence>,
+      document.body
+      )}
     </div>
   );
 }

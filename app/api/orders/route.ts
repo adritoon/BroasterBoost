@@ -87,9 +87,14 @@ export async function POST(request: Request) {
       totalPEN = subtotal - appliedDiscount;
     }
 
+    // Generar un ID ordenado cronológicamente (SB-timestamp-random)
+    const timestamp = Date.now().toString();
+    const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
+    const orderId = `SB-${timestamp}-${randomStr}`;
+
     // Save to Firestore
     const ordersRef = adminDb.collection('orders');
-    const docRef = await ordersRef.add({
+    await ordersRef.doc(orderId).set({
       items: orderItems,
       subtotalPEN: subtotal,
       discountPEN: appliedDiscount,
@@ -100,7 +105,7 @@ export async function POST(request: Request) {
       isCustomPack
     });
 
-    return NextResponse.json({ success: true, orderId: docRef.id, totalPEN });
+    return NextResponse.json({ success: true, orderId: orderId, totalPEN });
 
   } catch (error) {
     console.error("Error creating order:", error);

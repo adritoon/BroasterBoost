@@ -23,6 +23,9 @@ export async function POST(request: Request) {
     }
 
     const orderData = orderSnap.data();
+    if (!orderData) {
+      return NextResponse.json({ error: "Datos de orden vacíos" }, { status: 404 });
+    }
 
     // OBTENEMOS LA URL DE VERCEL (O usará localhost si estás probando en tu PC)
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'http://localhost:3000';

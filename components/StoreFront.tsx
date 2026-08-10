@@ -33,7 +33,7 @@ const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || '51999999999'
 const PAYPAL_CLIENT_ID = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || '';
 const PAYPAL_SANDBOX = process.env.NEXT_PUBLIC_PAYPAL_SANDBOX === 'true';
 const PAYPAL_COMMISSION = 0.054; // 5.4%
-const USD_EXCHANGE_RATE = 3.40;
+const USD_EXCHANGE_RATE = 3.30;
 
 const iconMap: Record<string, any> = {
   instagram: Instagram, music: Music, plays: Play, listeners: Headphones, saves: Bookmark, facebook: Facebook, youtube: Youtube,
@@ -814,6 +814,10 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
                              >
                                Yapear Directo (QR)
                              </button>
+                          </div>
+                        ) : loading ? (
+                          <div className="flex justify-center p-8 border-2 border-[#333] bg-[#111]">
+                            <span className="text-zinc-400 text-sm font-bold uppercase tracking-widest animate-pulse">Generando orden...</span>
                           </div>
                         ) : (
                           /* --- VISTA PAGO WEB: MercadoPago + PayPal juntos --- */

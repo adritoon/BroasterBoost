@@ -460,6 +460,10 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                       Volver
                     </button>
                  </div>
+              ) : loading ? (
+                 <div className="mt-4 flex justify-center p-8 border-2 border-[#333] bg-[#111]">
+                   <span className="text-zinc-400 text-sm font-bold uppercase tracking-widest animate-pulse">Generando orden...</span>
+                 </div>
               ) : (
                  <div className="mt-4 space-y-3">
                    <button
@@ -491,7 +495,7 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                         <span className="text-amber-400">5.4% comisión PayPal</span>
                       </p>
                       <p className="text-[10px] text-slate-500 mb-3 text-center font-bold">
-                        Total: S/ {(total * 1.054).toFixed(2)} PEN (≈ ${(total * 1.054 / 3.40).toFixed(2)} USD)
+                        Total: S/ {(total * 1.054).toFixed(2)} PEN (≈ ${(total * 1.054 / 3.30).toFixed(2)} USD)
                       </p>
                      {PAYPAL_CLIENT_ID ? (
                        <PayPalScriptProvider options={{

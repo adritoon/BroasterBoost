@@ -5,8 +5,8 @@ const PAYPAL_API_URL = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.payp
 const PAYPAL_CLIENT_ID = process.env.PAYPAL_CLIENT_ID!;
 const PAYPAL_CLIENT_SECRET = process.env.PAYPAL_CLIENT_SECRET!;
 
-// Tipo de cambio PEN → USD
-const EXCHANGE_RATE = 3.40;
+// Tipo de cambio protector PEN -> USD (Para contrarrestar comisiones de retiro)
+const EXCHANGE_RATE = 3.30;
 // Comisión PayPal (~5.4%) que se le agrega al cliente
 const PAYPAL_COMMISSION = 0.054;
 

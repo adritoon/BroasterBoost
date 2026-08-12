@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendOrderToProvider } from '@/lib/provider';
+import { sendOrderWithChunking } from '@/lib/provider';
 import { adminDb } from '@/lib/firebaseAdmin';
 
 const PAYPAL_API_URL = process.env.PAYPAL_API_URL || 'https://api-m.sandbox.paypal.com';
@@ -69,11 +69,38 @@ export async function POST(request: Request) {
             await orderRef.update({ status: 'completed', paymentId: orderID, gateway: 'paypal' });
 
             let providerResult = null;
-            // Iterar sobre los items y mandar al proveedor SMM
-            for (const item of orderData.items) {
+            let allChunks: any[] = [];
+            let totalChunksCount = 0;
+            let chunksDeliveredCount = 0;
+
+            // Iterar sobre los items y mandar al proveedor SMM con chunking
+            for (let i = 0; i < orderData.items.length; i++) {
+              const item = orderData.items[i];
               if (item.serviceId && item.link && item.quantity) {
-                providerResult = await sendOrderToProvider(Number(item.serviceId), item.link, Number(item.quantity));
+                providerResult = await sendOrderWithChunking(
+                  Number(item.serviceId),
+                  item.link,
+                  Number(item.quantity),
+                  item.serviceType || '',
+                  i
+                );
+
+                if (providerResult.chunked && providerResult.chunks) {
+                  allChunks = allChunks.concat(providerResult.chunks);
+                  totalChunksCount += providerResult.totalChunks || 0;
+                  chunksDeliveredCount += 1;
+                }
               }
+            }
+
+            // Si hubo chunking, guardar los chunks en la orden
+            if (allChunks.length > 0) {
+              await orderRef.update({
+                chunks: allChunks,
+                totalChunks: totalChunksCount,
+                chunksDelivered: chunksDeliveredCount,
+              });
+              console.log(`📦 Orden ${orderId}: ${chunksDeliveredCount}/${totalChunksCount} chunks enviados. Resto pendiente.`);
             }
             
             return NextResponse.json({ 

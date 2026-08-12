@@ -29,7 +29,8 @@ export async function POST(request: Request) {
           link: item.link,
           price: product.price,
           name: product.name,
-          productId: product.id
+          productId: product.id,
+          serviceType: product.service_type
         });
       } else if (item.type === 'custom_quantity') {
         if (!CUSTOM_QTY_ELIGIBLE.includes(item.service as ServiceType)) {
@@ -59,7 +60,8 @@ export async function POST(request: Request) {
           quantity: item.quantity,
           link: item.link,
           price: total,
-          name: `${item.quantity.toLocaleString()} ${item.service} personalizados`
+          name: `${item.quantity.toLocaleString()} ${item.service} personalizados`,
+          serviceType: item.service
         });
       } else if (item.type === 'custom_comments') {
          const { total } = getCustomCommentPrice(item.quantity);
@@ -74,7 +76,8 @@ export async function POST(request: Request) {
            price: total,
            comments: item.comments,
            name: `${item.quantity.toLocaleString()} Comentarios Personalizados`,
-           productId: product.id
+           productId: product.id,
+           serviceType: 'comments'
          });
       }
     }

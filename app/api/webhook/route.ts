@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
-import { sendOrderToProvider } from '@/lib/provider';
+import { sendOrderWithChunking } from '@/lib/provider';
 import { adminDb } from '@/lib/firebaseAdmin';
 
 const client = new MercadoPagoConfig({ 
@@ -47,14 +47,41 @@ export async function POST(request: Request) {
               // Marcar como completada ANTES de procesar para evitar doble envío si MP llama al webhook 2 veces
               await orderRef.update({ status: 'completed', paymentId: id, gateway: 'mercadopago' });
 
-              // Iterar sobre los items y mandar al proveedor SMM
-              for (const item of orderData.items) {
+              // Iterar sobre los items y mandar al proveedor SMM con chunking
+              let allChunks: any[] = [];
+              let totalChunksCount = 0;
+              let chunksDeliveredCount = 0;
+
+              for (let i = 0; i < orderData.items.length; i++) {
+                const item = orderData.items[i];
                 if (item.serviceId && item.link && item.quantity) {
                   // Si tiene comentarios, el proveedor SMM normalmente pide enviarlos en el 'link' o 'comments' parameter.
                   // Nuestro 'sendOrderToProvider' por ahora solo toma link (el panel SMM deduce los comentarios del link o se los pasaremos en el futuro).
                   // NOTA: Para custom comments de verdad, la API SMM requiere el parametro 'comments' (action=add&service=X&link=Y&comments=Z)
-                  await sendOrderToProvider(Number(item.serviceId), item.link, Number(item.quantity));
+                  const result = await sendOrderWithChunking(
+                    Number(item.serviceId),
+                    item.link,
+                    Number(item.quantity),
+                    item.serviceType || '',
+                    i
+                  );
+
+                  if (result.chunked && result.chunks) {
+                    allChunks = allChunks.concat(result.chunks);
+                    totalChunksCount += result.totalChunks || 0;
+                    chunksDeliveredCount += 1; // Solo el primer chunk de cada item se envía
+                  }
                 }
+              }
+
+              // Si hubo chunking, guardar los chunks en la orden
+              if (allChunks.length > 0) {
+                await orderRef.update({
+                  chunks: allChunks,
+                  totalChunks: totalChunksCount,
+                  chunksDelivered: chunksDeliveredCount,
+                });
+                console.log(`📦 Orden ${orderId}: ${chunksDeliveredCount}/${totalChunksCount} chunks enviados. Resto pendiente.`);
               }
             } else {
               console.log(`Orden ${orderId} ya estaba procesada.`);

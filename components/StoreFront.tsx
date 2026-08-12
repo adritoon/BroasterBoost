@@ -410,6 +410,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
       if (!resOrder.ok) throw new Error(dataOrder.error || 'Error al crear orden Yape');
       
       setOrderId(dataOrder.orderId);
+      setManualTotalPrice(dataOrder.totalPEN);
       setManualProduct(product);
       setShowYapeModal(true);
     } catch (error: any) {
@@ -843,10 +844,17 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
                                </button>
                                <button
                                  onClick={() => handleManualPayment(product)}
-                                 className="flex-1 flex items-center justify-center gap-2 bg-[#752384] text-white font-black py-4 hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest transition-transform text-sm shadow-[4px_4px_0px_white]"
+                                 disabled={loading}
+                                 className="flex-1 flex items-center justify-center gap-2 bg-[#752384] text-white font-black py-4 hover:-translate-y-1 active:translate-y-0 uppercase tracking-widest transition-transform text-sm shadow-[4px_4px_0px_white] disabled:opacity-50 disabled:cursor-not-allowed"
                                >
-                                 <MessageCircle size={18} />
-                                 Yapear Directo (QR)
+                                 {loading ? (
+                                    'Generando...'
+                                 ) : (
+                                   <>
+                                     <MessageCircle size={18} />
+                                     Yapear Directo (QR)
+                                   </>
+                                 )}
                                </button>
                              </div>
                              <p className="text-xs text-center text-slate-500">Solo pago manual vía Yape/Plin</p>
@@ -875,9 +883,10 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
 
                              <button
                                onClick={() => handleManualPayment(product)}
-                               className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-3.5 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
+                               disabled={loading}
+                               className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-3.5 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                              >
-                               Yapear Directo (QR)
+                               {loading ? 'Generando...' : 'Yapear Directo (QR)'}
                              </button>
                           </div>
                         ) : loading ? (

@@ -345,6 +345,67 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
     }
   };
 
+  const handleManualPayment = async () => {
+    try {
+      setLoading(true);
+
+      const items: any[] = [];
+      Object.entries(selections).forEach(([serviceType, qty]) => {
+        if (qty > 0) {
+           const link = PROFILE_LINK_SERVICES.includes(serviceType as ServiceType) ? profileLink : postLink;
+           items.push({
+             type: 'custom_quantity',
+             platform: activeCategory,
+             service: serviceType,
+             quantity: qty,
+             link: link
+           });
+        }
+      });
+
+      if (includeComments && commentQuantity > 0) {
+         // Buscamos el ID del producto de comentarios
+         const commentProduct = PRODUCTS.find(p => p.type === activeCategory && p.service_type === 'comments' && p.isCustomQuantity);
+         if (commentProduct) {
+           items.push({
+             type: 'custom_comments',
+             productId: commentProduct.id,
+             platform: activeCategory,
+             service: 'comments',
+             quantity: commentQuantity,
+             link: postLink,
+             comments: commentTexts.slice(0, commentQuantity)
+           });
+         }
+      }
+
+      // 1. Crear la orden en Firestore con Yape
+      const resOrder = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: activeCategory,
+          isCustomPack: true,
+          items: items,
+          paymentMethod: 'yape'
+        })
+      });
+      const dataOrder = await resOrder.json();
+      if (!resOrder.ok) throw new Error(dataOrder.error || 'Error al crear orden Yape');
+      
+      const generatedOrderId = dataOrder.orderId;
+      setOrderId(generatedOrderId);
+      setPaymentMethod('manual');
+      
+    } catch (err: any) {
+      console.error(err);
+      showError(err.message || 'Error al generar orden Yape');
+      setPaymentMethod(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const buildWhatsAppMessage = () => {
     const lines: string[] = [
       `🛒 Hola! Acabo de yapear S/ ${total.toFixed(2)} por mi Pack Personalizado ${platform.name}.`,
@@ -356,6 +417,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
     ];
     if (discount > 0) lines.push(`🏷️ Descuento Pack (-5%): -S/ ${discount.toFixed(2)}`);
     lines.push(`✅ Total pagado: S/ ${total.toFixed(2)}`, '');
+    if (orderId) lines.push(`🆔 Orden: ${orderId}`, '');
     if (needsProfileLink) lines.push(`🔗 Link perfil: ${profileLink}`);
     if (needsPostLink) lines.push(`🔗 Link video/post: ${postLink}`);
     if (includeComments) {
@@ -852,10 +914,11 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
                      {loading ? 'Cargando...' : 'Pago Web'}
                    </button>
                    <button
-                     onClick={() => setPaymentMethod('manual')}
-                     className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
+                     onClick={handleManualPayment}
+                     disabled={loading}
+                     className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                    >
-                     Yapear Directo (QR)
+                     {loading ? 'Generando...' : 'Yapear Directo (QR)'}
                    </button>
                  </div>
               ) : paymentMethod === 'manual' ? (

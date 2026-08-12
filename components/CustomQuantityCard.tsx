@@ -179,10 +179,46 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
     }
   };
 
+  const handleManualPayment = async () => {
+    try {
+      setLoading(true);
+      // 1. Crear la orden en Firestore con Yape
+      const resOrder = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: activeCategory,
+          items: [{
+            type: 'custom_quantity',
+            platform: activeCategory,
+            service: activeService,
+            quantity: quantity,
+            link: targetLink,
+          }],
+          paymentMethod: 'yape'
+        })
+      });
+      const dataOrder = await resOrder.json();
+      if (!resOrder.ok) throw new Error(dataOrder.error || 'Error al crear orden Yape');
+      
+      const generatedOrderId = dataOrder.orderId;
+      setOrderId(generatedOrderId);
+      setPaymentMethod('manual');
+      
+    } catch (err: any) {
+      console.error(err);
+      showError(err.message || 'Error al generar orden Yape');
+      setPaymentMethod(null);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const whatsAppMsg = (() => {
     const activePromo = getPromoForProduct(activeCategory);
     const promoLine = activePromo ? `\n\n🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}` : '';
-    return `Hola! Acabo de yapear S/ ${total.toFixed(2)} por ${quantity.toLocaleString()} ${serviceName} ${platformName} (Cantidad Personalizada).\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}`;
+    const orderLine = orderId ? `\n\n🆔 Orden: ${orderId}` : '';
+    return `Hola! Acabo de yapear S/ ${total.toFixed(2)} por ${quantity.toLocaleString()} ${serviceName} ${platformName} (Cantidad Personalizada).\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}${orderLine}`;
   })();
 
   // Incrementos rápidos basados en el rango
@@ -425,10 +461,11 @@ export function CustomQuantityCard({ activeCategory, activeService }: CustomQuan
                      {loading ? 'Cargando...' : 'Pago Web'}
                    </button>
                    <button
-                     onClick={() => setPaymentMethod('manual')}
-                     className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm"
+                     onClick={handleManualPayment}
+                     disabled={loading}
+                     className="w-full bg-[#752384] text-white font-black uppercase tracking-widest py-4 hover:-translate-y-1 active:translate-y-0 transition-transform shadow-[4px_4px_0px_white] text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                    >
-                     Yapear Directo (QR)
+                     {loading ? 'Generando...' : 'Yapear Directo (QR)'}
                    </button>
                  </div>
               ) : paymentMethod === 'manual' ? (

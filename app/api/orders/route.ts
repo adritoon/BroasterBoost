@@ -6,7 +6,7 @@ import { PRODUCTS, getInterpolatedPrice, ProductType, ServiceType, CUSTOM_QTY_EL
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { items, isCustomPack = false, platform } = body;
+    const { items, isCustomPack = false, platform, paymentMethod } = body;
 
     if (!items || !Array.isArray(items) || items.length === 0) {
       return NextResponse.json({ error: "No hay items en la orden" }, { status: 400 });
@@ -95,18 +95,30 @@ export async function POST(request: Request) {
     const randomStr = Math.random().toString(36).substring(2, 6).toUpperCase();
     const orderId = `SB-${timestamp}-${randomStr}`;
 
+    // Generate an expiration date if it's a manual payment (Yape/Plin)
+    const isYape = paymentMethod === 'yape';
+    const expiresAt = isYape 
+      ? new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
+      : null;
+
     // Save to Firestore
     const ordersRef = adminDb.collection('orders');
-    await ordersRef.doc(orderId).set({
+    const orderDocData: any = {
       items: orderItems,
       subtotalPEN: subtotal,
       discountPEN: appliedDiscount,
       totalPEN: totalPEN,
-      status: 'pending',
+      status: isYape ? 'pending_yape' : 'pending',
       createdAt: FieldValue.serverTimestamp(),
       platform: platform || 'mixed',
       isCustomPack
-    });
+    };
+
+    if (expiresAt) {
+      orderDocData.expiresAt = expiresAt;
+    }
+
+    await ordersRef.doc(orderId).set(orderDocData);
 
     return NextResponse.json({ success: true, orderId: orderId, totalPEN });
 

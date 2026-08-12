@@ -329,7 +329,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
 
 
   // --- LÓGICA YAPE MANUAL ---
-  const handleManualPayment = (product: Product) => {
+  const handleManualPayment = async (product: Product) => {
     if (!targetLink || targetLink.length < 3) {
       showError("Por favor ingresa tu enlace primero.");
       return;
@@ -338,21 +338,86 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
       showError("Por favor, confirma que tu perfil es público y el enlace es correcto marcando la casilla correspondiente.");
       return;
     }
-    // Validar comentarios si es producto con comentarios personalizados
+
+    let items = [];
     if (product.requiresComments) {
       const filledComments = customComments.filter(c => c.trim().length > 0);
       if (filledComments.length < customQuantity) {
         showError(`Por favor escribe los ${customQuantity} comentarios. Faltan ${customQuantity - filledComments.length}.`);
         return;
       }
-      // Guardar el precio calculado para el modal
       const { total } = getYouTubeCommentPrice(customQuantity);
       setManualTotalPrice(total);
+
+      items.push({
+        type: 'custom_comments',
+        productId: product.id,
+        platform: product.type,
+        service: product.service_type,
+        quantity: customQuantity,
+        link: targetLink,
+        comments: customComments.slice(0, customQuantity)
+      });
+    } else if (product.isCustomQuantity) {
+        // In case it's a custom quantity but no comments (e.g. followers)
+        const tierProducts = PRODUCTS.filter(p =>
+          p.type === product.type &&
+          p.service_type === product.service_type &&
+          !p.isCustomQuantity &&
+          p.status !== 'out_of_stock' &&
+          p.status !== 'maintenance'
+        ).sort((a, b) => a.provider_quantity - b.provider_quantity);
+        
+        let total = product.price;
+        if (tierProducts.length > 0) {
+          // getInterpolatedPrice logic isn't easily imported here if not already, 
+          // but we can just let backend calculate it or we just use product.price for now if it's fallback
+        }
+        
+        items.push({
+          type: 'custom_quantity',
+          productId: product.id,
+          platform: product.type,
+          service: product.service_type,
+          quantity: customQuantity,
+          link: targetLink
+        });
     } else {
       setManualTotalPrice(null);
+      items.push({
+        type: 'standard',
+        productId: product.id,
+        platform: product.type,
+        service: product.service_type,
+        quantity: product.provider_quantity,
+        link: targetLink
+      });
     }
-    setManualProduct(product);
-    setShowYapeModal(true);
+
+    setLoading(true);
+    try {
+      const resOrder = await fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          platform: product.type,
+          isCustomPack: false,
+          items: items,
+          paymentMethod: 'yape'
+        })
+      });
+      const dataOrder = await resOrder.json();
+      if (!resOrder.ok) throw new Error(dataOrder.error || 'Error al crear orden Yape');
+      
+      setOrderId(dataOrder.orderId);
+      setManualProduct(product);
+      setShowYapeModal(true);
+    } catch (error: any) {
+      console.error(error);
+      showError(error.message || "Error al generar orden Yape");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -957,10 +1022,11 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
                     (() => {
                       const activePromo = getPromoForProduct(manualProduct.type, manualProduct.id);
                       const promoLine = activePromo ? `\n\n🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}` : '';
+                      const orderLine = orderId ? `\n\n🆔 Orden: ${orderId}` : '';
                       if (manualProduct.requiresComments) {
-                        return `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}${promoLine}`;
+                        return `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}${promoLine}${orderLine}`;
                       }
-                      return `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}`;
+                      return `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}${orderLine}`;
                     })()
                   )}`}
                   target="_blank"

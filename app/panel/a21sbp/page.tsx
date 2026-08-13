@@ -53,6 +53,7 @@ export default function AdminDashboardPage() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [activeTab, setActiveTab] = useState<Tab>('chunks');
   const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState('');
   
   // Data states
   const [chunkOrders, setChunkOrders] = useState<OrderWithChunks[]>([]);
@@ -198,6 +199,12 @@ export default function AdminDashboardPage() {
     }
   }, [message]);
 
+  const filteredHistoryOrders = historyOrders.filter(order => {
+    if (!searchTerm) return true;
+    const lowerTerm = searchTerm.toLowerCase();
+    return order.id.toLowerCase().includes(lowerTerm) || 
+           (order.items?.[0]?.link && order.items[0].link.toLowerCase().includes(lowerTerm));
+  });
 
   if (!isAuthenticated) {
     return (
@@ -467,9 +474,18 @@ export default function AdminDashboardPage() {
             {/* TAB HISTORY */}
             {activeTab === 'history' && (
               <>
-                {historyOrders.length === 0 ? (
+                <div className="mb-4">
+                  <input
+                    type="text"
+                    placeholder="🔍 Buscar por ID de Orden o Enlace..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    className="w-full bg-zinc-900 border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors"
+                  />
+                </div>
+                {filteredHistoryOrders.length === 0 ? (
                   <div className="text-center py-20">
-                    <p className="text-zinc-400 text-lg">No hay órdenes en el historial</p>
+                    <p className="text-zinc-400 text-lg">No se encontraron órdenes</p>
                   </div>
                 ) : (
                   <div className="overflow-x-auto">
@@ -483,7 +499,7 @@ export default function AdminDashboardPage() {
                         </tr>
                       </thead>
                       <tbody>
-                        {historyOrders.map(order => (
+                        {filteredHistoryOrders.map(order => (
                           <React.Fragment key={order.id}>
                             <tr 
                               onClick={() => setExpandedOrderId(expandedOrderId === order.id ? null : order.id)}

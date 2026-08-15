@@ -322,7 +322,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleAutomationAction = async (automationId: string, action: 'pause' | 'resume' | 'delete') => {
+  const handleAutomationAction = async (automationId: string, action: 'pause' | 'resume' | 'delete' | 'run_now') => {
     setProcessingAction(automationId);
     setMessage(null);
 
@@ -986,13 +986,22 @@ export default function AdminDashboardPage() {
                           {(auto.status === 'active' || auto.status === 'paused' || auto.status === 'error') && (
                             <div className="flex gap-2 mt-2">
                               {auto.status === 'active' && (
-                                <button
-                                  onClick={() => handleAutomationAction(auto.id, 'pause')}
-                                  disabled={processingAction === auto.id}
-                                  className="flex-1 py-2 bg-zinc-800 text-amber-400 font-bold rounded-lg text-sm border border-amber-900/50 hover:bg-amber-900/20 transition-colors disabled:opacity-50"
-                                >
-                                  ⏸️ Pausar
-                                </button>
+                                <>
+                                  <button
+                                    onClick={() => handleAutomationAction(auto.id, 'run_now')}
+                                    disabled={processingAction === auto.id}
+                                    className="flex-1 py-2 bg-[#ccff00]/10 text-[#ccff00] font-bold rounded-lg text-sm border border-[#ccff00]/30 hover:bg-[#ccff00]/20 transition-colors disabled:opacity-50"
+                                  >
+                                    ▶️ Ejecutar Ahora
+                                  </button>
+                                  <button
+                                    onClick={() => handleAutomationAction(auto.id, 'pause')}
+                                    disabled={processingAction === auto.id}
+                                    className="flex-1 py-2 bg-zinc-800 text-amber-400 font-bold rounded-lg text-sm border border-amber-900/50 hover:bg-amber-900/20 transition-colors disabled:opacity-50"
+                                  >
+                                    ⏸️ Pausar
+                                  </button>
+                                </>
                               )}
                               {(auto.status === 'paused' || auto.status === 'error') && (
                                 <button

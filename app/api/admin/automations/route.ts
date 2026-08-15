@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
+import { sendOrderToProvider } from '@/lib/provider';
 
 function validateAdminKey(request: Request): boolean {
   const adminKey = process.env.ADMIN_API_KEY;
@@ -142,8 +143,8 @@ export async function POST(request: Request) {
 }
 
 /**
- * PATCH /api/admin/automations — Pausa, reanuda o elimina una automatización
- * Body: { adminKey, automationId, action: 'pause' | 'resume' | 'delete' }
+ * PATCH /api/admin/automations — Pausa, reanuda, elimina o ejecuta manualmente una automatización
+ * Body: { adminKey, automationId, action: 'pause' | 'resume' | 'delete' | 'run_now' }
  */
 export async function PATCH(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -158,7 +159,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Faltan automationId o action' }, { status: 400 });
   }
 
-  const validActions = ['pause', 'resume', 'delete'];
+  const validActions = ['pause', 'resume', 'delete', 'run_now'];
   if (!validActions.includes(action)) {
     return NextResponse.json({ error: `Acción inválida. Usar: ${validActions.join(', ')}` }, { status: 400 });
   }
@@ -194,6 +195,52 @@ export async function PATCH(request: Request) {
       await docRef.update({ status: 'active' });
       console.log(`▶️ Automatización ${automationId} reanudada`);
       return NextResponse.json({ success: true, message: 'Automatización reanudada' });
+    }
+
+    if (action === 'run_now') {
+      const data = docSnap.data();
+      if (!data) return NextResponse.json({ error: 'Datos no encontrados' }, { status: 404 });
+
+      const maxRuns = data.maxRuns || 240;
+      const totalRuns = data.totalRuns || 0;
+      
+      if (totalRuns >= maxRuns) {
+        return NextResponse.json({ error: 'Límite de ejecuciones alcanzado' }, { status: 400 });
+      }
+
+      const result = await sendOrderToProvider(Number(data.serviceId), data.link, Number(data.quantityPerRun));
+      const now = new Date().toISOString();
+      
+      const runEntry = {
+        runIndex: totalRuns,
+        providerOrderId: result.success ? (result.orderId?.toString() || null) : null,
+        sentAt: now,
+        success: result.success,
+        error: result.success ? undefined : (result.error || 'Unknown error'),
+      };
+
+      const history = data.history || [];
+      history.push(runEntry);
+      const trimmedHistory = history.length > 50 ? history.slice(-50) : history;
+
+      const newTotalRuns = totalRuns + 1;
+      const updateData: any = {
+        totalRuns: newTotalRuns,
+        lastRunAt: now,
+        history: trimmedHistory,
+      };
+
+      if (newTotalRuns >= maxRuns) {
+        updateData.status = 'completed';
+      }
+
+      await docRef.update(updateData);
+
+      if (result.success) {
+        return NextResponse.json({ success: true, message: `Orden enviada exitosamente (ID: ${result.orderId})` });
+      } else {
+        return NextResponse.json({ error: `Error del proveedor: ${result.error}` }, { status: 400 });
+      }
     }
 
     return NextResponse.json({ error: 'Acción no procesada' }, { status: 400 });

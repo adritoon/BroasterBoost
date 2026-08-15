@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 
-type Tab = 'chunks' | 'yape' | 'history';
+type Tab = 'chunks' | 'yape' | 'history' | 'automations';
 
 interface ChunkInfo {
   index: number;
@@ -48,6 +48,32 @@ interface GeneralOrder extends OrderBase {
   chunksDelivered?: number;
 }
 
+interface AutomationHistoryEntry {
+  runIndex: number;
+  providerOrderId: string | null;
+  sentAt: string;
+  success: boolean;
+  error?: string;
+}
+
+interface Automation {
+  id: string;
+  serviceId: number;
+  link: string;
+  quantityPerRun: number;
+  label: string;
+  status: 'active' | 'paused' | 'completed' | 'error';
+  intervalHours: number;
+  durationDays: number;
+  createdAt: string | null;
+  expiresAt: string | null;
+  totalRuns: number;
+  maxRuns: number;
+  lastRunAt: string | null;
+  historyCount: number;
+  recentHistory: AutomationHistoryEntry[];
+}
+
 export default function AdminDashboardPage() {
   const [adminKey, setAdminKey] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -59,10 +85,23 @@ export default function AdminDashboardPage() {
   const [chunkOrders, setChunkOrders] = useState<OrderWithChunks[]>([]);
   const [yapeOrders, setYapeOrders] = useState<GeneralOrder[]>([]);
   const [historyOrders, setHistoryOrders] = useState<GeneralOrder[]>([]);
+  const [automations, setAutomations] = useState<Automation[]>([]);
   
   const [loading, setLoading] = useState(false);
   const [processingAction, setProcessingAction] = useState<string | null>(null);
   const [message, setMessage] = useState<{ text: string; type: 'success' | 'error' } | null>(null);
+
+  // Automation form state
+  const [autoForm, setAutoForm] = useState({
+    serviceId: '',
+    link: '',
+    quantityPerRun: '',
+    label: '',
+    intervalHours: '3',
+    durationDays: '30',
+  });
+  const [creatingAuto, setCreatingAuto] = useState(false);
+  const [expandedAutoId, setExpandedAutoId] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<string>('');
 
   const fetchTab = useCallback(async (tab: Tab) => {
@@ -73,6 +112,8 @@ export default function AdminDashboardPage() {
         url = `/api/admin/chunks?adminKey=${encodeURIComponent(adminKey)}`;
       } else if (tab === 'yape') {
         url = `/api/admin/orders?adminKey=${encodeURIComponent(adminKey)}&status=pending_yape`;
+      } else if (tab === 'automations') {
+        url = `/api/admin/automations?adminKey=${encodeURIComponent(adminKey)}`;
       } else {
         url = `/api/admin/orders?adminKey=${encodeURIComponent(adminKey)}`;
       }
@@ -89,6 +130,7 @@ export default function AdminDashboardPage() {
         if (tab === 'chunks') setChunkOrders(data.orders || []);
         if (tab === 'yape') setYapeOrders(data.orders || []);
         if (tab === 'history') setHistoryOrders(data.orders || []);
+        if (tab === 'automations') setAutomations(data.automations || []);
         setLastRefresh(new Date().toLocaleTimeString('es-PE'));
       }
     } catch {
@@ -170,6 +212,68 @@ export default function AdminDashboardPage() {
         fetchOrders();
       } else {
         setMessage({ text: `❌ Error: ${data.error}`, type: 'error' });
+      }
+    } catch {
+      setMessage({ text: '❌ Error de conexión', type: 'error' });
+    } finally {
+      setProcessingAction(null);
+    }
+  };
+
+  const handleCreateAutomation = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!autoForm.serviceId || !autoForm.link || !autoForm.quantityPerRun) return;
+
+    setCreatingAuto(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch('/api/admin/automations', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          adminKey,
+          serviceId: autoForm.serviceId,
+          link: autoForm.link,
+          quantityPerRun: autoForm.quantityPerRun,
+          label: autoForm.label,
+          intervalHours: autoForm.intervalHours,
+          durationDays: autoForm.durationDays,
+        }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setMessage({ text: `✅ ${data.message}`, type: 'success' });
+        setAutoForm({ serviceId: '', link: '', quantityPerRun: '', label: '', intervalHours: '3', durationDays: '30' });
+        fetchOrders();
+      } else {
+        setMessage({ text: `❌ ${data.error}`, type: 'error' });
+      }
+    } catch {
+      setMessage({ text: '❌ Error de conexión', type: 'error' });
+    } finally {
+      setCreatingAuto(false);
+    }
+  };
+
+  const handleAutomationAction = async (automationId: string, action: 'pause' | 'resume' | 'delete') => {
+    setProcessingAction(automationId);
+    setMessage(null);
+
+    try {
+      const res = await fetch('/api/admin/automations', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ adminKey, automationId, action }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setMessage({ text: `✅ ${data.message}`, type: 'success' });
+        fetchOrders();
+      } else {
+        setMessage({ text: `❌ ${data.error}`, type: 'error' });
       }
     } catch {
       setMessage({ text: '❌ Error de conexión', type: 'error' });
@@ -276,7 +380,7 @@ export default function AdminDashboardPage() {
 
         {/* TABS */}
         <div className="flex gap-2 mb-6 border-b border-zinc-800 pb-2 overflow-x-auto">
-          {(['chunks', 'yape', 'history'] as Tab[]).map((tab) => (
+          {(['chunks', 'yape', 'history', 'automations'] as Tab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setExpandedOrderId(null); }}
@@ -289,6 +393,7 @@ export default function AdminDashboardPage() {
               {tab === 'chunks' && '📦 Chunks Pendientes'}
               {tab === 'yape' && '⏳ Pagos Yape'}
               {tab === 'history' && '📋 Todas las Órdenes'}
+              {tab === 'automations' && '⚡ Automatización'}
             </button>
           ))}
         </div>
@@ -572,6 +677,272 @@ export default function AdminDashboardPage() {
                         ))}
                       </tbody>
                     </table>
+                  </div>
+                )}
+              </>
+            )}
+
+            {/* TAB AUTOMATIZACIÓN */}
+            {activeTab === 'automations' && (
+              <>
+                {/* Formulario para crear nueva automatización */}
+                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+                  <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
+                    <span className="text-xl">⚡</span> Nueva Automatización
+                  </h2>
+                  <p className="text-zinc-400 text-sm mb-4">
+                    Envía órdenes automáticamente al proveedor SMM. Configura el intervalo y la duración.
+                  </p>
+                  <form onSubmit={handleCreateAutomation} className="space-y-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-zinc-500 mb-1 font-medium">Service ID del Proveedor *</label>
+                        <input
+                          type="number"
+                          value={autoForm.serviceId}
+                          onChange={(e) => setAutoForm({ ...autoForm, serviceId: e.target.value })}
+                          placeholder="Ej: 1234"
+                          className="w-full bg-black border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors placeholder:text-zinc-600"
+                          required
+                          min="1"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs text-zinc-500 mb-1 font-medium">Cantidad por ejecución *</label>
+                        <input
+                          type="number"
+                          value={autoForm.quantityPerRun}
+                          onChange={(e) => setAutoForm({ ...autoForm, quantityPerRun: e.target.value })}
+                          placeholder="Ej: 1000"
+                          className="w-full bg-black border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors placeholder:text-zinc-600"
+                          required
+                          min="1"
+                        />
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs text-zinc-500 mb-1 font-medium">Intervalo (horas) *</label>
+                        <input
+                          type="number"
+                          value={autoForm.intervalHours}
+                          onChange={(e) => setAutoForm({ ...autoForm, intervalHours: e.target.value })}
+                          placeholder="3"
+                          className="w-full bg-black border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors placeholder:text-zinc-600"
+                          required
+                          min="1"
+                          max="72"
+                        />
+                        <p className="text-[10px] text-zinc-600 mt-1">Cada cuántas horas se ejecuta (1-72h)</p>
+                      </div>
+                      <div>
+                        <label className="block text-xs text-zinc-500 mb-1 font-medium">Duración (días) *</label>
+                        <input
+                          type="number"
+                          value={autoForm.durationDays}
+                          onChange={(e) => setAutoForm({ ...autoForm, durationDays: e.target.value })}
+                          placeholder="30"
+                          className="w-full bg-black border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors placeholder:text-zinc-600"
+                          required
+                          min="1"
+                          max="90"
+                        />
+                        <p className="text-[10px] text-zinc-600 mt-1">Cuántos días estará activa (1-90 días)</p>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs text-zinc-500 mb-1 font-medium">Link / URL del contenido *</label>
+                      <input
+                        type="url"
+                        value={autoForm.link}
+                        onChange={(e) => setAutoForm({ ...autoForm, link: e.target.value })}
+                        placeholder="https://..."
+                        className="w-full bg-black border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors placeholder:text-zinc-600"
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-xs text-zinc-500 mb-1 font-medium">Etiqueta (opcional)</label>
+                      <input
+                        type="text"
+                        value={autoForm.label}
+                        onChange={(e) => setAutoForm({ ...autoForm, label: e.target.value })}
+                        placeholder="Ej: Views para video principal"
+                        className="w-full bg-black border border-zinc-700 text-white rounded-lg px-4 py-3 text-sm focus:outline-none focus:border-[#ccff00] transition-colors placeholder:text-zinc-600"
+                      />
+                    </div>
+                    <button
+                      type="submit"
+                      disabled={creatingAuto || !autoForm.serviceId || !autoForm.link || !autoForm.quantityPerRun || !autoForm.intervalHours || !autoForm.durationDays}
+                      className="w-full py-3 bg-[#ccff00] text-black font-bold rounded-lg hover:bg-[#b8e600] transition-colors disabled:opacity-50 disabled:cursor-not-allowed mt-2"
+                    >
+                      {creatingAuto ? '⏳ Creando...' : `🚀 Crear Automatización (cada ${autoForm.intervalHours || 3}h × ${autoForm.durationDays || 30} días)`}
+                    </button>
+                  </form>
+                </div>
+
+                {/* Lista de automatizaciones */}
+                {automations.length === 0 ? (
+                  <div className="text-center py-16">
+                    <div className="text-4xl mb-3">⚡</div>
+                    <p className="text-zinc-400 text-lg">No hay automatizaciones creadas</p>
+                    <p className="text-zinc-600 text-sm mt-1">Usa el formulario de arriba para crear una</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {automations.map((auto) => {
+                      const progress = auto.maxRuns > 0 ? (auto.totalRuns / auto.maxRuns) * 100 : 0;
+                      const daysLeft = auto.expiresAt
+                        ? Math.max(0, Math.ceil((new Date(auto.expiresAt).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
+                        : 0;
+                      const isExpanded = expandedAutoId === auto.id;
+
+                      const statusConfig: Record<string, { bg: string; text: string; border: string; label: string }> = {
+                        active: { bg: 'bg-green-900/30', text: 'text-green-400', border: 'border-green-800/50', label: 'ACTIVA' },
+                        paused: { bg: 'bg-amber-900/30', text: 'text-amber-400', border: 'border-amber-800/50', label: 'PAUSADA' },
+                        completed: { bg: 'bg-blue-900/30', text: 'text-blue-400', border: 'border-blue-800/50', label: 'COMPLETADA' },
+                        error: { bg: 'bg-red-900/30', text: 'text-red-400', border: 'border-red-800/50', label: 'ERROR' },
+                      };
+                      const st = statusConfig[auto.status] || statusConfig.active;
+
+                      return (
+                        <div key={auto.id} className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+                          {/* Header */}
+                          <div className="flex items-start justify-between mb-3">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${st.bg} ${st.text} ${st.border}`}>
+                                  {st.label}
+                                </span>
+                                {auto.status === 'active' && (
+                                  <span className="relative flex h-2 w-2">
+                                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                    <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                                  </span>
+                                )}
+                              </div>
+                              <h3 className="text-white font-medium truncate">{auto.label}</h3>
+                              <p className="text-xs text-zinc-500 font-mono mt-0.5">ID: {auto.id}</p>
+                            </div>
+                            <div className="text-right ml-3 flex-shrink-0">
+                              <p className="text-[#ccff00] font-bold text-sm">Service #{auto.serviceId}</p>
+                              <p className="text-zinc-400 text-xs">{auto.quantityPerRun.toLocaleString()} / cada {auto.intervalHours}h</p>
+                            </div>
+                          </div>
+
+                          {/* Link */}
+                          <div className="mb-3 text-xs text-blue-400 break-all">
+                            🔗 {auto.link}
+                          </div>
+
+                          {/* Progress */}
+                          <div className="mb-3">
+                            <div className="flex justify-between text-xs text-zinc-500 mb-1">
+                              <span>{auto.totalRuns} / {auto.maxRuns} ejecuciones</span>
+                              <span>{daysLeft} días restantes</span>
+                            </div>
+                            <div className="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+                              <div
+                                className={`h-full transition-all rounded-full ${
+                                  auto.status === 'error' ? 'bg-red-500' :
+                                  auto.status === 'completed' ? 'bg-blue-500' :
+                                  'bg-[#ccff00]'
+                                }`}
+                                style={{ width: `${Math.min(progress, 100)}%` }}
+                              />
+                            </div>
+                          </div>
+
+                          {/* Last run info */}
+                          {auto.lastRunAt && (
+                            <p className="text-xs text-zinc-500 mb-3">
+                              Última ejecución: {new Date(auto.lastRunAt).toLocaleString('es-PE')}
+                            </p>
+                          )}
+
+                          {/* Expandable history */}
+                          <button
+                            onClick={() => setExpandedAutoId(isExpanded ? null : auto.id)}
+                            className="text-xs text-zinc-400 hover:text-white underline decoration-zinc-600 underline-offset-2 mb-3"
+                          >
+                            {isExpanded ? 'Ocultar historial' : `Ver historial (${auto.historyCount} ejecuciones)`}
+                          </button>
+
+                          {isExpanded && auto.recentHistory.length > 0 && (
+                            <div className="mt-2 mb-3 p-3 bg-black/40 rounded-lg border border-zinc-800">
+                              <p className="text-xs text-zinc-500 font-bold mb-2">Últimas ejecuciones:</p>
+                              <div className="space-y-1.5">
+                                {auto.recentHistory.map((h, i) => (
+                                  <div key={i} className="flex items-center justify-between text-[11px] py-1 border-b border-zinc-800/50 last:border-0">
+                                    <div className="flex items-center gap-2">
+                                      <span>{h.success ? '✅' : '❌'}</span>
+                                      <span className="text-zinc-400">
+                                        Run #{h.runIndex + 1}
+                                      </span>
+                                      {h.providerOrderId && (
+                                        <span className="text-zinc-600">→ Order #{h.providerOrderId}</span>
+                                      )}
+                                      {h.error && (
+                                        <span className="text-red-400">{h.error}</span>
+                                      )}
+                                    </div>
+                                    <span className="text-zinc-600">
+                                      {new Date(h.sentAt).toLocaleString('es-PE', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                  </div>
+                                ))}
+                              </div>
+                              {auto.historyCount > 5 && (
+                                <p className="text-[10px] text-zinc-600 mt-2 text-center">
+                                  Mostrando las últimas 5 de {auto.historyCount} ejecuciones
+                                </p>
+                              )}
+                            </div>
+                          )}
+
+                          {isExpanded && auto.recentHistory.length === 0 && (
+                            <div className="mt-2 mb-3 p-3 bg-black/40 rounded-lg border border-zinc-800 text-center">
+                              <p className="text-xs text-zinc-500">Aún no hay ejecuciones</p>
+                            </div>
+                          )}
+
+                          {/* Action buttons */}
+                          {(auto.status === 'active' || auto.status === 'paused' || auto.status === 'error') && (
+                            <div className="flex gap-2 mt-2">
+                              {auto.status === 'active' && (
+                                <button
+                                  onClick={() => handleAutomationAction(auto.id, 'pause')}
+                                  disabled={processingAction === auto.id}
+                                  className="flex-1 py-2 bg-zinc-800 text-amber-400 font-bold rounded-lg text-sm border border-amber-900/50 hover:bg-amber-900/20 transition-colors disabled:opacity-50"
+                                >
+                                  ⏸️ Pausar
+                                </button>
+                              )}
+                              {(auto.status === 'paused' || auto.status === 'error') && (
+                                <button
+                                  onClick={() => handleAutomationAction(auto.id, 'resume')}
+                                  disabled={processingAction === auto.id}
+                                  className="flex-1 py-2 bg-[#ccff00] text-black font-bold rounded-lg text-sm hover:bg-[#b8e600] transition-colors disabled:opacity-50"
+                                >
+                                  {processingAction === auto.id ? '⏳...' : '▶️ Reanudar'}
+                                </button>
+                              )}
+                              <button
+                                onClick={() => {
+                                  if (confirm('¿Seguro que quieres eliminar esta automatización?')) {
+                                    handleAutomationAction(auto.id, 'delete');
+                                  }
+                                }}
+                                disabled={processingAction === auto.id}
+                                className="py-2 px-4 bg-zinc-800 text-red-400 font-bold rounded-lg text-sm border border-red-900/50 hover:bg-red-900/20 transition-colors disabled:opacity-50"
+                              >
+                                🗑️
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </>

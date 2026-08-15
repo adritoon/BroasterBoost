@@ -74,6 +74,50 @@ interface Automation {
   recentHistory: AutomationHistoryEntry[];
 }
 
+function NextRunCountdown({ lastRunAt, intervalHours, status }: { lastRunAt: string | null, intervalHours: number, status: string }) {
+  const [timeLeft, setTimeLeft] = useState<string>('');
+
+  useEffect(() => {
+    if (status !== 'active') {
+      setTimeLeft('');
+      return;
+    }
+
+    const calculate = () => {
+      const now = new Date();
+      let nextRun: Date;
+      if (!lastRunAt) {
+        setTimeLeft('Lista para ejecutar');
+        return;
+      } else {
+        nextRun = new Date(new Date(lastRunAt).getTime() + intervalHours * 60 * 60 * 1000);
+      }
+
+      const diff = nextRun.getTime() - now.getTime();
+      if (diff <= 0) {
+        setTimeLeft('Lista para ejecutar');
+      } else {
+        const h = Math.floor(diff / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+        setTimeLeft(`Próxima en ${h}h ${m}m ${s}s`);
+      }
+    };
+
+    calculate();
+    const interval = setInterval(calculate, 1000);
+    return () => clearInterval(interval);
+  }, [lastRunAt, intervalHours, status]);
+
+  if (!timeLeft) return null;
+
+  return (
+    <span className={`text-[10px] font-medium ml-2 px-1.5 py-0.5 rounded ${timeLeft === 'Lista para ejecutar' ? 'bg-[#ccff00]/20 text-[#ccff00]' : 'bg-zinc-800 text-zinc-400'}`}>
+      ⏱️ {timeLeft}
+    </span>
+  );
+}
+
 export default function AdminDashboardPage() {
   const [adminKey, setAdminKey] = useState('');
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -101,6 +145,7 @@ export default function AdminDashboardPage() {
     durationDays: '30',
   });
   const [creatingAuto, setCreatingAuto] = useState(false);
+  const [runningCron, setRunningCron] = useState(false);
   const [expandedAutoId, setExpandedAutoId] = useState<string | null>(null);
   const [lastRefresh, setLastRefresh] = useState<string>('');
 
@@ -254,6 +299,26 @@ export default function AdminDashboardPage() {
       setMessage({ text: '❌ Error de conexión', type: 'error' });
     } finally {
       setCreatingAuto(false);
+    }
+  };
+
+  const handleRunCron = async () => {
+    if (!confirm('¿Procesar ahora todas las automatizaciones pendientes?')) return;
+    setRunningCron(true);
+    setMessage(null);
+    try {
+      const res = await fetch(`/api/admin/automations/cron?adminKey=${adminKey}`);
+      const data = await res.json();
+      if (data.success) {
+        setMessage({ text: `✅ Tareas procesadas: ${data.processed} (${data.successCount} exitosas, ${data.failCount} fallidas)`, type: 'success' });
+        fetchTab('automations');
+      } else {
+        setMessage({ text: `❌ Error: ${data.error}`, type: 'error' });
+      }
+    } catch {
+      setMessage({ text: '❌ Error al ejecutar las tareas', type: 'error' });
+    } finally {
+      setRunningCron(false);
     }
   };
 
@@ -685,6 +750,16 @@ export default function AdminDashboardPage() {
             {/* TAB AUTOMATIZACIÓN */}
             {activeTab === 'automations' && (
               <>
+                <div className="flex justify-end mb-6">
+                  <button
+                    onClick={handleRunCron}
+                    disabled={runningCron}
+                    className="flex items-center gap-2 bg-[#ccff00] text-black px-4 py-2 rounded-lg font-bold hover:bg-[#b8e600] transition-colors disabled:opacity-50"
+                  >
+                    {runningCron ? '⏳ Procesando...' : '🔄 Procesar Tareas Pendientes'}
+                  </button>
+                </div>
+
                 {/* Formulario para crear nueva automatización */}
                 <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
                   <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
@@ -814,6 +889,7 @@ export default function AdminDashboardPage() {
                                 <span className={`px-2 py-0.5 rounded text-[10px] font-bold border ${st.bg} ${st.text} ${st.border}`}>
                                   {st.label}
                                 </span>
+                                <NextRunCountdown lastRunAt={auto.lastRunAt} intervalHours={auto.intervalHours} status={auto.status} />
                                 {auto.status === 'active' && (
                                   <span className="relative flex h-2 w-2">
                                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>

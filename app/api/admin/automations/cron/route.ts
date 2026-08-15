@@ -13,21 +13,20 @@ import { sendOrderToProvider } from '@/lib/provider';
  * Ejemplo: GET /api/admin/automations/cron?secret=TU_CRON_SECRET
  */
 export async function GET(request: Request) {
-  // Validar CRON_SECRET
+  // Validar CRON_SECRET o ADMIN_KEY
   const cronSecret = process.env.CRON_SECRET;
-  if (!cronSecret) {
-    console.error('❌ CRON_SECRET no configurado en .env.local');
-    return NextResponse.json({ error: 'CRON_SECRET not configured' }, { status: 500 });
-  }
+  const adminKey = process.env.ADMIN_API_KEY;
 
   const url = new URL(request.url);
   const providedSecret =
     url.searchParams.get('secret') ||
     request.headers.get('x-cron-secret') ||
-    // Vercel Cron usa este header
     request.headers.get('authorization')?.replace('Bearer ', '');
+  const providedAdminKey =
+    url.searchParams.get('adminKey') ||
+    request.headers.get('x-admin-key');
 
-  if (providedSecret !== cronSecret) {
+  if (providedSecret !== cronSecret && providedAdminKey !== adminKey) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 

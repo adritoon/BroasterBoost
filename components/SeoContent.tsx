@@ -14,7 +14,7 @@ export function SeoContent() {
   return (
     <section className="container mx-auto px-4 py-16 border-t border-white/10">
       
-      {/* TÍTULO PRINCIPAL SEO */}
+      {/* TÍTULO PRINCIPAL SEOa */}
       <div className="text-center mb-12">
         <h2 className="text-3xl font-bold text-white mb-4">
           Comprar Seguidores y Likes en Perú — #1 🇵🇪

@@ -216,7 +216,7 @@ export async function PATCH(request: Request) {
         providerOrderId: result.success ? (result.orderId?.toString() || null) : null,
         sentAt: now,
         success: result.success,
-        error: result.success ? undefined : (result.error || 'Unknown error'),
+        error: result.success ? null : (result.error || 'Unknown error'),
       };
 
       const history = data.history || [];

@@ -104,7 +104,7 @@ export async function GET(request: Request) {
           providerOrderId: result.success ? (result.orderId?.toString() || null) : null,
           sentAt: now.toISOString(),
           success: result.success,
-          error: result.success ? undefined : (result.error || 'Unknown error'),
+          error: result.success ? null : (result.error || 'Unknown error'),
         };
 
         // Actualizar documento

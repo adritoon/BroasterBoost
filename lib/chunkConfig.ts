@@ -25,8 +25,8 @@ export const CHUNK_RULES: ChunkRule[] = [
   },
   {
     serviceType: 'followers',
-    maxChunkSize: 750,
-    threshold: 750,         // Si piden ≤750 → envío normal
+    maxChunkSize: 100,
+    threshold: 100,         // Si piden ≤100 → envío normal
     description: 'Seguidores'
   },
   {

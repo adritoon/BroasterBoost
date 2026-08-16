@@ -121,7 +121,9 @@ export async function POST(request: Request) {
           if (result.chunked && result.chunks) {
             allChunks = allChunks.concat(result.chunks);
             totalChunksCount += result.totalChunks || 0;
-            chunksDeliveredCount += 1;
+            if (result.success) {
+              chunksDeliveredCount += 1;
+            }
           }
         }
       }

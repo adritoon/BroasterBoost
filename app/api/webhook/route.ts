@@ -69,7 +69,9 @@ export async function POST(request: Request) {
                   if (result.chunked && result.chunks) {
                     allChunks = allChunks.concat(result.chunks);
                     totalChunksCount += result.totalChunks || 0;
-                    chunksDeliveredCount += 1; // Solo el primer chunk de cada item se envía
+                    if (result.success) {
+                      chunksDeliveredCount += 1; // Solo el primer chunk de cada item se envía
+                    }
                   }
                 }
               }

@@ -100,7 +100,7 @@ export async function sendOrderWithChunking(
       chunks: chunkSizes.map((size, i) => ({
         index: i,
         size,
-        status: 'failed' as const,
+        status: 'pending_chunk' as const,
         providerOrderId: null,
         sentAt: null,
         itemIndex,

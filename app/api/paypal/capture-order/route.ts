@@ -88,7 +88,9 @@ export async function POST(request: Request) {
                 if (providerResult.chunked && providerResult.chunks) {
                   allChunks = allChunks.concat(providerResult.chunks);
                   totalChunksCount += providerResult.totalChunks || 0;
-                  chunksDeliveredCount += 1;
+                  if (providerResult.success) {
+                    chunksDeliveredCount += 1;
+                  }
                 }
               }
             }

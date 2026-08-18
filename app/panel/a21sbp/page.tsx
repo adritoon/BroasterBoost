@@ -946,7 +946,7 @@ export default function AdminDashboardPage() {
                                   </div>
                                 </div>
                               ) : (
-                                <div className="flex items-center gap-1.5">
+                                <>
                                   <p className="text-zinc-400 text-xs">{auto.quantityPerRun.toLocaleString()} / cada {auto.intervalHours}h</p>
                                   {(auto.status === 'active' || auto.status === 'paused') && (
                                     <button
@@ -957,13 +957,12 @@ export default function AdminDashboardPage() {
                                           intervalHours: auto.intervalHours.toString(),
                                         });
                                       }}
-                                      className="text-zinc-500 hover:text-[#ccff00] transition-colors text-xs"
-                                      title="Editar cantidad e intervalo"
+                                      className="mt-1 px-2 py-0.5 bg-zinc-800 text-zinc-400 hover:text-[#ccff00] hover:border-[#ccff00]/50 transition-colors text-[10px] rounded border border-zinc-700"
                                     >
-                                      ✏️
+                                      ✏️ Editar
                                     </button>
                                   )}
-                                </div>
+                                </>
                               )}
                             </div>
                           </div>

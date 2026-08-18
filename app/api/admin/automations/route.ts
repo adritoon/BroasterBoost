@@ -143,8 +143,8 @@ export async function POST(request: Request) {
 }
 
 /**
- * PATCH /api/admin/automations — Pausa, reanuda, elimina o ejecuta manualmente una automatización
- * Body: { adminKey, automationId, action: 'pause' | 'resume' | 'delete' | 'run_now' }
+ * PATCH /api/admin/automations — Pausa, reanuda, elimina, ejecuta o edita una automatización
+ * Body: { adminKey, automationId, action: 'pause' | 'resume' | 'delete' | 'run_now' | 'update', updates?: { quantityPerRun?, intervalHours? } }
  */
 export async function PATCH(request: Request) {
   const body = await request.json().catch(() => ({}));
@@ -159,7 +159,7 @@ export async function PATCH(request: Request) {
     return NextResponse.json({ error: 'Faltan automationId o action' }, { status: 400 });
   }
 
-  const validActions = ['pause', 'resume', 'delete', 'run_now'];
+  const validActions = ['pause', 'resume', 'delete', 'run_now', 'update'];
   if (!validActions.includes(action)) {
     return NextResponse.json({ error: `Acción inválida. Usar: ${validActions.join(', ')}` }, { status: 400 });
   }
@@ -241,6 +241,42 @@ export async function PATCH(request: Request) {
       } else {
         return NextResponse.json({ error: `Error del proveedor: ${result.error}` }, { status: 400 });
       }
+    }
+
+    if (action === 'update') {
+      const { updates } = body;
+      if (!updates || typeof updates !== 'object') {
+        return NextResponse.json({ error: 'Faltan los campos a actualizar' }, { status: 400 });
+      }
+
+      const updateData: any = {};
+      if (updates.quantityPerRun !== undefined) {
+        const qty = Number(updates.quantityPerRun);
+        if (isNaN(qty) || qty < 1) {
+          return NextResponse.json({ error: 'Cantidad por ejecución inválida' }, { status: 400 });
+        }
+        updateData.quantityPerRun = qty;
+      }
+      if (updates.intervalHours !== undefined) {
+        const interval = Number(updates.intervalHours);
+        if (isNaN(interval) || interval < 1 || interval > 72) {
+          return NextResponse.json({ error: 'Intervalo inválido (1-72h)' }, { status: 400 });
+        }
+        updateData.intervalHours = interval;
+
+        // Recalcular maxRuns si cambia el intervalo
+        const data = docSnap.data();
+        const durationDays = data?.durationDays || 30;
+        updateData.maxRuns = Math.ceil((durationDays * 24) / interval);
+      }
+
+      if (Object.keys(updateData).length === 0) {
+        return NextResponse.json({ error: 'No hay cambios para aplicar' }, { status: 400 });
+      }
+
+      await docRef.update(updateData);
+      console.log(`✏️ Automatización ${automationId} actualizada:`, updateData);
+      return NextResponse.json({ success: true, message: 'Automatización actualizada correctamente' });
     }
 
     return NextResponse.json({ error: 'Acción no procesada' }, { status: 400 });

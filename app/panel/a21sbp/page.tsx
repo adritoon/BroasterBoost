@@ -147,6 +147,8 @@ export default function AdminDashboardPage() {
   const [creatingAuto, setCreatingAuto] = useState(false);
   const [runningCron, setRunningCron] = useState(false);
   const [expandedAutoId, setExpandedAutoId] = useState<string | null>(null);
+  const [editingAutoId, setEditingAutoId] = useState<string | null>(null);
+  const [editAutoForm, setEditAutoForm] = useState({ quantityPerRun: '', intervalHours: '' });
   const [lastRefresh, setLastRefresh] = useState<string>('');
 
   const fetchTab = useCallback(async (tab: Tab) => {
@@ -322,7 +324,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleAutomationAction = async (automationId: string, action: 'pause' | 'resume' | 'delete' | 'run_now') => {
+  const handleAutomationAction = async (automationId: string, action: 'pause' | 'resume' | 'delete' | 'run_now' | 'update', updates?: { quantityPerRun?: string; intervalHours?: string }) => {
     setProcessingAction(automationId);
     setMessage(null);
 
@@ -330,12 +332,13 @@ export default function AdminDashboardPage() {
       const res = await fetch('/api/admin/automations', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ adminKey, automationId, action }),
+        body: JSON.stringify({ adminKey, automationId, action, updates }),
       });
 
       const data = await res.json();
       if (data.success) {
         setMessage({ text: `✅ ${data.message}`, type: 'success' });
+        setEditingAutoId(null);
         fetchOrders();
       } else {
         setMessage({ text: `❌ ${data.error}`, type: 'error' });
@@ -902,7 +905,66 @@ export default function AdminDashboardPage() {
                             </div>
                             <div className="text-right ml-3 flex-shrink-0">
                               <p className="text-[#ccff00] font-bold text-sm">Service #{auto.serviceId}</p>
-                              <p className="text-zinc-400 text-xs">{auto.quantityPerRun.toLocaleString()} / cada {auto.intervalHours}h</p>
+                              {editingAutoId === auto.id ? (
+                                <div className="flex flex-col gap-1.5 mt-1">
+                                  <div className="flex items-center gap-1">
+                                    <label className="text-[10px] text-zinc-500 w-8">Qty:</label>
+                                    <input
+                                      type="number"
+                                      value={editAutoForm.quantityPerRun}
+                                      onChange={(e) => setEditAutoForm({ ...editAutoForm, quantityPerRun: e.target.value })}
+                                      className="w-20 bg-black border border-zinc-600 text-white rounded px-2 py-0.5 text-xs focus:border-[#ccff00] outline-none"
+                                      min="1"
+                                    />
+                                  </div>
+                                  <div className="flex items-center gap-1">
+                                    <label className="text-[10px] text-zinc-500 w-8">Int:</label>
+                                    <input
+                                      type="number"
+                                      value={editAutoForm.intervalHours}
+                                      onChange={(e) => setEditAutoForm({ ...editAutoForm, intervalHours: e.target.value })}
+                                      className="w-20 bg-black border border-zinc-600 text-white rounded px-2 py-0.5 text-xs focus:border-[#ccff00] outline-none"
+                                      min="1"
+                                      max="72"
+                                    />
+                                    <span className="text-[10px] text-zinc-500">h</span>
+                                  </div>
+                                  <div className="flex gap-1 mt-0.5">
+                                    <button
+                                      onClick={() => handleAutomationAction(auto.id, 'update', { quantityPerRun: editAutoForm.quantityPerRun, intervalHours: editAutoForm.intervalHours })}
+                                      disabled={processingAction === auto.id}
+                                      className="px-2 py-0.5 bg-[#ccff00] text-black font-bold rounded text-[10px] hover:bg-[#b8e600] disabled:opacity-50"
+                                    >
+                                      💾
+                                    </button>
+                                    <button
+                                      onClick={() => setEditingAutoId(null)}
+                                      className="px-2 py-0.5 bg-zinc-800 text-zinc-400 rounded text-[10px] hover:bg-zinc-700"
+                                    >
+                                      ✕
+                                    </button>
+                                  </div>
+                                </div>
+                              ) : (
+                                <div className="flex items-center gap-1.5">
+                                  <p className="text-zinc-400 text-xs">{auto.quantityPerRun.toLocaleString()} / cada {auto.intervalHours}h</p>
+                                  {(auto.status === 'active' || auto.status === 'paused') && (
+                                    <button
+                                      onClick={() => {
+                                        setEditingAutoId(auto.id);
+                                        setEditAutoForm({
+                                          quantityPerRun: auto.quantityPerRun.toString(),
+                                          intervalHours: auto.intervalHours.toString(),
+                                        });
+                                      }}
+                                      className="text-zinc-500 hover:text-[#ccff00] transition-colors text-xs"
+                                      title="Editar cantidad e intervalo"
+                                    >
+                                      ✏️
+                                    </button>
+                                  )}
+                                </div>
+                              )}
                             </div>
                           </div>
 

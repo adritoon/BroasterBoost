@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
-import { PRODUCTS, getInterpolatedPrice, ProductType, ServiceType, CUSTOM_QTY_ELIGIBLE, getCustomCommentPrice } from '@/lib/products';
+import { PRODUCTS, getInterpolatedPrice, ProductType, ServiceType, CUSTOM_QTY_ELIGIBLE, getCustomCommentPrice, getPromoForProduct, getCurrentPromo } from '@/lib/products';
 
 export async function POST(request: Request) {
   try {
@@ -101,6 +101,36 @@ export async function POST(request: Request) {
       ? new Date(Date.now() + 24 * 60 * 60 * 1000) // 24 hours from now
       : null;
 
+    // Capturar promo activa al momento de crear la orden
+    // Se guarda como snapshot para que el admin la vea aunque la promo ya haya rotado
+    let activePromo: { id: string; code: string; description: string; title: string } | null = null;
+    
+    const rawPlatform = platform || items[0]?.platform || 'mixed';
+    const firstProductId = items[0]?.productId;
+    const validPlatforms = ['instagram', 'tiktok', 'facebook', 'youtube', 'kick', 'twitch', 'spotify', 'twitter'];
+    
+    if (validPlatforms.includes(rawPlatform)) {
+      const promoResult = getPromoForProduct(rawPlatform as ProductType, firstProductId);
+      if (promoResult) {
+        activePromo = {
+          id: promoResult.promo.id,
+          code: promoResult.promo.code,
+          description: promoResult.promo.description,
+          title: promoResult.promo.title,
+        };
+      }
+    } else {
+      const promoResult = getCurrentPromo();
+      if (promoResult) {
+        activePromo = {
+          id: promoResult.promo.id,
+          code: promoResult.promo.code,
+          description: promoResult.promo.description,
+          title: promoResult.promo.title,
+        };
+      }
+    }
+
     // Save to Firestore
     const ordersRef = adminDb.collection('orders');
     const orderDocData: any = {
@@ -111,7 +141,8 @@ export async function POST(request: Request) {
       status: isYape ? 'pending_yape' : 'pending',
       createdAt: FieldValue.serverTimestamp(),
       platform: platform || 'mixed',
-      isCustomPack
+      isCustomPack,
+      ...(activePromo && { activePromo })
     };
 
     if (expiresAt) {

@@ -31,6 +31,12 @@ interface OrderBase {
   status?: string;
   gateway?: string;
   items: OrderItem[];
+  activePromo?: {
+    id: string;
+    code: string;
+    description: string;
+    title: string;
+  };
 }
 
 interface OrderWithChunks extends OrderBase {
@@ -580,6 +586,14 @@ export default function AdminDashboardPage() {
                             <h2 className="font-mono text-sm text-zinc-400">{order.id}</h2>
                             <p className="text-white font-medium mt-1">{order.items?.[0]?.name}</p>
                             <p className="text-xs text-zinc-500 mt-1">Creado: {new Date(order.createdAt).toLocaleString('es-PE')}</p>
+                            {order.activePromo && (
+                              <div className="mt-2 flex items-center gap-1.5">
+                                <span className="bg-[#ccff00]/15 text-[#ccff00] border border-[#ccff00]/30 px-2 py-1 rounded text-xs font-bold">
+                                  🎁 {order.activePromo.code}
+                                </span>
+                                <span className="text-[11px] text-[#ccff00]/80">{order.activePromo.description}</span>
+                              </div>
+                            )}
                           </div>
                           <div className="text-right flex flex-col items-end">
                             <span className="text-[#ccff00] font-bold text-lg">S/ {order.totalPEN?.toFixed(2)}</span>
@@ -600,6 +614,13 @@ export default function AdminDashboardPage() {
                         {expandedOrderId === order.id && (
                           <div className="mt-3 p-3 bg-black/40 rounded-lg text-xs space-y-2 mb-3 border border-zinc-800">
                             <p><strong className="text-zinc-500">Plataforma:</strong> {order.platform}</p>
+                            {order.activePromo && (
+                              <div className="p-2 bg-[#ccff00]/5 border border-[#ccff00]/20 rounded-lg">
+                                <p className="font-bold text-[#ccff00]">
+                                  🎁 Promo: {order.activePromo.code} — {order.activePromo.description}
+                                </p>
+                              </div>
+                            )}
                             <div>
                               <strong className="text-zinc-500">Items:</strong>
                               <ul className="list-disc pl-4 mt-1">
@@ -706,6 +727,13 @@ export default function AdminDashboardPage() {
                                     <div>
                                       <p><strong className="text-zinc-500">Gateway:</strong> {order.gateway || 'N/A'}</p>
                                       <p><strong className="text-zinc-500">Plataforma:</strong> {order.platform}</p>
+                                      {order.activePromo && (
+                                        <div className="mt-2 p-2 bg-[#ccff00]/5 border border-[#ccff00]/20 rounded-lg">
+                                          <p className="font-bold text-[#ccff00]">
+                                            🎁 Promo: {order.activePromo.code} — {order.activePromo.description}
+                                          </p>
+                                        </div>
+                                      )}
                                     </div>
                                     <div>
                                       <strong className="text-zinc-500">Items:</strong>

@@ -141,6 +141,65 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: 'Pago aprobado y orden procesada' });
     }
 
+    if (action === 'refill') {
+      if (orderData?.status !== 'completed') {
+        return NextResponse.json({ error: 'Solo se puede hacer refill de órdenes completadas' }, { status: 400 });
+      }
+
+      console.log(`🔄 Refill solicitado para Orden ${orderId}. Reenviando items al proveedor...`);
+
+      const refillResults: any[] = [];
+      let allSuccess = true;
+
+      for (let i = 0; i < orderData.items.length; i++) {
+        const item = orderData.items[i];
+        if (item.serviceId && item.link && item.quantity) {
+          const result = await sendOrderWithChunking(
+            Number(item.serviceId),
+            item.link,
+            Number(item.quantity),
+            item.serviceType || '',
+            i
+          );
+
+          refillResults.push({
+            itemIndex: i,
+            itemName: item.name || `${item.quantity} unidades`,
+            quantity: item.quantity,
+            success: result.success,
+            providerOrderId: result.orderId || null,
+            error: result.error || null,
+          });
+
+          if (!result.success) allSuccess = false;
+        }
+      }
+
+      // Registrar el refill en el historial de la orden
+      const existingRefills = orderData.refills || [];
+      const refillEntry = {
+        refillIndex: existingRefills.length + 1,
+        timestamp: new Date().toISOString(),
+        results: refillResults,
+        allSuccess,
+      };
+
+      await orderRef.update({
+        refills: [...existingRefills, refillEntry],
+      });
+
+      const successCount = refillResults.filter(r => r.success).length;
+      const totalCount = refillResults.length;
+
+      console.log(`🔄 Refill #${refillEntry.refillIndex} para ${orderId}: ${successCount}/${totalCount} items reenviados.`);
+
+      return NextResponse.json({ 
+        success: true, 
+        message: `Refill #${refillEntry.refillIndex}: ${successCount}/${totalCount} items reenviados exitosamente`,
+        refill: refillEntry,
+      });
+    }
+
     return NextResponse.json({ error: 'Acción no válida' }, { status: 400 });
 
   } catch (error) {

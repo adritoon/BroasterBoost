@@ -47,11 +47,26 @@ interface OrderWithChunks extends OrderBase {
   pendingCount: number;
 }
 
+interface RefillEntry {
+  refillIndex: number;
+  timestamp: string;
+  allSuccess: boolean;
+  results: {
+    itemIndex: number;
+    itemName: string;
+    quantity: number;
+    success: boolean;
+    providerOrderId: string | null;
+    error: string | null;
+  }[];
+}
+
 interface GeneralOrder extends OrderBase {
   id: string;
   chunks?: ChunkInfo[];
   totalChunks?: number;
   chunksDelivered?: number;
+  refills?: RefillEntry[];
 }
 
 interface AutomationHistoryEntry {
@@ -257,6 +272,33 @@ export default function AdminDashboardPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderId, adminKey, action }),
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        setMessage({ text: `✅ ${data.message}`, type: 'success' });
+        fetchOrders();
+      } else {
+        setMessage({ text: `❌ Error: ${data.error}`, type: 'error' });
+      }
+    } catch {
+      setMessage({ text: '❌ Error de conexión', type: 'error' });
+    } finally {
+      setProcessingAction(null);
+    }
+  };
+
+  const handleRefill = async (orderId: string) => {
+    if (!confirm(`¿Enviar refill para la orden ${orderId}? Se reenviarán todos los items al proveedor.`)) return;
+    
+    setProcessingAction(orderId);
+    setMessage(null);
+
+    try {
+      const res = await fetch('/api/admin/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderId, adminKey, action: 'refill' }),
       });
 
       const data = await res.json();
@@ -766,6 +808,55 @@ export default function AdminDashboardPage() {
                                       )}
                                     </div>
                                   </div>
+
+                                  {/* Refill section - solo para órdenes completadas */}
+                                  {order.status === 'completed' && (
+                                    <div className="mt-4 border-t border-zinc-800 pt-4">
+                                      {/* Historial de refills previos */}
+                                      {order.refills && order.refills.length > 0 && (
+                                        <div className="mb-3 space-y-2">
+                                          <strong className="text-zinc-500">🔄 Historial de Refills ({order.refills.length}):</strong>
+                                          {order.refills.map((refill, ri) => (
+                                            <div key={ri} className={`p-2 rounded-lg border text-[11px] ${
+                                              refill.allSuccess 
+                                                ? 'bg-green-900/10 border-green-800/30' 
+                                                : 'bg-red-900/10 border-red-800/30'
+                                            }`}>
+                                              <div className="flex items-center justify-between mb-1">
+                                                <span className="font-bold text-zinc-300">
+                                                  Refill #{refill.refillIndex}
+                                                </span>
+                                                <span className="text-zinc-500">
+                                                  {new Date(refill.timestamp).toLocaleString('es-PE')}
+                                                </span>
+                                              </div>
+                                              {refill.results.map((r, rri) => (
+                                                <div key={rri} className="flex items-center gap-2 text-[10px]">
+                                                  <span>{r.success ? '✅' : '❌'}</span>
+                                                  <span className="text-zinc-400">{r.itemName} ({r.quantity})</span>
+                                                  {r.providerOrderId && (
+                                                    <span className="text-zinc-600 font-mono">ID: {r.providerOrderId}</span>
+                                                  )}
+                                                  {r.error && (
+                                                    <span className="text-red-400">{r.error}</span>
+                                                  )}
+                                                </div>
+                                              ))}
+                                            </div>
+                                          ))}
+                                        </div>
+                                      )}
+
+                                      {/* Botón de refill */}
+                                      <button
+                                        onClick={(e) => { e.stopPropagation(); handleRefill(order.id); }}
+                                        disabled={processingAction === order.id}
+                                        className="w-full py-2 bg-amber-600/20 text-amber-400 font-bold rounded-lg border border-amber-700/50 hover:bg-amber-600/30 transition-colors disabled:opacity-50 text-xs"
+                                      >
+                                        {processingAction === order.id ? '⏳ Enviando refill...' : `🔄 Enviar Refill${order.refills && order.refills.length > 0 ? ` (#${order.refills.length + 1})` : ''}`}
+                                      </button>
+                                    </div>
+                                  )}
                                 </td>
                               </tr>
                             )}

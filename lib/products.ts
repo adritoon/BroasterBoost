@@ -808,7 +808,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-followers-100',
     name: '100 Seguidores Instagram',
     price: 8.00,
-    provider_id: 8706, 
+    provider_id: 1896, 
     provider_quantity: 100,
     type: 'instagram',
     service_type: 'followers',
@@ -818,7 +818,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-followers-500',
     name: '500 Seguidores Instagram',
     price: 20.00, // Bajado de 15 a 12
-    provider_id: 8706,
+    provider_id: 1896,
     provider_quantity: 500,
     type: 'instagram',
     service_type: 'followers',
@@ -828,7 +828,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-followers-1k',
     name: '1,000 Seguidores Instagram',
     price: 35.00, // Bajado de 25 a 20. Precio Gancho.
-    provider_id: 8706,
+    provider_id: 1896,
     provider_quantity: 1000,
     type: 'instagram',
     service_type: 'followers',
@@ -840,7 +840,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-followers-5k',
     name: '5,000 Seguidores Instagram',
     price: 125.00, // Bajado de 90
-    provider_id: 8706,
+    provider_id: 1896,
     provider_quantity: 5000,
     type: 'instagram',
     service_type: 'followers',
@@ -850,7 +850,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-followers-10k',
     name: '10,000 Seguidores Instagram',
     price: 215.00, // Bajado de 180
-    provider_id: 8706,
+    provider_id: 1896,
     provider_quantity: 10000,
     type: 'instagram',
     service_type: 'followers',
@@ -860,7 +860,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'ig-followers-20k',
     name: '20,000 Seguidores Instagram',
     price: 350.00, // Bajado de 340
-    provider_id: 8706,
+    provider_id: 1896,
     provider_quantity: 20000,
     type: 'instagram',
     service_type: 'followers',

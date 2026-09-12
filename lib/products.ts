@@ -4,6 +4,8 @@ import { Instagram, Music, Facebook, Youtube, Gamepad2, Heart, Eye, MessageCircl
 // SISTEMA DE PROMOS ROTATIVAS (FLASH SALES)
 // ==========================================
 
+export const PROMOS_ENABLED = false; // <-- Cambia a true para activar promociones
+
 export interface FlashPromo {
   id: string;
   title: string;          // Texto principal del banner
@@ -177,6 +179,8 @@ function isPromoEligible(promo: FlashPromo, hour: number, dayOfWeek: number): bo
  * "NOCHE" solo aparece de noche y "VIERNES" solo los viernes.
  */
 export function getCurrentPromo(): { promo: FlashPromo; remainingMs: number; totalMs: number } | null {
+  if (!PROMOS_ENABLED) return null;
+
   const { hour, dayOfWeek } = getPeruTime();
 
   // Filtrar promos elegibles según hora y día

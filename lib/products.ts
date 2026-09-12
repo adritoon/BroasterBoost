@@ -561,16 +561,19 @@ const RAW_PRODUCTS: Product[] = [
   },
   // =========================================
   // TIKTOK VIEWERS STREAMS
-  // Costo proveedor: $4.50/1K/hr = S/ 17.10/1K/hr
-  // Provider IDs: 1120 (1hr), 1122 (2hr), 1123 (3hr)
-  // Margen objetivo: 55-75%
+  // Costo proveedor actual (tipo de cambio 1$ = ~3.8S/):
+  // 1hr: $0.659/100 -> ~S/ 2.50
+  // 2hr: $1.317/100 -> ~S/ 5.00
+  // 3hr: $1.975/100 -> ~S/ 7.51
+  // Provider IDs: 9812 (1hr), 9815 (2hr), 9817 (3hr)
+  // Margen objetivo: ~50-75%
   // =========================================
   // 1 Hora
   {
     id: 'tt-viewers-100-1',
     name: '100 Viewers (1 Hora)',
-    price: 7.90, // Costo: ~S/ 1.71 → Margen: 78%
-    provider_id: 1120,
+    price: 9.90, // Costo: ~S/ 2.50 → Margen: 75%
+    provider_id: 9812,
     provider_quantity: 100,
     type: 'tiktok',
     service_type: 'streaming',
@@ -579,8 +582,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-200-1',
     name: '200 Viewers (1 Hora)',
-    price: 12.90, // Costo: ~S/ 3.42 → Margen: 73%
-    provider_id: 1120,
+    price: 16.90, // Costo: ~S/ 5.01 → Margen: 70%
+    provider_id: 9812,
     provider_quantity: 200,
     type: 'tiktok',
     service_type: 'streaming',
@@ -589,8 +592,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-500-1',
     name: '500 Viewers (1 Hora)',
-    price: 24.90, // Costo: ~S/ 8.55 → Margen: 66%
-    provider_id: 1120,
+    price: 34.90, // Costo: ~S/ 12.52 → Margen: 64%
+    provider_id: 9812,
     provider_quantity: 500,
     type: 'tiktok',
     service_type: 'streaming',
@@ -601,8 +604,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-1000-1',
     name: '1000 Viewers (1 Hora)',
-    price: 39.90, // Costo: ~S/ 17.10 → Margen: 57%
-    provider_id: 1120,
+    price: 54.90, // Costo: ~S/ 25.04 → Margen: 54%
+    provider_id: 9812,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'streaming',
@@ -613,8 +616,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-2000-1',
     name: '2000 Viewers (1 Hora)',
-    price: 69.90, // Costo: ~S/ 34.20 → Margen: 51%
-    provider_id: 1120,
+    price: 99.90, // Costo: ~S/ 50.08 → Margen: 50%
+    provider_id: 9812,
     provider_quantity: 2000,
     type: 'tiktok',
     service_type: 'streaming',
@@ -624,8 +627,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-100-2',
     name: '100 Viewers (2 Horas)',
-    price: 12.90, // Costo: ~S/ 3.42 → Margen: 73%
-    provider_id: 1122,
+    price: 15.90, // Costo: ~S/ 5.00 → Margen: 69%
+    provider_id: 9815,
     provider_quantity: 100,
     type: 'tiktok',
     service_type: 'streaming',
@@ -634,8 +637,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-200-2',
     name: '200 Viewers (2 Horas)',
-    price: 22.90, // Costo: ~S/ 6.84 → Margen: 70%
-    provider_id: 1122,
+    price: 27.90, // Costo: ~S/ 10.01 → Margen: 64%
+    provider_id: 9815,
     provider_quantity: 200,
     type: 'tiktok',
     service_type: 'streaming',
@@ -644,8 +647,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-500-2',
     name: '500 Viewers (2 Horas)',
-    price: 42.90, // Costo: ~S/ 17.10 → Margen: 60%
-    provider_id: 1122,
+    price: 59.90, // Costo: ~S/ 25.02 → Margen: 58%
+    provider_id: 9815,
     provider_quantity: 500,
     type: 'tiktok',
     service_type: 'streaming',
@@ -654,8 +657,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-1000-2',
     name: '1000 Viewers (2 Horas)',
-    price: 69.90, // Costo: ~S/ 34.20 → Margen: 51%
-    provider_id: 1122,
+    price: 99.90, // Costo: ~S/ 50.05 → Margen: 50%
+    provider_id: 9815,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'streaming',
@@ -664,8 +667,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-2000-2',
     name: '2000 Viewers (2 Horas)',
-    price: 119.90, // Costo: ~S/ 68.40 → Margen: 43%
-    provider_id: 1122,
+    price: 169.90, // Costo: ~S/ 100.09 → Margen: 41%
+    provider_id: 9815,
     provider_quantity: 2000,
     type: 'tiktok',
     service_type: 'streaming',
@@ -675,8 +678,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-100-3',
     name: '100 Viewers (3 Horas)',
-    price: 17.90, // Costo: ~S/ 5.13 → Margen: 71%
-    provider_id: 1123,
+    price: 21.90, // Costo: ~S/ 7.51 → Margen: 66%
+    provider_id: 9817,
     provider_quantity: 100,
     type: 'tiktok',
     service_type: 'streaming',
@@ -685,8 +688,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-200-3',
     name: '200 Viewers (3 Horas)',
-    price: 29.90, // Costo: ~S/ 10.26 → Margen: 66%
-    provider_id: 1123,
+    price: 39.90, // Costo: ~S/ 15.01 → Margen: 62%
+    provider_id: 9817,
     provider_quantity: 200,
     type: 'tiktok',
     service_type: 'streaming',
@@ -695,8 +698,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-500-3',
     name: '500 Viewers (3 Horas)',
-    price: 59.90, // Costo: ~S/ 25.65 → Margen: 57%
-    provider_id: 1123,
+    price: 89.90, // Costo: ~S/ 37.53 → Margen: 58%
+    provider_id: 9817,
     provider_quantity: 500,
     type: 'tiktok',
     service_type: 'streaming',
@@ -705,8 +708,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-1000-3',
     name: '1000 Viewers (3 Horas)',
-    price: 94.90, // Costo: ~S/ 51.30 → Margen: 46%
-    provider_id: 1123,
+    price: 149.90, // Costo: ~S/ 75.05 → Margen: 50%
+    provider_id: 9817,
     provider_quantity: 1000,
     type: 'tiktok',
     service_type: 'streaming',
@@ -715,8 +718,8 @@ const RAW_PRODUCTS: Product[] = [
   {
     id: 'tt-viewers-2000-3',
     name: '2000 Viewers (3 Horas)',
-    price: 169.90, // Costo: ~S/ 102.60 → Margen: 40%
-    provider_id: 1123,
+    price: 249.90, // Costo: ~S/ 150.10 → Margen: 40%
+    provider_id: 9817,
     provider_quantity: 2000,
     type: 'tiktok',
     service_type: 'streaming',

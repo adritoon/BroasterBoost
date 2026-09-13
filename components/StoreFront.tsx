@@ -9,7 +9,7 @@ import {
   MessageCircle, Share2, Users, Swords, Clock, ThumbsUp, ShoppingCart, Link as LinkIcon,
   Minus, Plus, Repeat 
 } from 'lucide-react';
-import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES, getYouTubeCommentPrice, serviceLabels, getSeoMetadataForService, getPromoForProduct } from '@/lib/products';
+import { PRODUCTS, CATEGORIES, Product, ProductType, ServiceType, MAINTENANCE_SUBCATEGORIES, getYouTubeCommentPrice, serviceLabels, getSeoMetadataForService, getPromoForProduct, fetchMaintenanceConfig, getProductsWithMaintenance, getCategoriesWithMaintenance, MaintenanceConfig } from '@/lib/products';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { FAQSection } from '@/components/FAQSection';
@@ -78,8 +78,25 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
   const [showYapeModal, setShowYapeModal] = useState(false);
   const [manualProduct, setManualProduct] = useState<Product | null>(null);
 
+  // --- ESTADO DINÁMICO DE MANTENIMIENTO ---
+  const [dynamicProducts, setDynamicProducts] = useState<Product[]>(PRODUCTS);
+  const [dynamicCategories, setDynamicCategories] = useState(CATEGORIES);
+  const [maintenanceSubcats, setMaintenanceSubcats] = useState(MAINTENANCE_SUBCATEGORIES);
+
+  // Fetch maintenance config on mount
+  useEffect(() => {
+    fetchMaintenanceConfig().then((config) => {
+      setDynamicProducts(getProductsWithMaintenance(config));
+      setDynamicCategories(getCategoriesWithMaintenance(config));
+      setMaintenanceSubcats([
+        ...MAINTENANCE_SUBCATEGORIES,
+        ...config.subcategories as { type: ProductType; service_type: ServiceType }[]
+      ]);
+    });
+  }, []);
+
   // --- LÓGICA DE FILTROS ---
-  const productsByCategory = PRODUCTS.filter(p => p.type === activeCategory);
+  const productsByCategory = dynamicProducts.filter(p => p.type === activeCategory);
   const rawServices = Array.from(new Set(productsByCategory.map(p => p.service_type)));
   // Agregar pestaña "Arma tu Pack" si hay 2+ tipos de servicio combinables
   const builderEligible = rawServices.filter(s => !['streaming_chat', 'pkbattle'].includes(s));
@@ -96,7 +113,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
     setCustomQuantity(5);
     setCustomQuantityInput('5');
     setCustomComments(['', '', '', '', '']);
-    const firstService = PRODUCTS.find(p => p.type === cat)?.service_type || 'followers';
+    const firstService = dynamicProducts.find(p => p.type === cat)?.service_type || 'followers';
     setActiveService(firstService);
     
     // Sincronizar URL silenciosamente con el nombre original en inglés
@@ -108,8 +125,8 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
   useEffect(() => {
     const hash = window.location.hash.replace('#', '');
     if (hash) {
-      const isValidCategory = CATEGORIES.some(c => c.id === hash);
-      const isMaintenance = CATEGORIES.find(c => c.id === hash)?.status === 'maintenance';
+      const isValidCategory = dynamicCategories.some(c => c.id === hash);
+      const isMaintenance = dynamicCategories.find(c => c.id === hash)?.status === 'maintenance';
       if (isValidCategory && !isMaintenance) {
         handleCategoryChange(hash as ProductType);
       }
@@ -117,8 +134,8 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
       const params = new URLSearchParams(window.location.search);
       const categoryParam = params.get('categoria') || params.get('category');
       if (categoryParam) {
-        const isValidCategory = CATEGORIES.some(c => c.id === categoryParam);
-        const isMaintenance = CATEGORIES.find(c => c.id === categoryParam)?.status === 'maintenance';
+        const isValidCategory = dynamicCategories.some(c => c.id === categoryParam);
+        const isMaintenance = dynamicCategories.find(c => c.id === categoryParam)?.status === 'maintenance';
         if (isValidCategory && !isMaintenance) {
           handleCategoryChange(categoryParam as ProductType);
         }
@@ -360,7 +377,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
       });
     } else if (product.isCustomQuantity) {
         // In case it's a custom quantity but no comments (e.g. followers)
-        const tierProducts = PRODUCTS.filter(p =>
+        const tierProducts = dynamicProducts.filter(p =>
           p.type === product.type &&
           p.service_type === product.service_type &&
           !p.isCustomQuantity &&
@@ -520,7 +537,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
         <h2 className="sr-only">Selecciona una Red Social</h2> 
         
         <div className="flex flex-wrap justify-center gap-2">
-          {CATEGORIES.map((cat) => {
+          {dynamicCategories.map((cat) => {
             const isCatUnavailable = cat.status === 'maintenance';
             return (
               <button
@@ -548,8 +565,8 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
         <div className="flex justify-center">
           <div className="flex flex-wrap justify-center gap-2 bg-[#050505] p-2 border-2 border-[#333]">
             {availableServices.map((service) => {
-              const activeCategoryObj = CATEGORIES.find(c => c.id === activeCategory);
-              const isServiceUnavailable = MAINTENANCE_SUBCATEGORIES.some(
+              const activeCategoryObj = dynamicCategories.find(c => c.id === activeCategory);
+              const isServiceUnavailable = maintenanceSubcats.some(
                 m => m.type === activeCategory && m.service_type === service
               );
               return (

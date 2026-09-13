@@ -351,8 +351,82 @@ export interface Product {
   maxQuantity?: number;        // Cantidad máxima (ej: 100)
   requiresComments?: boolean;  // Si true, el cliente debe ingresar texto de comentarios
 }
+// Fallback estático — se usa si Firestore no responde
 export const MAINTENANCE_SUBCATEGORIES: { type: ProductType; service_type: ServiceType }[] = [
 ];
+
+// --- Configuración Dinámica de Mantenimiento (desde Firestore) ---
+export interface MaintenanceConfig {
+  subcategories: { type: string; service_type: string }[];
+  categories: string[];
+}
+
+/**
+ * Fetcha la config de mantenimiento desde el API.
+ * Se usa en el StoreFront (client-side) para obtener el estado en tiempo real.
+ */
+export async function fetchMaintenanceConfig(): Promise<MaintenanceConfig> {
+  try {
+    const res = await fetch('/api/settings/maintenance', { next: { revalidate: 0 } });
+    if (!res.ok) throw new Error('Failed to fetch');
+    const data = await res.json();
+    if (data.success) {
+      return {
+        subcategories: data.subcategories || [],
+        categories: data.categories || [],
+      };
+    }
+  } catch (e) {
+    console.warn('Could not fetch maintenance config, using static fallback');
+  }
+  return { subcategories: MAINTENANCE_SUBCATEGORIES, categories: [] };
+}
+
+/**
+ * Aplica la configuración de mantenimiento (dinámica o estática) a los productos.
+ * - Si una subcategoría (type + service_type) está en la lista, marca productos como 'maintenance'
+ * - Si una categoría entera está en la lista, marca TODOS sus productos como 'maintenance'
+ */
+export function getProductsWithMaintenance(config: MaintenanceConfig): Product[] {
+  return RAW_PRODUCTS.map(product => {
+    // Categoría entera en mantenimiento
+    const isCategoryDisabled = config.categories.includes(product.type);
+    if (isCategoryDisabled) {
+      return { ...product, status: 'maintenance' as const };
+    }
+
+    // Subcategoría específica en mantenimiento
+    const isSubcategoryDisabled = config.subcategories.some(
+      m => m.type === product.type && m.service_type === product.service_type
+    );
+    if (isSubcategoryDisabled) {
+      return { ...product, status: 'maintenance' as const };
+    }
+
+    // Fallback estático
+    const isStaticMaintenance = MAINTENANCE_SUBCATEGORIES.some(
+      m => m.type === product.type && m.service_type === product.service_type
+    );
+    if (isStaticMaintenance) {
+      return { ...product, status: 'maintenance' as const };
+    }
+
+    return product;
+  });
+}
+
+/**
+ * Aplica la configuración de mantenimiento a las categorías.
+ * Las categorías en la lista se marcan con status: 'maintenance'.
+ */
+export function getCategoriesWithMaintenance(config: MaintenanceConfig): Category[] {
+  return CATEGORIES.map(cat => {
+    if (config.categories.includes(cat.id)) {
+      return { ...cat, status: 'maintenance' as const };
+    }
+    return cat;
+  });
+}
 
 const RAW_PRODUCTS: Product[] = [
   // =========================================

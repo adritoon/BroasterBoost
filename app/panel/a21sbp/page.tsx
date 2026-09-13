@@ -2,7 +2,55 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 
-type Tab = 'chunks' | 'yape' | 'history' | 'automations';
+type Tab = 'chunks' | 'yape' | 'history' | 'automations' | 'services';
+
+// Service management types
+interface MaintenanceConfig {
+  subcategories: { type: string; service_type: string }[];
+  categories: string[];
+}
+
+const ALL_CATEGORIES = [
+  { id: 'tiktok', label: 'TikTok', emoji: '🎵' },
+  { id: 'instagram', label: 'Instagram', emoji: '📸' },
+  { id: 'twitter', label: 'X/Twitter', emoji: '🐦' },
+  { id: 'youtube', label: 'YouTube', emoji: '▶️' },
+  { id: 'facebook', label: 'Facebook', emoji: '👤' },
+  { id: 'spotify', label: 'Spotify', emoji: '🎧' },
+  { id: 'kick', label: 'Kick', emoji: '🎮' },
+  { id: 'twitch', label: 'Twitch', emoji: '💜' },
+];
+
+const SERVICE_LABELS: Record<string, string> = {
+  followers: 'Seguidores',
+  likes: 'Likes',
+  views: 'Vistas',
+  reactions: 'Reacciones',
+  viewsShorts: 'Shorts',
+  pkbattle: 'Batallas PK',
+  watchtime: 'Watchtime',
+  comments: 'Comentarios',
+  shares: 'Compartidos',
+  streaming: 'En Vivo',
+  streaming_chat: 'En Vivo + Chat',
+  plays: 'Plays',
+  listeners: 'Oyentes Mensuales',
+  saves: 'Guardados',
+  retweets: 'Retweets',
+  custom_pack: 'Arma tu Pack',
+};
+
+// Map of category -> available service types (derived from actual products)
+const CATEGORY_SERVICES: Record<string, string[]> = {
+  tiktok: ['followers', 'likes', 'views', 'streaming', 'pkbattle', 'comments', 'shares'],
+  instagram: ['followers', 'likes', 'views', 'comments', 'shares'],
+  twitter: ['followers', 'likes', 'views', 'comments', 'retweets'],
+  youtube: ['followers', 'likes', 'views', 'viewsShorts', 'watchtime', 'comments', 'shares'],
+  facebook: ['followers', 'likes', 'views', 'reactions', 'comments'],
+  spotify: ['followers', 'plays', 'listeners', 'saves'],
+  kick: ['followers', 'streaming'],
+  twitch: ['followers', 'streaming', 'streaming_chat'],
+};
 
 interface ChunkInfo {
   index: number;
@@ -172,6 +220,10 @@ export default function AdminDashboardPage() {
   const [editAutoForm, setEditAutoForm] = useState({ quantityPerRun: '', intervalHours: '' });
   const [lastRefresh, setLastRefresh] = useState<string>('');
 
+  // Services tab state
+  const [maintenanceConfig, setMaintenanceConfig] = useState<MaintenanceConfig>({ subcategories: [], categories: [] });
+  const [togglingService, setTogglingService] = useState<string | null>(null);
+
   const fetchTab = useCallback(async (tab: Tab) => {
     setLoading(true);
     try {
@@ -182,6 +234,19 @@ export default function AdminDashboardPage() {
         url = `/api/admin/orders?adminKey=${encodeURIComponent(adminKey)}&status=pending_yape`;
       } else if (tab === 'automations') {
         url = `/api/admin/automations?adminKey=${encodeURIComponent(adminKey)}`;
+      } else if (tab === 'services') {
+        // Services uses a different endpoint
+        const res = await fetch('/api/settings/maintenance');
+        const data = await res.json();
+        if (data.success) {
+          setMaintenanceConfig({
+            subcategories: data.subcategories || [],
+            categories: data.categories || [],
+          });
+          setLastRefresh(new Date().toLocaleTimeString('es-PE'));
+        }
+        setLoading(false);
+        return;
       } else {
         url = `/api/admin/orders?adminKey=${encodeURIComponent(adminKey)}`;
       }
@@ -496,7 +561,7 @@ export default function AdminDashboardPage() {
 
         {/* TABS */}
         <div className="flex gap-2 mb-6 border-b border-zinc-800 pb-2 overflow-x-auto">
-          {(['chunks', 'yape', 'history', 'automations'] as Tab[]).map((tab) => (
+          {(['chunks', 'yape', 'history', 'automations', 'services'] as Tab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setExpandedOrderId(null); }}
@@ -510,6 +575,7 @@ export default function AdminDashboardPage() {
               {tab === 'yape' && '⏳ Pagos Yape'}
               {tab === 'history' && '📋 Todas las Órdenes'}
               {tab === 'automations' && '⚡ Automatización'}
+              {tab === 'services' && '🔧 Servicios'}
             </button>
           ))}
         </div>
@@ -1210,6 +1276,162 @@ export default function AdminDashboardPage() {
                     })}
                   </div>
                 )}
+              </>
+            )}
+
+            {/* TAB SERVICIOS */}
+            {activeTab === 'services' && (
+              <>
+                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+                  <h2 className="text-lg font-bold mb-2 flex items-center gap-2">
+                    <span className="text-xl">🔧</span> Gestión de Servicios
+                  </h2>
+                  <p className="text-zinc-400 text-sm mb-1">
+                    Activa o desactiva servicios en tiempo real. Los cambios se aplican al instante en la tienda.
+                  </p>
+                  <p className="text-zinc-500 text-xs">
+                    🟢 = Activo &nbsp; 🔴 = En Mantenimiento (desactivado para clientes)
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {ALL_CATEGORIES.map((cat) => {
+                    const isCatDisabled = maintenanceConfig.categories.includes(cat.id);
+                    const services = CATEGORY_SERVICES[cat.id] || [];
+                    const toggleKey = `cat-${cat.id}`;
+
+                    return (
+                      <div key={cat.id} className={`bg-zinc-900 border rounded-xl overflow-hidden transition-colors ${isCatDisabled ? 'border-red-900/50' : 'border-zinc-800'}`}>
+                        {/* Category Header with master toggle */}
+                        <div className={`flex items-center justify-between px-5 py-4 ${isCatDisabled ? 'bg-red-950/20' : ''}`}>
+                          <div className="flex items-center gap-3">
+                            <span className="text-2xl">{cat.emoji}</span>
+                            <div>
+                              <h3 className="text-white font-bold text-base">{cat.label}</h3>
+                              <p className="text-zinc-500 text-xs">{services.length} servicios</p>
+                            </div>
+                          </div>
+                          <button
+                            onClick={async () => {
+                              setTogglingService(toggleKey);
+                              try {
+                                const res = await fetch('/api/settings/maintenance', {
+                                  method: 'POST',
+                                  headers: { 'Content-Type': 'application/json' },
+                                  body: JSON.stringify({ adminKey, action: 'toggle_category', categoryId: cat.id }),
+                                });
+                                const data = await res.json();
+                                if (data.success) {
+                                  setMaintenanceConfig({
+                                    subcategories: data.subcategories,
+                                    categories: data.categories,
+                                  });
+                                  setMessage({ text: `✅ ${cat.label} ${data.categories.includes(cat.id) ? 'desactivado' : 'activado'}`, type: 'success' });
+                                } else {
+                                  setMessage({ text: `❌ ${data.error}`, type: 'error' });
+                                }
+                              } catch {
+                                setMessage({ text: '❌ Error de conexión', type: 'error' });
+                              } finally {
+                                setTogglingService(null);
+                              }
+                            }}
+                            disabled={togglingService === toggleKey}
+                            className={`relative inline-flex h-7 w-14 items-center rounded-full transition-colors duration-300 focus:outline-none ${
+                              isCatDisabled ? 'bg-red-900/60' : 'bg-green-600'
+                            } ${togglingService === toggleKey ? 'opacity-50' : ''}`}
+                          >
+                            <span className={`inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                              isCatDisabled ? 'translate-x-1' : 'translate-x-8'
+                            }`} />
+                          </button>
+                        </div>
+
+                        {/* Subcategory toggles */}
+                        {!isCatDisabled && services.length > 0 && (
+                          <div className="border-t border-zinc-800 divide-y divide-zinc-800/50">
+                            {services.map((serviceType) => {
+                              const isSubDisabled = maintenanceConfig.subcategories.some(
+                                s => s.type === cat.id && s.service_type === serviceType
+                              );
+                              const subToggleKey = `sub-${cat.id}-${serviceType}`;
+
+                              return (
+                                <div key={serviceType} className={`flex items-center justify-between px-5 py-3 pl-14 ${isSubDisabled ? 'bg-red-950/10' : ''}`}>
+                                  <div className="flex items-center gap-2">
+                                    <span className={`w-2 h-2 rounded-full ${isSubDisabled ? 'bg-red-500' : 'bg-green-500'}`} />
+                                    <span className={`text-sm ${isSubDisabled ? 'text-red-400/80' : 'text-zinc-300'}`}>
+                                      {SERVICE_LABELS[serviceType] || serviceType}
+                                    </span>
+                                    {isSubDisabled && (
+                                      <span className="text-[10px] bg-red-900/40 text-red-400 px-1.5 py-0.5 rounded border border-red-800/30">
+                                        MANTENIMIENTO
+                                      </span>
+                                    )}
+                                  </div>
+                                  <button
+                                    onClick={async () => {
+                                      setTogglingService(subToggleKey);
+                                      try {
+                                        const res = await fetch('/api/settings/maintenance', {
+                                          method: 'POST',
+                                          headers: { 'Content-Type': 'application/json' },
+                                          body: JSON.stringify({
+                                            adminKey,
+                                            action: 'toggle_subcategory',
+                                            type: cat.id,
+                                            service_type: serviceType,
+                                          }),
+                                        });
+                                        const data = await res.json();
+                                        if (data.success) {
+                                          setMaintenanceConfig({
+                                            subcategories: data.subcategories,
+                                            categories: data.categories,
+                                          });
+                                          const isNowDisabled = data.subcategories.some(
+                                            (s: any) => s.type === cat.id && s.service_type === serviceType
+                                          );
+                                          setMessage({
+                                            text: `✅ ${cat.label} → ${SERVICE_LABELS[serviceType] || serviceType} ${isNowDisabled ? 'desactivado' : 'activado'}`,
+                                            type: 'success',
+                                          });
+                                        } else {
+                                          setMessage({ text: `❌ ${data.error}`, type: 'error' });
+                                        }
+                                      } catch {
+                                        setMessage({ text: '❌ Error de conexión', type: 'error' });
+                                      } finally {
+                                        setTogglingService(null);
+                                      }
+                                    }}
+                                    disabled={togglingService === subToggleKey}
+                                    className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-300 focus:outline-none ${
+                                      isSubDisabled ? 'bg-red-900/60' : 'bg-green-600'
+                                    } ${togglingService === subToggleKey ? 'opacity-50' : ''}`}
+                                  >
+                                    <span className={`inline-block h-4 w-4 transform rounded-full bg-white shadow-lg transition-transform duration-300 ${
+                                      isSubDisabled ? 'translate-x-1' : 'translate-x-6'
+                                    }`} />
+                                  </button>
+                                </div>
+                              );
+                            })}
+                          </div>
+                        )}
+
+                        {/* Message when entire category is disabled */}
+                        {isCatDisabled && (
+                          <div className="px-5 py-3 border-t border-red-900/30 bg-red-950/10">
+                            <p className="text-red-400/70 text-xs text-center">
+                              ⚠️ Toda la categoría {cat.label} está desactivada. Los clientes no pueden ver ni comprar ningún servicio de {cat.label}.
+                            </p>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </>
             )}
 

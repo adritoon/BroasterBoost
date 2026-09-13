@@ -1317,7 +1317,7 @@ export default function AdminDashboardPage() {
                               try {
                                 const res = await fetch('/api/settings/maintenance', {
                                   method: 'POST',
-                                  headers: { 'Content-Type': 'application/json' },
+                                  headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
                                   body: JSON.stringify({ adminKey, action: 'toggle_category', categoryId: cat.id }),
                                 });
                                 const data = await res.json();
@@ -1375,7 +1375,7 @@ export default function AdminDashboardPage() {
                                       try {
                                         const res = await fetch('/api/settings/maintenance', {
                                           method: 'POST',
-                                          headers: { 'Content-Type': 'application/json' },
+                                          headers: { 'Content-Type': 'application/json', 'x-admin-key': adminKey },
                                           body: JSON.stringify({
                                             adminKey,
                                             action: 'toggle_subcategory',

@@ -291,7 +291,7 @@ export default function AdminDashboardPage() {
     } finally {
       setLoading(false);
     }
-  }, [adminKey]);
+  }, [adminKey, financePeriod, financeUsdRate]);
 
   const fetchOrders = useCallback(() => {
     fetchTab(activeTab);

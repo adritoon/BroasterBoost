@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 
-type Tab = 'chunks' | 'yape' | 'history' | 'automations' | 'services';
+type Tab = 'chunks' | 'yape' | 'history' | 'automations' | 'services' | 'finances';
 
 // Service management types
 interface MaintenanceConfig {
@@ -224,6 +224,11 @@ export default function AdminDashboardPage() {
   const [maintenanceConfig, setMaintenanceConfig] = useState<MaintenanceConfig>({ subcategories: [], categories: [] });
   const [togglingService, setTogglingService] = useState<string | null>(null);
 
+  // Finances tab state
+  const [financeData, setFinanceData] = useState<any>(null);
+  const [financePeriod, setFinancePeriod] = useState<string>('all');
+  const [financeUsdRate, setFinanceUsdRate] = useState<number>(3.70);
+
   const fetchTab = useCallback(async (tab: Tab) => {
     setLoading(true);
     try {
@@ -243,6 +248,21 @@ export default function AdminDashboardPage() {
             subcategories: data.subcategories || [],
             categories: data.categories || [],
           });
+          setLastRefresh(new Date().toLocaleTimeString('es-PE'));
+        }
+        setLoading(false);
+        return;
+      } else if (tab === 'finances') {
+        const res = await fetch(`/api/admin/finances?adminKey=${encodeURIComponent(adminKey)}&period=${financePeriod}&usdRate=${financeUsdRate}`);
+        if (res.status === 401) {
+          setIsAuthenticated(false);
+          setMessage({ text: 'Clave inválida', type: 'error' });
+          setLoading(false);
+          return;
+        }
+        const data = await res.json();
+        if (data.success) {
+          setFinanceData(data);
           setLastRefresh(new Date().toLocaleTimeString('es-PE'));
         }
         setLoading(false);
@@ -561,7 +581,7 @@ export default function AdminDashboardPage() {
 
         {/* TABS */}
         <div className="flex gap-2 mb-6 border-b border-zinc-800 pb-2 overflow-x-auto">
-          {(['chunks', 'yape', 'history', 'automations', 'services'] as Tab[]).map((tab) => (
+          {(['chunks', 'yape', 'history', 'automations', 'services', 'finances'] as Tab[]).map((tab) => (
             <button
               key={tab}
               onClick={() => { setActiveTab(tab); setExpandedOrderId(null); }}
@@ -576,6 +596,7 @@ export default function AdminDashboardPage() {
               {tab === 'history' && '📋 Todas las Órdenes'}
               {tab === 'automations' && '⚡ Automatización'}
               {tab === 'services' && '🔧 Servicios'}
+              {tab === 'finances' && '📊 Finanzas'}
             </button>
           ))}
         </div>
@@ -1432,6 +1453,170 @@ export default function AdminDashboardPage() {
                     );
                   })}
                 </div>
+              </>
+            )}
+
+            {/* TAB FINANZAS */}
+            {activeTab === 'finances' && (
+              <>
+                {/* Controls */}
+                <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+                  <h2 className="text-lg font-bold mb-3 flex items-center gap-2">
+                    <span className="text-xl">📊</span> Dashboard de Finanzas
+                  </h2>
+                  <div className="flex flex-wrap gap-3 items-end">
+                    <div>
+                      <label className="text-zinc-400 text-xs block mb-1">Período</label>
+                      <select
+                        value={financePeriod}
+                        onChange={(e) => setFinancePeriod(e.target.value)}
+                        className="bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm"
+                      >
+                        <option value="today">Hoy</option>
+                        <option value="week">Últimos 7 días</option>
+                        <option value="month">Este mes</option>
+                        <option value="all">Todo el historial</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="text-zinc-400 text-xs block mb-1">Tipo cambio USD→PEN</label>
+                      <input
+                        type="number"
+                        step="0.01"
+                        value={financeUsdRate}
+                        onChange={(e) => setFinanceUsdRate(parseFloat(e.target.value) || 3.70)}
+                        className="bg-zinc-800 border border-zinc-700 text-white px-3 py-2 rounded-lg text-sm w-24"
+                      />
+                    </div>
+                    <button
+                      onClick={() => fetchTab('finances')}
+                      className="px-4 py-2 bg-[#ccff00] text-black font-bold rounded-lg text-sm hover:bg-[#b3e600] transition-colors"
+                    >
+                      🔄 Actualizar
+                    </button>
+                  </div>
+                </div>
+
+                {financeData ? (
+                  <>
+                    {/* KPI Cards */}
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+                      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                        <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Ingresos</p>
+                        <p className="text-2xl font-black text-white">S/. {financeData.summary.totalRevenuePEN.toFixed(2)}</p>
+                        <p className="text-zinc-500 text-xs mt-1">{financeData.summary.totalOrders} órdenes</p>
+                      </div>
+                      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                        <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Costos Proveedor</p>
+                        <p className="text-2xl font-black text-red-400">S/. {financeData.summary.totalCostPEN.toFixed(2)}</p>
+                        <p className="text-zinc-500 text-xs mt-1">${financeData.summary.totalCostUSD.toFixed(2)} USD</p>
+                      </div>
+                      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                        <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Ganancia Neta</p>
+                        <p className={`text-2xl font-black ${financeData.summary.totalProfitPEN >= 0 ? 'text-[#ccff00]' : 'text-red-400'}`}>
+                          S/. {financeData.summary.totalProfitPEN.toFixed(2)}
+                        </p>
+                        <p className="text-zinc-500 text-xs mt-1">Revenue - Costs</p>
+                      </div>
+                      <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-4">
+                        <p className="text-zinc-500 text-xs uppercase tracking-wider mb-1">Margen</p>
+                        <p className={`text-2xl font-black ${financeData.summary.profitMargin >= 50 ? 'text-[#ccff00]' : financeData.summary.profitMargin >= 30 ? 'text-yellow-400' : 'text-red-400'}`}>
+                          {financeData.summary.profitMargin.toFixed(1)}%
+                        </p>
+                        <p className="text-zinc-500 text-xs mt-1">Profit / Revenue</p>
+                      </div>
+                    </div>
+
+                    {/* Platform Breakdown */}
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5 mb-6">
+                      <h3 className="text-white font-bold mb-4">📱 Por Plataforma</h3>
+                      <div className="space-y-3">
+                        {financeData.platformBreakdown.map((p: any) => {
+                          const maxRevenue = Math.max(...financeData.platformBreakdown.map((x: any) => x.revenuePEN), 1);
+                          const barWidth = (p.revenuePEN / maxRevenue) * 100;
+                          const margin = p.revenuePEN > 0 ? ((p.profitPEN / p.revenuePEN) * 100) : 0;
+                          const catEmoji = ALL_CATEGORIES.find(c => c.id === p.platform)?.emoji || '📦';
+                          const catLabel = ALL_CATEGORIES.find(c => c.id === p.platform)?.label || p.platform;
+                          return (
+                            <div key={p.platform} className="group">
+                              <div className="flex items-center justify-between mb-1">
+                                <div className="flex items-center gap-2">
+                                  <span>{catEmoji}</span>
+                                  <span className="text-white font-medium text-sm">{catLabel}</span>
+                                  <span className="text-zinc-600 text-xs">({p.orderCount} ventas)</span>
+                                </div>
+                                <div className="flex items-center gap-3 text-xs">
+                                  <span className="text-zinc-400">S/. {p.revenuePEN.toFixed(2)}</span>
+                                  <span className="text-red-400/70">-S/. {p.costPEN.toFixed(2)}</span>
+                                  <span className={`font-bold ${p.profitPEN >= 0 ? 'text-[#ccff00]' : 'text-red-400'}`}>
+                                    = S/. {p.profitPEN.toFixed(2)}
+                                  </span>
+                                  <span className={`text-[10px] px-1.5 py-0.5 rounded ${margin >= 50 ? 'bg-green-900/40 text-green-400' : margin >= 30 ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
+                                    {margin.toFixed(0)}%
+                                  </span>
+                                </div>
+                              </div>
+                              <div className="h-2 bg-zinc-800 rounded-full overflow-hidden">
+                                <div
+                                  className="h-full rounded-full bg-gradient-to-r from-[#ccff00] to-green-500 transition-all duration-500"
+                                  style={{ width: `${barWidth}%` }}
+                                />
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+
+                    {/* Service Breakdown Table */}
+                    <div className="bg-zinc-900 border border-zinc-800 rounded-xl p-5">
+                      <h3 className="text-white font-bold mb-4">🔍 Desglose por Servicio</h3>
+                      <div className="overflow-x-auto">
+                        <table className="w-full text-sm">
+                          <thead>
+                            <tr className="text-zinc-500 text-xs uppercase border-b border-zinc-800">
+                              <th className="text-left py-2 pr-3">Plataforma</th>
+                              <th className="text-left py-2 pr-3">Servicio</th>
+                              <th className="text-right py-2 pr-3">Ventas</th>
+                              <th className="text-right py-2 pr-3">Ingresos</th>
+                              <th className="text-right py-2 pr-3">Costo</th>
+                              <th className="text-right py-2 pr-3">Ganancia</th>
+                              <th className="text-right py-2">Margen</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            {financeData.serviceBreakdown.map((s: any, i: number) => {
+                              const margin = s.revenuePEN > 0 ? ((s.profitPEN / s.revenuePEN) * 100) : 0;
+                              const catEmoji = ALL_CATEGORIES.find(c => c.id === s.platform)?.emoji || '';
+                              return (
+                                <tr key={i} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
+                                  <td className="py-2 pr-3 text-zinc-300">{catEmoji} {s.platform}</td>
+                                  <td className="py-2 pr-3 text-zinc-300">{SERVICE_LABELS[s.serviceType] || s.serviceType}</td>
+                                  <td className="py-2 pr-3 text-right text-zinc-400">{s.orderCount}</td>
+                                  <td className="py-2 pr-3 text-right text-white font-medium">S/. {s.revenuePEN.toFixed(2)}</td>
+                                  <td className="py-2 pr-3 text-right text-red-400/70">S/. {s.costPEN.toFixed(2)}</td>
+                                  <td className={`py-2 pr-3 text-right font-bold ${s.profitPEN >= 0 ? 'text-[#ccff00]' : 'text-red-400'}`}>
+                                    S/. {s.profitPEN.toFixed(2)}
+                                  </td>
+                                  <td className="py-2 text-right">
+                                    <span className={`text-xs px-1.5 py-0.5 rounded ${margin >= 50 ? 'bg-green-900/40 text-green-400' : margin >= 30 ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
+                                      {margin.toFixed(0)}%
+                                    </span>
+                                  </td>
+                                </tr>
+                              );
+                            })}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center text-zinc-500 py-12">
+                    <p className="text-4xl mb-3">📊</p>
+                    <p>Presiona <strong className="text-white">Actualizar</strong> para cargar los datos financieros</p>
+                  </div>
+                )}
               </>
             )}
 

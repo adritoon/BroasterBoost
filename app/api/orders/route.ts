@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { FieldValue } from 'firebase-admin/firestore';
-import { PRODUCTS, getInterpolatedPrice, ProductType, ServiceType, CUSTOM_QTY_ELIGIBLE, getCustomCommentPrice, getPromoForProduct, getCurrentPromo } from '@/lib/products';
+import { PRODUCTS, getInterpolatedPrice, ProductType, ServiceType, CUSTOM_QTY_ELIGIBLE, getCustomCommentPrice, getPromoForProduct, getCurrentPromo, getProviderCostUSD } from '@/lib/products';
 
 export async function POST(request: Request) {
   try {
@@ -23,6 +23,7 @@ export async function POST(request: Request) {
           return NextResponse.json({ error: `Producto ${item.productId} no disponible` }, { status: 400 });
         }
         subtotal += product.price;
+        const providerCostUSD = product.provider_cost_usd || getProviderCostUSD(product.provider_id, product.provider_quantity);
         orderItems.push({
           serviceId: product.provider_id,
           quantity: product.provider_quantity,
@@ -30,7 +31,8 @@ export async function POST(request: Request) {
           price: product.price,
           name: product.name,
           productId: product.id,
-          serviceType: product.service_type
+          serviceType: product.service_type,
+          providerCostUSD,
         });
       } else if (item.type === 'custom_quantity') {
         if (!CUSTOM_QTY_ELIGIBLE.includes(item.service as ServiceType)) {
@@ -55,13 +57,15 @@ export async function POST(request: Request) {
         }
 
         subtotal += total;
+        const providerCostUSD = getProviderCostUSD(nearestTier.provider_id, item.quantity);
         orderItems.push({
           serviceId: nearestTier.provider_id,
           quantity: item.quantity,
           link: item.link,
           price: total,
           name: `${item.quantity.toLocaleString()} ${item.service} personalizados`,
-          serviceType: item.service
+          serviceType: item.service,
+          providerCostUSD,
         });
       } else if (item.type === 'custom_comments') {
          const { total } = getCustomCommentPrice(item.quantity);
@@ -69,6 +73,7 @@ export async function POST(request: Request) {
          if (!product) return NextResponse.json({ error: `Producto de comentarios no encontrado` }, { status: 400 });
          
          subtotal += total;
+         const providerCostUSD = getProviderCostUSD(product.provider_id, item.quantity);
          orderItems.push({
            serviceId: product.provider_id,
            quantity: item.quantity,
@@ -77,7 +82,8 @@ export async function POST(request: Request) {
            comments: item.comments,
            name: `${item.quantity.toLocaleString()} Comentarios Personalizados`,
            productId: product.id,
-           serviceType: 'comments'
+           serviceType: 'comments',
+           providerCostUSD,
          });
       }
     }
@@ -131,6 +137,9 @@ export async function POST(request: Request) {
       }
     }
 
+    // Calcular costo total del proveedor en USD
+    const totalCostUSD = orderItems.reduce((sum: number, item: any) => sum + (item.providerCostUSD || 0), 0);
+
     // Save to Firestore
     const ordersRef = adminDb.collection('orders');
     const orderDocData: any = {
@@ -138,6 +147,7 @@ export async function POST(request: Request) {
       subtotalPEN: subtotal,
       discountPEN: appliedDiscount,
       totalPEN: totalPEN,
+      totalCostUSD: parseFloat(totalCostUSD.toFixed(4)),
       status: isYape ? 'pending_yape' : 'pending',
       createdAt: FieldValue.serverTimestamp(),
       platform: platform || 'mixed',

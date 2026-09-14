@@ -350,7 +350,61 @@ export interface Product {
   minQuantity?: number;        // Cantidad mínima (ej: 5)
   maxQuantity?: number;        // Cantidad máxima (ej: 100)
   requiresComments?: boolean;  // Si true, el cliente debe ingresar texto de comentarios
+  provider_cost_usd?: number;  // Costo del proveedor en USD (calculado automáticamente)
 }
+
+// ==========================================
+// COSTOS DEL PROVEEDOR (USD por cantidad base indicada)
+// Se usa para calcular ganancia neta en el panel de Finanzas
+// ==========================================
+const PROVIDER_COSTS: Record<number, { costUSD: number; baseQty: number }> = {
+  // TikTok
+  5447: { costUSD: 0.185, baseQty: 100 },   // Followers
+  8848: { costUSD: 0.048, baseQty: 100 },   // Likes
+  1130: { costUSD: 0.07, baseQty: 1000 },   // Views
+  9812: { costUSD: 0.671, baseQty: 100 },   // Streaming 1h
+  9815: { costUSD: 1.342, baseQty: 100 },   // Streaming 2h
+  9817: { costUSD: 2.013, baseQty: 100 },   // Streaming 3h
+  5159: { costUSD: 0.013, baseQty: 100 },   // PK Battle
+  // Instagram
+  1896: { costUSD: 0.147, baseQty: 100 },   // Followers
+  2498: { costUSD: 0.007, baseQty: 100 },   // Likes
+  7706: { costUSD: 0.005, baseQty: 100 },   // Views Reels
+  // YouTube
+  9648: { costUSD: 0.63, baseQty: 50 },     // Suscriptores
+  1857: { costUSD: 0.139, baseQty: 100 },   // Likes (video + shorts unificado)
+  8120: { costUSD: 1.015, baseQty: 500 },   // Views video
+  6673: { costUSD: 0.405, baseQty: 100 },   // Views Shorts
+  8831: { costUSD: 1.17, baseQty: 5 },      // Watchtime (horas)
+  // Facebook
+  9061: { costUSD: 0.0066, baseQty: 10 },   // Followers/Likes Página
+  5133: { costUSD: 0.0065, baseQty: 50 },   // Likes Post
+  5986: { costUSD: 0.011, baseQty: 50 },    // Me encanta
+  5987: { costUSD: 0.011, baseQty: 50 },    // Me importa
+  5988: { costUSD: 0.011, baseQty: 50 },    // Me asombra
+  5989: { costUSD: 0.011, baseQty: 50 },    // Me divierte
+  5990: { costUSD: 0.011, baseQty: 50 },    // Me entristece
+  5991: { costUSD: 0.011, baseQty: 50 },    // Me enoja
+  // X/Twitter
+  2594: { costUSD: 0.116, baseQty: 100 },   // Followers
+  9553: { costUSD: 0.209, baseQty: 100 },   // Likes
+  3308: { costUSD: 0.289, baseQty: 100 },   // Retweets
+  // Spotify
+  1981: { costUSD: 0.018, baseQty: 100 },   // Followers Global
+  4511: { costUSD: 0.02, baseQty: 100 },    // Followers Perú
+  1612: { costUSD: 0.09, baseQty: 500 },    // Plays Global
+  4410: { costUSD: 0.345, baseQty: 500 },   // Plays Perú
+  1980: { costUSD: 2.10, baseQty: 1000 },   // Oyentes Mensuales
+  3240: { costUSD: 0.02, baseQty: 100 },    // Saves
+  // Kick
+  7260: { costUSD: 0.0114, baseQty: 10 },   // Followers
+  3771: { costUSD: 0.10, baseQty: 100 },    // Streaming 1h
+  3772: { costUSD: 0.201, baseQty: 100 },   // Streaming 2h
+  3773: { costUSD: 0.302, baseQty: 100 },   // Streaming 3h
+  3775: { costUSD: 0.50, baseQty: 100 },    // Streaming 5h
+  // Twitch
+  2758: { costUSD: 0.028, baseQty: 100 },   // Followers
+};
 // Fallback estático — se usa si Firestore no responde
 export const MAINTENANCE_SUBCATEGORIES: { type: ProductType; service_type: ServiceType }[] = [
 ];
@@ -1108,7 +1162,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-10',
     name: '10 Seguidores Kick',
     price: 4.00,
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 10,
     type: 'kick',
     service_type: 'followers',
@@ -1118,7 +1172,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-50',
     name: '50 Seguidores Kick',
     price: 8.00, // Bajado a 8
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 50,
     type: 'kick',
     service_type: 'followers',
@@ -1128,7 +1182,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-100',
     name: '100 Seguidores Kick',
     price: 12.00, // Bajado de 15
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 100,
     type: 'kick',
     service_type: 'followers',
@@ -1138,7 +1192,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-500',
     name: '500 Seguidores Kick',
     price: 35.00, // Bajado de 50 a 35
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 500,
     type: 'kick',
     service_type: 'followers',
@@ -1148,7 +1202,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-1k',
     name: '1,000 Seguidores Kick',
     price: 65.00, // GANCHO: Bajado de 90 a 65
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 1000,
     type: 'kick',
     service_type: 'followers',
@@ -1160,7 +1214,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-5k',
     name: '5,000 Seguidores Kick',
     price: 300.00, // Bajado de 350
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 5000,
     type: 'kick',
     service_type: 'followers',
@@ -1170,7 +1224,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'kick-followers-10k',
     name: '10,000 Seguidores Kick',
     price: 550.00, // Bajado de 650
-    provider_id: 7266,
+    provider_id: 7260,
     provider_quantity: 10000,
     type: 'kick',
     service_type: 'followers',
@@ -1670,7 +1724,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-50',
     name: '50 Suscriptores',
     price: 8.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 50,
     type: 'youtube',
     service_type: 'followers', // Subs = Followers en lógica de filtro
@@ -1680,7 +1734,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-100',
     name: '100 Suscriptores',
     price: 15.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 100,
     type: 'youtube',
     service_type: 'followers',
@@ -1690,7 +1744,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-250',
     name: '250 Suscriptores',
     price: 30.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 250,
     type: 'youtube',
     service_type: 'followers',
@@ -1700,7 +1754,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-500',
     name: '500 Suscriptores',
     price: 50.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 500,
     type: 'youtube',
     service_type: 'followers',
@@ -1711,7 +1765,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-1000',
     name: '1000 Suscriptores',
     price: 90.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 1000,
     type: 'youtube',
     service_type: 'followers',
@@ -1721,7 +1775,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-5000',
     name: '5000 Suscriptores',
     price: 400.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 5000,
     type: 'youtube',
     service_type: 'followers',
@@ -1731,7 +1785,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-subs-10000',
     name: '10000 Suscriptores',
     price: 750.00,
-    provider_id: 8871,
+    provider_id: 9648,
     provider_quantity: 10000,
     type: 'youtube',
     service_type: 'followers',
@@ -1918,7 +1972,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-100',
     name: '100 likes de video',
     price: 6.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 100,
     type: 'youtube',
     service_type: 'likes',
@@ -1928,7 +1982,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-500',
     name: '500 likes de video',
     price: 12.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 500,
     type: 'youtube',
     service_type: 'likes',
@@ -1938,7 +1992,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-1000',
     name: '1,000 likes de video',
     price: 18.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 1000,
     type: 'youtube',
     service_type: 'likes',
@@ -1949,7 +2003,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-5000',
     name: '5,000 likes de video',
     price: 50.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 5000,
     type: 'youtube',
     service_type: 'likes',
@@ -1959,7 +2013,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-10000',
     name: '10,000 likes de video',
     price: 80.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 10000,
     type: 'youtube',
     service_type: 'likes',
@@ -1969,7 +2023,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-50000',
     name: '50,000 likes de video',
     price: 250.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 50000,
     type: 'youtube',
     service_type: 'likes',
@@ -1979,7 +2033,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-100000',
     name: '100,000 likes de video',
     price: 400.00,
-    provider_id: 6241,
+    provider_id: 1857,
     provider_quantity: 100000,
     type: 'youtube',
     service_type: 'likes',
@@ -1990,7 +2044,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-100',
     name: '100 likes de shorts',
     price: 6.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 100,
     type: 'youtube',
     service_type: 'likes',
@@ -2000,7 +2054,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-500',
     name: '500 likes de shorts',
     price: 12.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 500,
     type: 'youtube',
     service_type: 'likes',
@@ -2010,7 +2064,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-1000',
     name: '1,000 likes de shorts',
     price: 18.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 1000,
     type: 'youtube',
     service_type: 'likes',
@@ -2021,7 +2075,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-5000',
     name: '5,000 likes de shorts',
     price: 50.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 5000,
     type: 'youtube',
     service_type: 'likes',
@@ -2031,7 +2085,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-10000',
     name: '10,000 likes de shorts',
     price: 80.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 10000,
     type: 'youtube',
     service_type: 'likes',
@@ -2041,7 +2095,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-50000',
     name: '50,000 likes de shorts',
     price: 250.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 50000,
     type: 'youtube',
     service_type: 'likes',
@@ -2051,7 +2105,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'yt-likes-shorts-100000',
     name: '100,000 likes de shorts',
     price: 400.00,
-    provider_id: 6243,
+    provider_id: 1857,
     provider_quantity: 100000,
     type: 'youtube',
     service_type: 'likes',
@@ -3482,7 +3536,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tw-followers-100',
     name: '100 Seguidores X/Twitter',
     price: 8.00, // Costo: S/ 0.58 → Margen: 93%
-    provider_id: 8587,
+    provider_id: 2594,
     provider_quantity: 100,
     type: 'twitter',
     service_type: 'followers',
@@ -3492,7 +3546,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tw-followers-500',
     name: '500 Seguidores X/Twitter',
     price: 20.00, // Costo: S/ 2.91 → Margen: 85%
-    provider_id: 8587,
+    provider_id: 2594,
     provider_quantity: 500,
     type: 'twitter',
     service_type: 'followers',
@@ -3502,7 +3556,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tw-followers-1k',
     name: '1,000 Seguidores X/Twitter',
     price: 35.00, // Costo: S/ 5.81 → Margen: 83%
-    provider_id: 8587,
+    provider_id: 2594,
     provider_quantity: 1000,
     type: 'twitter',
     service_type: 'followers',
@@ -3514,7 +3568,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tw-followers-5k',
     name: '5,000 Seguidores X/Twitter',
     price: 120.00, // Costo: S/ 29.07 → Margen: 76%
-    provider_id: 8587,
+    provider_id: 2594,
     provider_quantity: 5000,
     type: 'twitter',
     service_type: 'followers',
@@ -3524,7 +3578,7 @@ const RAW_PRODUCTS: Product[] = [
     id: 'tw-followers-10k',
     name: '10,000 Seguidores X/Twitter',
     price: 200.00, // Costo: S/ 58.14 → Margen: 71%
-    provider_id: 8587,
+    provider_id: 2594,
     provider_quantity: 10000,
     type: 'twitter',
     service_type: 'followers',
@@ -3676,11 +3730,31 @@ export const PRODUCTS: Product[] = RAW_PRODUCTS.map(product => {
   const isSubcategoryInMaintenance = MAINTENANCE_SUBCATEGORIES.some(
     m => m.type === product.type && m.service_type === product.service_type
   );
+
+  // Calcular costo del proveedor en USD
+  const costInfo = PROVIDER_COSTS[product.provider_id];
+  const provider_cost_usd = costInfo
+    ? parseFloat(((product.provider_quantity / costInfo.baseQty) * costInfo.costUSD).toFixed(4))
+    : 0;
+
   if (isSubcategoryInMaintenance) {
-    return { ...product, status: 'maintenance' };
+    return { ...product, status: 'maintenance' as const, provider_cost_usd };
   }
-  return product;
+  return { ...product, provider_cost_usd };
 });
+
+// Exportar mapa de costos para uso en finanzas
+export { PROVIDER_COSTS };
+
+/**
+ * Calcula el costo USD del proveedor para una cantidad dada de un provider_id.
+ * Útil para órdenes de cantidad personalizada.
+ */
+export function getProviderCostUSD(providerId: number, quantity: number): number {
+  const costInfo = PROVIDER_COSTS[providerId];
+  if (!costInfo) return 0;
+  return parseFloat(((quantity / costInfo.baseQty) * costInfo.costUSD).toFixed(4));
+}
 
 // Escala degresiva de precios para Comentarios Personalizados (YouTube, TikTok, Instagram, X/Twitter)
 export function getCustomCommentPrice(qty: number): { pricePerUnit: number; total: number } {

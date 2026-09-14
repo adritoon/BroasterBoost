@@ -63,16 +63,19 @@ export async function GET(request: Request) {
     }
 
     // Consultar órdenes completadas (= pagadas y confirmadas)
-    // Nota: Las órdenes con chunks también tienen status 'completed'.
-    // Los chunks son sub-divisiones internas de cada item, no estados de la orden.
-    let query: any = adminDb.collection('orders').where('status', '==', 'completed');
-
-    if (startDate) {
-      query = query.where('createdAt', '>=', startDate);
-    }
-
+    const query = adminDb.collection('orders').where('status', '==', 'completed');
     const snapshot = await query.get();
-    const allDocs = snapshot.docs;
+    
+    // Filtrar en memoria para evitar el error de Firebase "The query requires an index" 
+    // que ocurre al combinar where('status') con where('createdAt')
+    const allDocs = snapshot.docs.filter((doc: any) => {
+      if (!startDate) return true;
+      const data = doc.data();
+      if (!data.createdAt) return false;
+      
+      const orderDate = data.createdAt.toDate ? data.createdAt.toDate() : new Date(data.createdAt);
+      return orderDate.getTime() >= startDate.getTime();
+    });
 
     // Agregar métricas
     let totalRevenuePEN = 0;

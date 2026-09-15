@@ -366,6 +366,8 @@ const PROVIDER_COSTS: Record<number, { costUSD: number; baseQty: number }> = {
   9815: { costUSD: 1.342, baseQty: 100 },   // Streaming 2h
   9817: { costUSD: 2.013, baseQty: 100 },   // Streaming 3h
   5159: { costUSD: 0.013, baseQty: 100 },   // PK Battle
+  7724: { costUSD: 0.029, baseQty: 100 },   // Shares
+  1116: { costUSD: 0.007, baseQty: 100 },   // Favorites/Saves
   // Instagram
   1896: { costUSD: 0.147, baseQty: 100 },   // Followers
   2498: { costUSD: 0.007, baseQty: 100 },   // Likes
@@ -935,6 +937,91 @@ const RAW_PRODUCTS: Product[] = [
     type: 'tiktok',
     service_type: 'pkbattle',
     icon: 'sword'
+  },
+  // =========================================
+  // TIKTOK SHARES Y SAVES
+  // =========================================
+  {
+    id: 'tt-shares-100',
+    name: '100 Compartidas TikTok',
+    price: 3.00,
+    provider_id: 7724,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'shares',
+    icon: 'share-2'
+  },
+  {
+    id: 'tt-shares-500',
+    name: '500 Compartidas TikTok',
+    price: 8.00,
+    provider_id: 7724,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'shares',
+    icon: 'share-2'
+  },
+  {
+    id: 'tt-shares-1000',
+    name: '1,000 Compartidas TikTok',
+    price: 15.00,
+    provider_id: 7724,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'shares',
+    icon: 'share-2',
+    popular: true
+  },
+  {
+    id: 'tt-shares-5000',
+    name: '5,000 Compartidas TikTok',
+    price: 50.00,
+    provider_id: 7724,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'shares',
+    icon: 'share-2'
+  },
+  {
+    id: 'tt-saves-100',
+    name: '100 Favoritos/Guardados TikTok',
+    price: 3.00,
+    provider_id: 1116,
+    provider_quantity: 100,
+    type: 'tiktok',
+    service_type: 'saves',
+    icon: 'bookmark'
+  },
+  {
+    id: 'tt-saves-500',
+    name: '500 Favoritos/Guardados TikTok',
+    price: 8.00,
+    provider_id: 1116,
+    provider_quantity: 500,
+    type: 'tiktok',
+    service_type: 'saves',
+    icon: 'bookmark'
+  },
+  {
+    id: 'tt-saves-1000',
+    name: '1,000 Favoritos/Guardados TikTok',
+    price: 15.00,
+    provider_id: 1116,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'saves',
+    icon: 'bookmark',
+    popular: true
+  },
+  {
+    id: 'tt-saves-5000',
+    name: '5,000 Favoritos/Guardados TikTok',
+    price: 50.00,
+    provider_id: 1116,
+    provider_quantity: 5000,
+    type: 'tiktok',
+    service_type: 'saves',
+    icon: 'bookmark'
   },
   // =========================================
   // INSTAGRAM SEGUIDORES

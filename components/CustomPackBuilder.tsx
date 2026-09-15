@@ -105,6 +105,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
   const [postLink, setPostLink] = useState('');
   const [isPublicConfirmed, setIsPublicConfirmed] = useState(false);
   const [showCheckout, setShowCheckout] = useState(false);
+  const [letAgencyDecide, setLetAgencyDecide] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const [paymentMethod, setPaymentMethod] = useState<'web' | 'manual' | null>(null);
@@ -261,7 +262,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
       showError(`Ingresa un enlace válido para ${platform.postLabel.toLowerCase()}.`);
       return;
     }
-    if (includeComments && commentTexts.slice(0, commentQuantity).some(t => t.trim().length === 0)) {
+    if (includeComments && !letAgencyDecide && commentTexts.slice(0, commentQuantity).some(t => t.trim().length === 0)) {
       showError('Completa todos los textos de los comentarios.');
       return;
     }
@@ -296,6 +297,9 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
          // Buscamos el ID del producto de comentarios
          const commentProduct = PRODUCTS.find(p => p.type === activeCategory && p.service_type === 'comments' && p.isCustomQuantity);
          if (commentProduct) {
+           const finalComments = letAgencyDecide 
+             ? Array(commentQuantity).fill("Comentario a criterio de agencia") 
+             : commentTexts.slice(0, commentQuantity);
            items.push({
              type: 'custom_comments',
              productId: commentProduct.id,
@@ -303,7 +307,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
              service: 'comments',
              quantity: commentQuantity,
              link: postLink,
-             comments: commentTexts.slice(0, commentQuantity)
+             comments: finalComments
            });
          }
       }
@@ -367,6 +371,9 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
          // Buscamos el ID del producto de comentarios
          const commentProduct = PRODUCTS.find(p => p.type === activeCategory && p.service_type === 'comments' && p.isCustomQuantity);
          if (commentProduct) {
+           const finalComments = letAgencyDecide 
+             ? Array(commentQuantity).fill("Comentario a criterio de agencia") 
+             : commentTexts.slice(0, commentQuantity);
            items.push({
              type: 'custom_comments',
              productId: commentProduct.id,
@@ -374,7 +381,7 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
              service: 'comments',
              quantity: commentQuantity,
              link: postLink,
-             comments: commentTexts.slice(0, commentQuantity)
+             comments: finalComments
            });
          }
       }
@@ -422,7 +429,11 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
     if (needsPostLink) lines.push(`🔗 Link video/post: ${postLink}`);
     if (includeComments) {
       lines.push('', '📝 Comentarios solicitados:');
-      commentTexts.forEach((c, i) => lines.push(`${i + 1}. ${c}`));
+      if (letAgencyDecide) {
+        lines.push('1. Que la agencia los redacte');
+      } else {
+        commentTexts.forEach((c, i) => lines.push(`${i + 1}. ${c}`));
+      }
     }
     lines.push('', 'Aquí mi comprobante (adjunto foto).');
     const activePromo = getPromoForProduct(activeCategory);
@@ -697,32 +708,53 @@ export function CustomPackBuilder({ activeCategory }: CustomPackBuilderProps) {
 
                     {/* Campos de texto */}
                     <div className="bg-[#050505] p-4 border-2 border-[#333]">
-                      <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
-                        📝 Escribe tus {commentQuantity} comentarios
+                      <label className="flex items-center gap-3 cursor-pointer group mb-4">
+                        <div className="relative flex items-center justify-center shrink-0">
+                          <input 
+                            type="checkbox" 
+                            checked={letAgencyDecide}
+                            onChange={(e) => setLetAgencyDecide(e.target.checked)}
+                            className="peer h-5 w-5 shrink-0 appearance-none border-2 border-[#333] bg-[#111] checked:border-[#ccff00] checked:bg-[#ccff00] focus:outline-none transition-all"
+                          />
+                          <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-black opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                          </svg>
+                        </div>
+                        <span className="text-xs font-black text-[#ccff00] uppercase tracking-widest leading-tight">
+                          Déjalo en nuestras manos (Nosotros los redactamos)
+                        </span>
                       </label>
-                      <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
-                        {commentTexts.map((text, i) => (
-                          <div key={i} className="flex items-start gap-2">
-                            <span className="mt-2 text-xs font-bold text-slate-500 w-5 shrink-0 text-right">
-                              {i + 1}.
-                            </span>
-                            <input
-                              type="text"
-                              placeholder={`Comentario ${i + 1}...`}
-                              value={text}
-                              onChange={e => {
-                                const updated = [...commentTexts];
-                                updated[i] = e.target.value;
-                                setCommentTexts(updated);
-                              }}
-                              className="flex-1 bg-[#111] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00] transition-colors"
-                            />
+
+                      {!letAgencyDecide && (
+                        <>
+                          <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
+                            📝 Escribe tus {commentQuantity} comentarios
+                          </label>
+                          <div className="space-y-1.5 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
+                            {commentTexts.map((text, i) => (
+                              <div key={i} className="flex items-start gap-2">
+                                <span className="mt-2 text-xs font-bold text-slate-500 w-5 shrink-0 text-right">
+                                  {i + 1}.
+                                </span>
+                                <input
+                                  type="text"
+                                  placeholder={`Comentario ${i + 1}...`}
+                                  value={text}
+                                  onChange={e => {
+                                    const updated = [...commentTexts];
+                                    updated[i] = e.target.value;
+                                    setCommentTexts(updated);
+                                  }}
+                                  className="flex-1 bg-[#111] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00] transition-colors"
+                                />
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
-                      <p className="mt-2 text-[10px] text-slate-500">
-                        {commentTexts.filter(c => c.trim()).length}/{commentQuantity} escritos
-                      </p>
+                          <p className="mt-2 text-[10px] text-slate-500">
+                            {commentTexts.filter(c => c.trim()).length}/{commentQuantity} escritos
+                          </p>
+                        </>
+                      )}
                     </div>
                   </div>
                 </motion.div>

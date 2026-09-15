@@ -62,6 +62,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
   const [customQuantityInput, setCustomQuantityInput] = useState('5');
   const [customComments, setCustomComments] = useState<string[]>(['', '', '', '', '']);
   const [manualTotalPrice, setManualTotalPrice] = useState<number | null>(null);
+  const [letAgencyDecide, setLetAgencyDecide] = useState(false);
 
   const showError = (msg: string) => {
     setErrorMessage(msg);
@@ -168,6 +169,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
     setCustomComments(['', '', '', '', '']);
     setPaymentMethod(null);
     setPaypalOrderCreated(false);
+    setLetAgencyDecide(false);
   };
 
   // --- HELPER: Precio con comisión PayPal en USD ---
@@ -280,11 +282,18 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
 
     let items = [];
     if (product.isCustomQuantity && product.requiresComments) {
-      const filledComments = customComments.filter(c => c.trim().length > 0);
-      if (filledComments.length < customQuantity) {
-        showError(`Por favor escribe los ${customQuantity} comentarios. Faltan ${customQuantity - filledComments.length}.`);
-        return;
+      const finalComments = letAgencyDecide 
+        ? Array(customQuantity).fill("Comentario a criterio de agencia") 
+        : customComments.slice(0, customQuantity);
+
+      if (!letAgencyDecide) {
+        const filledComments = customComments.filter(c => c.trim().length > 0);
+        if (filledComments.length < customQuantity) {
+          showError(`Por favor escribe los ${customQuantity} comentarios. Faltan ${customQuantity - filledComments.length}.`);
+          return;
+        }
       }
+      
       items.push({
         type: 'custom_comments',
         productId: product.id,
@@ -292,7 +301,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
         service: product.service_type,
         quantity: customQuantity,
         link: targetLink,
-        comments: customComments.slice(0, customQuantity)
+        comments: finalComments
       });
     } else {
       items.push({
@@ -358,11 +367,18 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
 
     let items = [];
     if (product.requiresComments) {
-      const filledComments = customComments.filter(c => c.trim().length > 0);
-      if (filledComments.length < customQuantity) {
-        showError(`Por favor escribe los ${customQuantity} comentarios. Faltan ${customQuantity - filledComments.length}.`);
-        return;
+      const finalComments = letAgencyDecide 
+        ? Array(customQuantity).fill("Comentario a criterio de agencia") 
+        : customComments.slice(0, customQuantity);
+
+      if (!letAgencyDecide) {
+        const filledComments = customComments.filter(c => c.trim().length > 0);
+        if (filledComments.length < customQuantity) {
+          showError(`Por favor escribe los ${customQuantity} comentarios. Faltan ${customQuantity - filledComments.length}.`);
+          return;
+        }
       }
+      
       const { total } = getYouTubeCommentPrice(customQuantity);
       setManualTotalPrice(total);
 
@@ -373,7 +389,7 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
         service: product.service_type,
         quantity: customQuantity,
         link: targetLink,
-        comments: customComments.slice(0, customQuantity)
+        comments: finalComments
       });
     } else if (product.isCustomQuantity) {
         // In case it's a custom quantity but no comments (e.g. followers)
@@ -804,26 +820,47 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
 
                               {/* Campos individuales de comentarios */}
                               <div className="bg-[#050505] p-4 border-2 border-[#333]">
-                                <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
-                                  📝 Escribe tus {customQuantity} comentarios
+                                <label className="flex items-center gap-3 cursor-pointer group mb-4">
+                                  <div className="relative flex items-center justify-center shrink-0">
+                                    <input 
+                                      type="checkbox" 
+                                      checked={letAgencyDecide}
+                                      onChange={(e) => setLetAgencyDecide(e.target.checked)}
+                                      className="peer h-5 w-5 shrink-0 appearance-none border-2 border-[#333] bg-[#111] checked:border-[#ccff00] checked:bg-[#ccff00] focus:outline-none transition-all"
+                                    />
+                                    <svg className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-3.5 h-3.5 text-black opacity-0 peer-checked:opacity-100 transition-opacity pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                                      <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                  </div>
+                                  <span className="text-xs font-black text-[#ccff00] uppercase tracking-widest leading-tight">
+                                    Déjalo en nuestras manos (Nosotros los redactamos)
+                                  </span>
                                 </label>
-                                <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
-                                  {customComments.map((comment, index) => (
-                                    <div key={index} className="flex items-start gap-2">
-                                      <span className="mt-2 text-xs font-bold text-slate-500 w-5 shrink-0 text-right">{index + 1}.</span>
-                                      <input
-                                        type="text"
-                                        placeholder={`Comentario ${index + 1}...`}
-                                        value={comment}
-                                        onChange={(e) => updateComment(index, e.target.value)}
-                                        className="flex-1 bg-[#111] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00] transition-colors"
-                                      />
+
+                                {!letAgencyDecide && (
+                                  <>
+                                    <label className="text-xs font-black text-zinc-500 uppercase tracking-widest mb-4 block">
+                                      📝 Escribe tus {customQuantity} comentarios
+                                    </label>
+                                    <div className="space-y-2 max-h-48 overflow-y-auto pr-1 custom-scrollbar">
+                                      {customComments.map((comment, index) => (
+                                        <div key={index} className="flex items-start gap-2">
+                                          <span className="mt-2 text-xs font-bold text-slate-500 w-5 shrink-0 text-right">{index + 1}.</span>
+                                          <input
+                                            type="text"
+                                            placeholder={`Comentario ${index + 1}...`}
+                                            value={comment}
+                                            onChange={(e) => updateComment(index, e.target.value)}
+                                            className="flex-1 bg-[#111] border-2 border-[#333] py-2 px-3 text-sm font-bold text-white placeholder:text-zinc-600 focus:border-[#ccff00] focus:outline-none focus:text-[#ccff00] transition-colors"
+                                          />
+                                        </div>
+                                      ))}
                                     </div>
-                                  ))}
-                                </div>
-                                <p className="mt-2 text-[10px] text-slate-500">
-                                  {customComments.filter(c => c.trim()).length}/{customQuantity} comentarios escritos
-                                </p>
+                                    <p className="mt-2 text-[10px] text-slate-500">
+                                      {customComments.filter(c => c.trim()).length}/{customQuantity} comentarios escritos
+                                    </p>
+                                  </>
+                                )}
                               </div>
                             </div>
                           );
@@ -1050,7 +1087,10 @@ export function StoreFront({ initialCategory = 'tiktok', initialService = 'follo
                       const promoLine = activePromo ? `\n\n🎁 Código promo activo: ${activePromo.promo.code} — ${activePromo.promo.description}` : '';
                       const orderLine = orderId ? `\n\n🆔 Orden: ${orderId}` : '';
                       if (manualProduct.requiresComments) {
-                        return `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${customComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}${promoLine}${orderLine}`;
+                        const finalComments = letAgencyDecide 
+                          ? ["Que la agencia los redacte"] 
+                          : customComments;
+                        return `Hola! Acabo de yapear S/ ${(manualTotalPrice ?? manualProduct.price).toFixed(2)} por ${customQuantity} ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}\n\n📝 Comentarios solicitados:\n${finalComments.map((c, i) => `${i + 1}. ${c}`).join('\n')}${promoLine}${orderLine}`;
                       }
                       return `Hola! Acabo de yapear S/ ${manualProduct.price} por el pack de ${manualProduct.name}.\n\nAquí mi comprobante (adjunto foto).\n\nMi enlace es: ${targetLink}${promoLine}${orderLine}`;
                     })()

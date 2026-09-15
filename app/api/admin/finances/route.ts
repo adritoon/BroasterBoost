@@ -90,30 +90,15 @@ export async function GET(request: Request) {
       const orderRevenue = data.totalPEN || 0;
       totalRevenuePEN += orderRevenue;
 
-      // Costo directo de la orden o recalcular
-      let orderCostUSD = data.totalCostUSD || 0;
-
-      if (!orderCostUSD && data.items) {
-        // Recalcular para órdenes históricas que no tienen totalCostUSD
-        for (const item of data.items) {
-          if (item.providerCostUSD) {
-            orderCostUSD += item.providerCostUSD;
-          } else if (item.serviceId) {
-            const costInfo = PROVIDER_COSTS[item.serviceId];
-            if (costInfo) {
-              orderCostUSD += (item.quantity / costInfo.baseQty) * costInfo.costUSD;
-            }
-          }
-        }
-      }
-
-      totalCostUSD += orderCostUSD;
+      let orderCostUSD = 0;
 
       // Desglose por items
       if (data.items) {
-        for (const item of data.items) {
+        for (let i = 0; i < data.items.length; i++) {
+          const item = data.items[i];
           const platform = data.platform || 'unknown';
-          // Resolver serviceType: campo directo > buscar por productId > buscar por serviceId > 'unknown'
+          
+          // Resolver serviceType
           let serviceType = item.serviceType;
           if (!serviceType && item.productId) {
             const matchedProduct = PRODUCTS.find(p => p.id === item.productId);
@@ -126,15 +111,31 @@ export async function GET(request: Request) {
           if (!serviceType) serviceType = 'unknown';
           const itemRevenue = item.price || 0;
 
-          let itemCostUSD = item.providerCostUSD || 0;
-          if (!itemCostUSD && item.serviceId) {
+          // Costo base del item
+          let baseItemCostUSD = item.providerCostUSD || 0;
+          if (!baseItemCostUSD && item.serviceId) {
             const costInfo = PROVIDER_COSTS[item.serviceId];
             if (costInfo) {
-              itemCostUSD = (item.quantity / costInfo.baseQty) * costInfo.costUSD;
+              baseItemCostUSD = (item.quantity / costInfo.baseQty) * costInfo.costUSD;
             }
           }
 
-          const itemCostPEN = itemCostUSD * usdRate;
+          // Contar cuántos refills exitosos tuvo este item específico
+          let successfulRefills = 0;
+          if (data.refills && Array.isArray(data.refills)) {
+            for (const refill of data.refills) {
+              const result = refill.results?.find((r: any) => r.itemIndex === i);
+              if (result && result.success) {
+                successfulRefills++;
+              }
+            }
+          }
+
+          // Costo total del item = Costo base (1er envío) + Costos de refills
+          const totalItemCostUSD = baseItemCostUSD * (1 + successfulRefills);
+          const itemCostPEN = totalItemCostUSD * usdRate;
+          
+          orderCostUSD += totalItemCostUSD;
 
           // Por plataforma
           if (!byPlatform[platform]) {
@@ -149,7 +150,7 @@ export async function GET(request: Request) {
             };
           }
           byPlatform[platform].revenuePEN += itemRevenue;
-          byPlatform[platform].costUSD += itemCostUSD;
+          byPlatform[platform].costUSD += totalItemCostUSD;
           byPlatform[platform].costPEN += itemCostPEN;
           byPlatform[platform].profitPEN += itemRevenue - itemCostPEN;
           byPlatform[platform].orderCount += 1;
@@ -168,12 +169,14 @@ export async function GET(request: Request) {
             };
           }
           byService[serviceKey].revenuePEN += itemRevenue;
-          byService[serviceKey].costUSD += itemCostUSD;
+          byService[serviceKey].costUSD += totalItemCostUSD;
           byService[serviceKey].costPEN += itemCostPEN;
           byService[serviceKey].profitPEN += itemRevenue - itemCostPEN;
           byService[serviceKey].orderCount += 1;
         }
       }
+      
+      totalCostUSD += orderCostUSD;
     }
 
     const totalCostPEN = totalCostUSD * usdRate;

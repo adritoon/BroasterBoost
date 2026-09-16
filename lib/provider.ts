@@ -62,7 +62,8 @@ export async function sendOrderWithChunking(
   link: string,
   quantity: number,
   serviceType: string,
-  itemIndex: number = 0
+  itemIndex: number = 0,
+  packNumChunks?: number
 ): Promise<{
   success: boolean;
   orderId?: string;
@@ -73,20 +74,27 @@ export async function sendOrderWithChunking(
 }> {
   const rule = findChunkRule(serviceType);
 
-  // Sin regla de chunking o cantidad dentro del threshold → envío normal
-  if (!rule || quantity <= rule.threshold) {
+  // Si no hay regla, enviamos todo de golpe y sin chunking
+  if (!rule) {
     const result = await sendOrderToProvider(serviceId, link, quantity);
-    return {
-      ...result,
-      chunked: false,
-    };
+    return { ...result, chunked: false };
   }
 
-  // Chunking necesario — dividir la cantidad
-  console.log(`🔀 Chunking activado para ${rule.description}: ${quantity} → chunks de ${rule.maxChunkSize}`);
+  let chunkSizes: number[] = [];
   
-  const chunkSizes = splitIntoChunks(quantity, rule.maxChunkSize);
-  console.log(`📦 ${chunkSizes.length} chunks: [${chunkSizes.join(', ')}]`);
+  if (packNumChunks && packNumChunks > 1) {
+    // Caso: Es parte de un pack, dividimos equitativamente (respetando minChunkSize)
+    chunkSizes = splitIntoFixedChunks(quantity, packNumChunks, rule.minChunkSize);
+    console.log(`🔀 Chunking Sincronizado para ${rule.description}: ${quantity} en ${chunkSizes.length} chunks (basado en ronda maestra de ${packNumChunks}).`);
+  } else {
+    // Caso normal / producto individual
+    if (quantity <= rule.threshold) {
+      const result = await sendOrderToProvider(serviceId, link, quantity);
+      return { ...result, chunked: false };
+    }
+    chunkSizes = splitIntoChunks(quantity, rule.maxChunkSize);
+    console.log(`🔀 Chunking Normal para ${rule.description}: ${quantity} → chunks de máx ${rule.maxChunkSize} (${chunkSizes.length} totales)`);
+  }
 
   // Enviar SOLO el primer chunk automáticamente
   const firstResult = await sendOrderToProvider(serviceId, link, chunkSizes[0]);

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { MercadoPagoConfig, Payment } from 'mercadopago';
 import { sendOrderWithChunking } from '@/lib/provider';
 import { adminDb } from '@/lib/firebaseAdmin';
+import { calculatePackChunks } from '@/lib/chunkConfig';
 
 const client = new MercadoPagoConfig({ 
   accessToken: process.env.MP_ACCESS_TOKEN! 
@@ -47,6 +48,9 @@ export async function POST(request: Request) {
               // Marcar como completada ANTES de procesar para evitar doble envío si MP llama al webhook 2 veces
               await orderRef.update({ status: 'completed', paymentId: id, gateway: 'mercadopago' });
 
+              // Calcular la Ronda Maestra de chunks basándose en el servicio más demandante
+              const packNumChunks = calculatePackChunks(orderData.items);
+              
               // Iterar sobre los items y mandar al proveedor SMM con chunking
               let allChunks: any[] = [];
               let totalChunksCount = 0;
@@ -63,7 +67,8 @@ export async function POST(request: Request) {
                     item.link,
                     Number(item.quantity),
                     item.serviceType || '',
-                    i
+                    i,
+                    packNumChunks
                   );
 
                   if (result.chunked && result.chunks) {

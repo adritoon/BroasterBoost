@@ -348,7 +348,7 @@ export default function AdminDashboardPage() {
     }
   };
 
-  const handleYapeAction = async (orderId: string, action: 'approve_yape' | 'reject_yape') => {
+  const handleYapeAction = async (orderId: string, action: 'approve_yape' | 'reject_yape' | 'approve_yape_manual') => {
     setProcessingAction(orderId);
     setMessage(null);
 
@@ -775,16 +775,23 @@ export default function AdminDashboardPage() {
                           <button
                             onClick={() => handleYapeAction(order.id, 'reject_yape')}
                             disabled={processingAction === order.id}
-                            className="flex-1 py-2 bg-zinc-800 text-red-400 font-bold rounded-lg border border-red-900 hover:bg-red-900/30 transition-colors"
+                            className="flex-1 py-2 bg-zinc-800 text-red-400 font-bold text-xs md:text-sm rounded-lg border border-red-900 hover:bg-red-900/30 transition-colors"
                           >
-                            Rechazar / Eliminar
+                            Rechazar
+                          </button>
+                          <button
+                            onClick={() => handleYapeAction(order.id, 'approve_yape_manual')}
+                            disabled={processingAction === order.id}
+                            className="flex-1 py-2 bg-zinc-800 text-[#ccff00] font-bold text-xs md:text-sm rounded-lg border border-[#ccff00]/30 hover:bg-[#ccff00]/10 transition-colors"
+                          >
+                            Aprobar Manual
                           </button>
                           <button
                             onClick={() => handleYapeAction(order.id, 'approve_yape')}
                             disabled={processingAction === order.id}
-                            className="flex-1 py-2 bg-[#ccff00] text-black font-bold rounded-lg hover:bg-[#b8e600] transition-colors"
+                            className="flex-1 py-2 bg-[#ccff00] text-black font-bold text-xs md:text-sm rounded-lg hover:bg-[#b8e600] transition-colors"
                           >
-                            {processingAction === order.id ? 'Aprobando...' : '✅ Aprobar Pago'}
+                            {processingAction === order.id ? '...' : '✅ Aprobar Automático'}
                           </button>
                         </div>
                       </div>

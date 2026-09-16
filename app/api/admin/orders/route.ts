@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { adminDb } from '@/lib/firebaseAdmin';
 import { sendOrderWithChunking } from '@/lib/provider';
+import { calculatePackChunks } from '@/lib/chunkConfig';
 
 // Rate limiting and validation (similarly used in chunks route)
 function validateAdminKey(request: Request): boolean {
@@ -92,15 +93,30 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: true, message: 'Orden cancelada' });
     }
 
+    if (action === 'approve_yape_manual') {
+      if (orderData?.status !== 'pending_yape') {
+        return NextResponse.json({ error: 'La orden no está pendiente de Yape' }, { status: 400 });
+      }
+
+      console.log(`💰 Aprobando Yape manualmente (SIN ENVIAR A PROVEEDOR) para Orden ${orderId}.`);
+      
+      // Marcar como completada sin procesar items
+      await orderRef.update({ status: 'completed', gateway: 'yape_manual', provider: 'manual' });
+
+      return NextResponse.json({ success: true, message: 'Pago aprobado (Fulfillment manual)' });
+    }
+
     if (action === 'approve_yape') {
       if (orderData?.status !== 'pending_yape') {
         return NextResponse.json({ error: 'La orden no está pendiente de Yape' }, { status: 400 });
       }
 
-      console.log(`💰 Aprobando Yape manualmente para Orden ${orderId}. Procesando items...`);
+      console.log(`💰 Aprobando Yape para Orden ${orderId}. Procesando items...`);
       
       // Marcar como completada
       await orderRef.update({ status: 'completed', gateway: 'yape_manual' });
+
+      const packNumChunks = calculatePackChunks(orderData.items || []);
 
       // Iterar sobre los items y mandar al proveedor SMM con chunking
       let allChunks: any[] = [];
@@ -115,7 +131,8 @@ export async function POST(request: Request) {
             item.link,
             Number(item.quantity),
             item.serviceType || '',
-            i
+            i,
+            packNumChunks
           );
 
           if (result.chunked && result.chunks) {

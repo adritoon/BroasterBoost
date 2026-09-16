@@ -151,10 +151,18 @@ export async function POST(request: Request) {
 
     const chunks = orderData.chunks || [];
     
-    // Encontrar el primer chunk pendiente
-    const pendingIndex = chunks.findIndex((c: any) => c.status === 'pending_chunk');
+    // Encontrar UN chunk pendiente por cada itemIndex único (una "ronda")
+    const pendingChunksToProcess: any[] = [];
+    const seenItemIndices = new Set();
     
-    if (pendingIndex === -1) {
+    for (const c of chunks) {
+      if (c.status === 'pending_chunk' && !seenItemIndices.has(c.itemIndex)) {
+        pendingChunksToProcess.push(c);
+        seenItemIndices.add(c.itemIndex);
+      }
+    }
+    
+    if (pendingChunksToProcess.length === 0) {
       return NextResponse.json({ 
         error: 'No hay chunks pendientes en esta orden',
         totalChunks: orderData.totalChunks,
@@ -162,79 +170,80 @@ export async function POST(request: Request) {
       }, { status: 400 });
     }
 
-    const chunk = chunks[pendingIndex];
-    
-    console.log(`🚀 Admin enviando chunk ${pendingIndex + 1}/${chunks.length} de orden ${orderId}: ${chunk.size} unidades`);
+    console.log(`🚀 Admin enviando RONDA de ${pendingChunksToProcess.length} chunks para la orden ${orderId}`);
 
-    // Enviar al proveedor
-    const result = await sendOrderToProvider(
-      Number(chunk.serviceId),
-      chunk.link,
-      Number(chunk.size)
-    );
-
+    // Enviar al proveedor todos los chunks de la ronda en paralelo
     const now = new Date().toISOString();
+    let successCount = 0;
+    let failCount = 0;
+    let errors: string[] = [];
 
-    if (result.success) {
-      // Actualizar el chunk como enviado
-      chunks[pendingIndex] = {
-        ...chunk,
-        status: 'sent',
-        providerOrderId: result.orderId?.toString() || null,
-        sentAt: now,
-      };
+    await Promise.all(pendingChunksToProcess.map(async (chunk) => {
+      const result = await sendOrderToProvider(
+        Number(chunk.serviceId),
+        chunk.link,
+        Number(chunk.size)
+      );
 
-      const newDelivered = (orderData.chunksDelivered || 0) + 1;
+      const chunkIndex = chunks.findIndex((c: any) => c === chunk);
 
-      await orderRef.update({
-        chunks,
-        chunksDelivered: newDelivered,
-      });
+      if (result.success) {
+        chunks[chunkIndex] = {
+          ...chunk,
+          status: 'sent',
+          providerOrderId: result.orderId?.toString() || null,
+          sentAt: now,
+        };
+        successCount++;
+        
+        await adminDb.collection('admin_logs').add({
+          action: 'chunk_sent',
+          orderId,
+          chunkIndex,
+          chunkSize: chunk.size,
+          providerOrderId: result.orderId,
+          ip,
+          timestamp: now,
+        });
+      } else {
+        failCount++;
+        errors.push(result.error || 'Unknown error');
+        await adminDb.collection('admin_logs').add({
+          action: 'chunk_failed',
+          orderId,
+          chunkIndex,
+          chunkSize: chunk.size,
+          error: result.error,
+          ip,
+          timestamp: now,
+        });
+      }
+    }));
 
-      // Log de auditoría
-      await adminDb.collection('admin_logs').add({
-        action: 'chunk_sent',
-        orderId,
-        chunkIndex: pendingIndex,
-        chunkSize: chunk.size,
-        providerOrderId: result.orderId,
-        ip,
-        timestamp: now,
-      });
+    const newDelivered = (orderData.chunksDelivered || 0) + successCount;
 
-      const remainingPending = chunks.filter((c: any) => c.status === 'pending_chunk').length - 1;
+    await orderRef.update({
+      chunks,
+      chunksDelivered: newDelivered,
+    });
 
-      console.log(`✅ Chunk ${pendingIndex + 1} enviado. Quedan ${remainingPending} pendientes.`);
+    const remainingPending = chunks.filter((c: any) => c.status === 'pending_chunk').length;
+    console.log(`✅ Ronda completada: ${successCount} enviados, ${failCount} fallidos. Quedan ${remainingPending} pendientes.`);
 
-      return NextResponse.json({
-        success: true,
-        message: `Chunk ${pendingIndex + 1}/${chunks.length} enviado exitosamente`,
-        chunkSize: chunk.size,
-        providerOrderId: result.orderId,
-        chunksDelivered: newDelivered,
-        totalChunks: orderData.totalChunks,
-        remainingPending,
-      });
-    } else {
-      // Log del fallo
-      await adminDb.collection('admin_logs').add({
-        action: 'chunk_failed',
-        orderId,
-        chunkIndex: pendingIndex,
-        chunkSize: chunk.size,
-        error: result.error,
-        ip,
-        timestamp: now,
-      });
-
-      console.error(`❌ Falló el envío del chunk ${pendingIndex + 1} de orden ${orderId}:`, result.error);
-
+    if (successCount === 0 && failCount > 0) {
       return NextResponse.json({
         success: false,
-        error: `Error del proveedor: ${result.error}`,
-        chunkIndex: pendingIndex,
+        error: `Error del proveedor en la ronda: ${errors[0]}`,
       }, { status: 500 });
     }
+
+    return NextResponse.json({
+      success: true,
+      message: `Ronda enviada: ${successCount} exitosos${failCount > 0 ? `, ${failCount} fallidos` : ''}`,
+      chunksDelivered: newDelivered,
+      totalChunks: orderData.totalChunks,
+      remainingPending,
+    });
 
   } catch (error) {
     console.error('Error sending chunk:', error);

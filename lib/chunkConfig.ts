@@ -5,6 +5,7 @@
 export interface ChunkRule {
   serviceType: string;      // service_type del producto (e.g., 'views', 'followers', 'likes')
   maxChunkSize: number;     // Máximo de unidades por envío
+  minChunkSize: number;     // Mínimo de unidades por envío (para evitar rechazos del SMM)
   threshold: number;        // Solo aplica chunking si quantity > threshold
   description: string;      // Para logs y panel admin
 }
@@ -14,26 +15,51 @@ export const CHUNK_RULES: ChunkRule[] = [
   {
     serviceType: 'views',
     maxChunkSize: 20000,
+    minChunkSize: 1000,
     threshold: 20000,       // Si piden ≤20K → envío normal
     description: 'Views'
   },
   {
     serviceType: 'viewsShorts',
     maxChunkSize: 20000,
+    minChunkSize: 1000,
     threshold: 20000,
     description: 'Views Shorts'
   },
   {
     serviceType: 'followers',
     maxChunkSize: 100,
+    minChunkSize: 10,
     threshold: 100,         // Si piden ≤100 → envío normal
     description: 'Seguidores'
   },
   {
     serviceType: 'likes',
-    maxChunkSize: 10000,
-    threshold: 10000,       // Si piden ≤10K → envío normal
+    maxChunkSize: 2000,
+    minChunkSize: 50,
+    threshold: 2000,       // Si piden ≤2K → envío normal, si es más, se divide de 2K en 2K
     description: 'Likes'
+  },
+  {
+    serviceType: 'shares',
+    maxChunkSize: 200,
+    minChunkSize: 20,
+    threshold: 200,        // Si piden ≤200 → envío normal
+    description: 'Compartidos'
+  },
+  {
+    serviceType: 'saves',
+    maxChunkSize: 200,
+    minChunkSize: 20,
+    threshold: 200,        // Si piden ≤200 → envío normal
+    description: 'Guardados/Favoritos'
+  },
+  {
+    serviceType: 'comments',
+    maxChunkSize: 20,
+    minChunkSize: 5,
+    threshold: 20,         // Si piden ≤20 → envío normal
+    description: 'Comentarios'
   },
 ];
 
@@ -46,9 +72,51 @@ export function findChunkRule(serviceType: string): ChunkRule | null {
 }
 
 /**
- * Divide una cantidad en chunks según la regla.
+ * Calcula la cantidad de chunks que necesita el servicio más demandante del pack.
+ */
+export function calculatePackChunks(items: any[]): number {
+  let maxChunks = 1;
+  for (const item of items) {
+    const rule = findChunkRule(item.serviceType || '');
+    if (rule) {
+      const chunksNeeded = Math.ceil(item.quantity / rule.maxChunkSize);
+      if (chunksNeeded > maxChunks) {
+        maxChunks = chunksNeeded;
+      }
+    }
+  }
+  return maxChunks;
+}
+
+/**
+ * Divide una cantidad en un número exacto de chunks.
+ * Si el chunkSize resultante es menor al minChunkSize, agrupa los chunks para no violar el límite del proveedor.
+ */
+export function splitIntoFixedChunks(quantity: number, numChunks: number, minChunkSize: number): number[] {
+  const chunks: number[] = [];
+  
+  if (numChunks <= 1) return [quantity];
+
+  let actualChunks = numChunks;
+  if (quantity / numChunks < minChunkSize) {
+    actualChunks = Math.floor(quantity / minChunkSize);
+    if (actualChunks < 1) actualChunks = 1;
+  }
+
+  const baseSize = Math.floor(quantity / actualChunks);
+  let remainder = quantity % actualChunks;
+
+  for (let i = 0; i < actualChunks; i++) {
+    chunks.push(baseSize + (remainder > 0 ? 1 : 0));
+    remainder--;
+  }
+
+  return chunks;
+}
+
+/**
+ * Divide una cantidad en chunks según la regla (Lógica antigua para servicios sueltos sin pack).
  * Ej: splitIntoChunks(100000, 20000) → [20000, 20000, 20000, 20000, 20000]
- * Ej: splitIntoChunks(50000, 20000) → [20000, 20000, 10000]
  */
 export function splitIntoChunks(quantity: number, maxChunkSize: number): number[] {
   const chunks: number[] = [];

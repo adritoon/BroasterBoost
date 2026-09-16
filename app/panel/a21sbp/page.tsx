@@ -892,8 +892,8 @@ export default function AdminDashboardPage() {
                                         <div className="mt-4 border-t border-zinc-800 pt-3">
                                           <strong className="text-zinc-500">Chunks ({order.chunksDelivered || 0}/{order.totalChunks || order.chunks.length}):</strong>
                                           <div className="flex flex-col gap-3 mt-2">
-                                            {Array.from(new Set(order.chunks.map((c: any) => c.itemIndex))).map((idx: any) => {
-                                              const itemChunks = order.chunks.filter((c: any) => c.itemIndex === idx);
+                                            {Array.from(new Set(order.chunks!.map((c: any) => c.itemIndex))).map((idx: any) => {
+                                              const itemChunks = order.chunks!.filter((c: any) => c.itemIndex === idx);
                                               const itemName = order.items?.[idx]?.name || `Servicio ${idx + 1}`;
                                               return (
                                                 <div key={idx} className="bg-black/20 p-2 rounded-lg border border-zinc-800/50">

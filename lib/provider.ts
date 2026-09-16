@@ -2,7 +2,7 @@
 // Este archivo maneja la conexión con CUALQUIER panel SMM (JAP, MoreThanPanel, etc.)
 // Incluye lógica de chunking para dividir pedidos grandes en envíos parciales.
 
-import { findChunkRule, splitIntoChunks, ChunkData } from './chunkConfig';
+import { findChunkRule, splitIntoChunks, splitIntoFixedChunks, ChunkData } from './chunkConfig';
 
 export async function sendOrderToProvider(serviceId: number, link: string, quantity: number) {
   // Usamos nombres de variables genéricos

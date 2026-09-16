@@ -89,12 +89,10 @@ export function calculatePackChunks(items: any[]): number {
 }
 
 /**
- * Divide una cantidad en un número exacto de chunks.
+ * Divide una cantidad en un número exacto de chunks con varianza (Jitter) para que parezca orgánico.
  * Si el chunkSize resultante es menor al minChunkSize, agrupa los chunks para no violar el límite del proveedor.
  */
-export function splitIntoFixedChunks(quantity: number, numChunks: number, minChunkSize: number): number[] {
-  const chunks: number[] = [];
-  
+export function splitIntoFixedChunks(quantity: number, numChunks: number, minChunkSize: number, variancePercent: number = 0.15): number[] {
   if (numChunks <= 1) return [quantity];
 
   let actualChunks = numChunks;
@@ -103,13 +101,36 @@ export function splitIntoFixedChunks(quantity: number, numChunks: number, minChu
     if (actualChunks < 1) actualChunks = 1;
   }
 
-  const baseSize = Math.floor(quantity / actualChunks);
-  let remainder = quantity % actualChunks;
+  if (actualChunks === 1) return [quantity];
 
-  for (let i = 0; i < actualChunks; i++) {
-    chunks.push(baseSize + (remainder > 0 ? 1 : 0));
-    remainder--;
+  const chunks: number[] = [];
+  const baseSize = quantity / actualChunks;
+  let remaining = quantity;
+
+  for (let i = 0; i < actualChunks - 1; i++) {
+    // Calcular varianza aleatoria +/- variancePercent
+    const variance = 1 + (Math.random() * variancePercent * 2 - variancePercent);
+    let randomizedSize = Math.floor(baseSize * variance);
+    
+    // Asegurar límite inferior
+    if (randomizedSize < minChunkSize) {
+      randomizedSize = minChunkSize;
+    }
+    
+    // Asegurar que quede suficiente para los chunks restantes usando el límite mínimo
+    const chunksLeft = actualChunks - 1 - i;
+    const minRequiredForRest = chunksLeft * minChunkSize;
+    
+    if (remaining - randomizedSize < minRequiredForRest) {
+      randomizedSize = remaining - minRequiredForRest;
+    }
+
+    chunks.push(randomizedSize);
+    remaining -= randomizedSize;
   }
+
+  // El último chunk absorbe el resto exacto
+  chunks.push(remaining);
 
   return chunks;
 }

@@ -891,12 +891,23 @@ export default function AdminDashboardPage() {
                                       {order.chunks && order.chunks.length > 0 && (
                                         <div className="mt-4 border-t border-zinc-800 pt-3">
                                           <strong className="text-zinc-500">Chunks ({order.chunksDelivered || 0}/{order.totalChunks || order.chunks.length}):</strong>
-                                          <div className="flex flex-wrap gap-1 mt-2">
-                                            {order.chunks.map((chunk: any, i: number) => (
-                                              <span key={i} title={chunk.status} className={`px-2 py-0.5 text-[10px] rounded border ${chunk.status === 'sent' ? 'bg-green-900/30 text-green-400 border-green-800' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
-                                                {chunk.status === 'sent' ? '✅' : '⏳'} {chunk.size.toLocaleString()}
-                                              </span>
-                                            ))}
+                                          <div className="flex flex-col gap-3 mt-2">
+                                            {Array.from(new Set(order.chunks.map((c: any) => c.itemIndex))).map((idx: any) => {
+                                              const itemChunks = order.chunks.filter((c: any) => c.itemIndex === idx);
+                                              const itemName = order.items?.[idx]?.name || `Servicio ${idx + 1}`;
+                                              return (
+                                                <div key={idx} className="bg-black/20 p-2 rounded-lg border border-zinc-800/50">
+                                                  <p className="text-[11px] text-[#ccff00]/70 font-bold mb-1.5">{itemName}</p>
+                                                  <div className="flex flex-wrap gap-1">
+                                                    {itemChunks.map((chunk: any, i: number) => (
+                                                      <span key={i} title={chunk.status} className={`px-1.5 py-0.5 text-[10px] rounded border ${chunk.status === 'sent' ? 'bg-green-900/30 text-green-400 border-green-800' : chunk.status === 'failed' ? 'bg-red-900/30 text-red-400 border-red-800' : 'bg-zinc-800 text-zinc-400 border-zinc-700'}`}>
+                                                        {chunk.status === 'sent' ? '✅' : chunk.status === 'failed' ? '❌' : '⏳'} {chunk.size.toLocaleString()}
+                                                      </span>
+                                                    ))}
+                                                  </div>
+                                                </div>
+                                              );
+                                            })}
                                           </div>
                                         </div>
                                       )}

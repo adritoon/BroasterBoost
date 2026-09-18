@@ -23,7 +23,6 @@ interface FinanceItem {
   costUSD: number;
   costPEN: number;
   profitPEN: number;
-  profitPEN: number;
   orderCount: number;
   ordersDetail?: {
     id: string;

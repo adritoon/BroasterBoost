@@ -23,7 +23,17 @@ interface FinanceItem {
   costUSD: number;
   costPEN: number;
   profitPEN: number;
+  profitPEN: number;
   orderCount: number;
+  ordersDetail?: {
+    id: string;
+    createdAt: string;
+    itemName: string;
+    revenuePEN: number;
+    costUSD: number;
+    costPEN: number;
+    profitPEN: number;
+  }[];
 }
 
 /**
@@ -97,7 +107,7 @@ export async function GET(request: Request) {
         for (let i = 0; i < data.items.length; i++) {
           const item = data.items[i];
           const platform = data.platform || 'unknown';
-          
+
           // Resolver serviceType
           let serviceType = item.serviceType;
           if (!serviceType && item.productId) {
@@ -166,6 +176,7 @@ export async function GET(request: Request) {
               costPEN: 0,
               profitPEN: 0,
               orderCount: 0,
+              ordersDetail: [],
             };
           }
           byService[serviceKey].revenuePEN += itemRevenue;
@@ -173,6 +184,18 @@ export async function GET(request: Request) {
           byService[serviceKey].costPEN += itemCostPEN;
           byService[serviceKey].profitPEN += itemRevenue - itemCostPEN;
           byService[serviceKey].orderCount += 1;
+          
+          if (byService[serviceKey].ordersDetail) {
+            byService[serviceKey].ordersDetail!.push({
+              id: doc.id,
+              createdAt: data.createdAt?.toDate ? data.createdAt.toDate().toISOString() : new Date(data.createdAt || Date.now()).toISOString(),
+              itemName: item.name || 'Servicio',
+              revenuePEN: itemRevenue,
+              costUSD: totalItemCostUSD,
+              costPEN: itemCostPEN,
+              profitPEN: itemRevenue - itemCostPEN,
+            });
+          }
         }
       }
       

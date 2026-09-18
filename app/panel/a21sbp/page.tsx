@@ -228,6 +228,7 @@ export default function AdminDashboardPage() {
   const [financeData, setFinanceData] = useState<any>(null);
   const [financePeriod, setFinancePeriod] = useState<string>('all');
   const [financeUsdRate, setFinanceUsdRate] = useState<number>(3.70);
+  const [expandedFinanceService, setExpandedFinanceService] = useState<string | null>(null);
 
   const fetchTab = useCallback(async (tab: Tab) => {
     setLoading(true);
@@ -1606,22 +1607,67 @@ export default function AdminDashboardPage() {
                             {financeData.serviceBreakdown.map((s: any, i: number) => {
                               const margin = s.revenuePEN > 0 ? ((s.profitPEN / s.revenuePEN) * 100) : 0;
                               const catEmoji = ALL_CATEGORIES.find(c => c.id === s.platform)?.emoji || '';
+                              const serviceKey = `${s.platform}:${s.serviceType}`;
+                              const isExpanded = expandedFinanceService === serviceKey;
                               return (
-                                <tr key={i} className="border-b border-zinc-800/50 hover:bg-zinc-800/30">
-                                  <td className="py-2 pr-3 text-zinc-300">{catEmoji} {s.platform}</td>
-                                  <td className="py-2 pr-3 text-zinc-300">{SERVICE_LABELS[s.serviceType] || s.serviceType}</td>
-                                  <td className="py-2 pr-3 text-right text-zinc-400">{s.orderCount}</td>
-                                  <td className="py-2 pr-3 text-right text-white font-medium">S/. {s.revenuePEN.toFixed(2)}</td>
-                                  <td className="py-2 pr-3 text-right text-red-400/70">S/. {s.costPEN.toFixed(2)}</td>
-                                  <td className={`py-2 pr-3 text-right font-bold ${s.profitPEN >= 0 ? 'text-[#ccff00]' : 'text-red-400'}`}>
-                                    S/. {s.profitPEN.toFixed(2)}
-                                  </td>
-                                  <td className="py-2 text-right">
-                                    <span className={`text-xs px-1.5 py-0.5 rounded ${margin >= 50 ? 'bg-green-900/40 text-green-400' : margin >= 30 ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
-                                      {margin.toFixed(0)}%
-                                    </span>
-                                  </td>
-                                </tr>
+                                <React.Fragment key={i}>
+                                  <tr 
+                                    className="border-b border-zinc-800/50 hover:bg-zinc-800/30 cursor-pointer transition-colors"
+                                    onClick={() => setExpandedFinanceService(isExpanded ? null : serviceKey)}
+                                  >
+                                    <td className="py-2 pr-3 text-zinc-300">
+                                      <span className="inline-block w-4 mr-1 text-center text-[10px] text-zinc-600">
+                                        {isExpanded ? '▼' : '▶'}
+                                      </span>
+                                      {catEmoji} {s.platform}
+                                    </td>
+                                    <td className="py-2 pr-3 text-zinc-300">{SERVICE_LABELS[s.serviceType] || s.serviceType}</td>
+                                    <td className="py-2 pr-3 text-right text-zinc-400">{s.orderCount}</td>
+                                    <td className="py-2 pr-3 text-right text-white font-medium">S/. {s.revenuePEN.toFixed(2)}</td>
+                                    <td className="py-2 pr-3 text-right text-red-400/70">S/. {s.costPEN.toFixed(2)}</td>
+                                    <td className={`py-2 pr-3 text-right font-bold ${s.profitPEN >= 0 ? 'text-[#ccff00]' : 'text-red-400'}`}>
+                                      S/. {s.profitPEN.toFixed(2)}
+                                    </td>
+                                    <td className="py-2 text-right">
+                                      <span className={`text-xs px-1.5 py-0.5 rounded ${margin >= 50 ? 'bg-green-900/40 text-green-400' : margin >= 30 ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
+                                        {margin.toFixed(0)}%
+                                      </span>
+                                    </td>
+                                  </tr>
+                                  {isExpanded && s.ordersDetail && s.ordersDetail.length > 0 && (
+                                    <tr className="bg-zinc-900/30">
+                                      <td colSpan={7} className="p-4 border-b border-zinc-800/50">
+                                        <div className="rounded-md border border-zinc-800 bg-black/40 p-3 overflow-x-auto">
+                                          <h4 className="text-[11px] font-semibold text-zinc-500 mb-2 uppercase tracking-wider">Desglose de Órdenes</h4>
+                                          <table className="w-full text-[11px]">
+                                            <thead>
+                                              <tr className="text-zinc-500 border-b border-zinc-800/50">
+                                                <th className="text-left py-1.5 font-normal whitespace-nowrap pr-4">ID Orden</th>
+                                                <th className="text-left py-1.5 font-normal whitespace-nowrap pr-4">Fecha</th>
+                                                <th className="text-left py-1.5 font-normal pr-4">Producto</th>
+                                                <th className="text-right py-1.5 font-normal whitespace-nowrap pr-4">Ingreso</th>
+                                                <th className="text-right py-1.5 font-normal whitespace-nowrap pr-4">Costo</th>
+                                                <th className="text-right py-1.5 font-normal whitespace-nowrap">Ganancia</th>
+                                              </tr>
+                                            </thead>
+                                            <tbody>
+                                              {s.ordersDetail.map((od: any, idx: number) => (
+                                                <tr key={idx} className="border-b border-zinc-800/30 last:border-0 hover:bg-zinc-800/30">
+                                                  <td className="py-1.5 text-zinc-500 font-mono pr-4 truncate max-w-[100px]" title={od.id}>{od.id.substring(0, 8)}...</td>
+                                                  <td className="py-1.5 text-zinc-400 pr-4 whitespace-nowrap">{new Date(od.createdAt).toLocaleString('es-PE', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })}</td>
+                                                  <td className="py-1.5 text-zinc-300 pr-4 truncate max-w-[200px]" title={od.itemName}>{od.itemName}</td>
+                                                  <td className="py-1.5 text-right text-white pr-4">S/. {od.revenuePEN.toFixed(2)}</td>
+                                                  <td className="py-1.5 text-right text-red-400/70 pr-4">S/. {od.costPEN.toFixed(2)}</td>
+                                                  <td className={`py-1.5 text-right ${od.profitPEN >= 0 ? 'text-[#ccff00]' : 'text-red-400'}`}>S/. {od.profitPEN.toFixed(2)}</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
+                                        </div>
+                                      </td>
+                                    </tr>
+                                  )}
+                                </React.Fragment>
                               );
                             })}
                           </tbody>

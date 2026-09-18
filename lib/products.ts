@@ -362,9 +362,10 @@ const PROVIDER_COSTS: Record<number, { costUSD: number; baseQty: number }> = {
   5447: { costUSD: 0.185, baseQty: 100 },   // Followers
   8848: { costUSD: 0.048, baseQty: 100 },   // Likes
   1130: { costUSD: 0.07, baseQty: 1000 },   // Views
-  9812: { costUSD: 0.671, baseQty: 100 },   // Streaming 1h
-  9815: { costUSD: 1.342, baseQty: 100 },   // Streaming 2h
-  9817: { costUSD: 2.013, baseQty: 100 },   // Streaming 3h
+  1118: { costUSD: 0.69, baseQty: 1000 },   // Streaming 15min
+  9812: { costUSD: 0.275, baseQty: 100 },   // Streaming 1h
+  9815: { costUSD: 0.55, baseQty: 100 },   // Streaming 2h
+  9817: { costUSD: 0.825, baseQty: 100 },   // Streaming 3h
   5159: { costUSD: 0.013, baseQty: 100 },   // PK Battle
   7724: { costUSD: 0.029, baseQty: 100 },   // Shares
   1116: { costUSD: 0.007, baseQty: 100 },   // Favorites/Saves
@@ -698,6 +699,17 @@ const RAW_PRODUCTS: Product[] = [
   // Provider IDs: 9812 (1hr), 9815 (2hr), 9817 (3hr)
   // Margen objetivo: ~50-75%
   // =========================================
+  // 15 Minutos
+  {
+    id: 'tt-viewers-1000-15m',
+    name: '1000 Viewers (15 Minutos)',
+    price: 15.00, // Costo: $0.69 -> ~S/ 2.55 -> Margen: ~83%
+    provider_id: 1118,
+    provider_quantity: 1000,
+    type: 'tiktok',
+    service_type: 'streaming',
+    icon: 'users'
+  },
   // 1 Hora
   {
     id: 'tt-viewers-100-1',
